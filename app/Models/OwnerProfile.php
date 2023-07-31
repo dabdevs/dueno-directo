@@ -10,8 +10,7 @@ class OwnerProfile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'phone_number', 
-        'address',
+        'phone_number',
         'property_type',
         'property_address',
         'property_description',

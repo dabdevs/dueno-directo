@@ -54,10 +54,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(TenantProfile::class);
     }
 
+    /**
+     * Get all of the addresses for the User
+     *
+     */
     public function addresses()
     {
-        return $this->belongsToMany(Address::class, 'user_addresses', 'user_id', 'address_id')
-        ->withPivot('type', 'unit_number', 'is_primary', 'note')
-        ->withTimestamps();
+        return $this->hasMany(Address::class);
     }
 }
