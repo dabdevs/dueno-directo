@@ -14,8 +14,13 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $types = ['owner', 'tenant'];
+        $type = $types[array_rand($types)];
+
         return [
-            'name' => $this->faker->name(),
+            'given_name' => $this->faker->firstName(),
+            'family_name' => $this->faker->lastName(),
+            'type' => $type,
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password

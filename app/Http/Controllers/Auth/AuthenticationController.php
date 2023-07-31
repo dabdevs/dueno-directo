@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Auth;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -24,7 +24,7 @@ class AuthenticationController extends Controller
             // Check if the user already exists in database 
             $user = User::whereEmail($googleUser->email)->first();
 
-            // If the user does not exist, create a new user in your database
+            // If the user does not exist, create a new user
             if (!$user) {
                 $user = new User();
                 $user->given_name = $googleUser->user["given_name"];
@@ -40,7 +40,6 @@ class AuthenticationController extends Controller
             // Redirect to the home page or a dashboard
             return redirect()->intended(RouteServiceProvider::HOME);
         } catch (\Exception $e) {
-            // Handle any errors that might occur during the authentication process
             return redirect()->route('login')->with('error', 'Google authentication failed.');
         }
     }
@@ -50,7 +49,7 @@ class AuthenticationController extends Controller
     {
         Auth::logout();
 
-        // Redirect to the login page or any other page after logout
+        // Redirect to the login page
         return redirect('/login');
     }
 }

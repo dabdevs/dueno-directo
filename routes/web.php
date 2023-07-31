@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\V1\DashboardController;
+use App\Http\Controllers\Auth\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,5 +19,6 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+Route::post('/register-user-type', [DashboardController::class, 'registerUserType'])->middleware(['auth'])->name('auth.register_user_type');
 
 require __DIR__.'/auth.php';
