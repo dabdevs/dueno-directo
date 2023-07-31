@@ -43,4 +43,21 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function ownerProfile()
+    {
+        return $this->hasOne(OwnerProfile::class);
+    }
+
+    public function tenantProfile()
+    {
+        return $this->hasOne(TenantProfile::class);
+    }
+
+    public function addresses()
+    {
+        return $this->belongsToMany(Address::class, 'user_addresses', 'user_id', 'address_id')
+        ->withPivot('type', 'unit_number', 'is_primary', 'note')
+        ->withTimestamps();
+    }
 }
