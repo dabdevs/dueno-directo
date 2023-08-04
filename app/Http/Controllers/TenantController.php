@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TenantProfile;
 use Illuminate\Http\Request;
 
 class TenantController extends Controller
@@ -34,7 +35,20 @@ class TenantController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validate the form data (you can add more validation rules as needed)
+        $validatedData = $request->validate([
+            // Add validation rules for the Tenant profile fields
+            'full_name' => 'required|string',
+            'email' => 'required|email',
+            'phone_number' => 'required|string',
+            // Add more validation rules for other fields
+        ]);
+
+        // Create and store the Tenant profile
+        TenantProfile::create($validatedData); 
+
+        // Redirect to a thank you page or any other page as needed
+        return redirect()->route('profile.create')->with('success', 'Tenant profile created successfully!');
     }
 
     /**

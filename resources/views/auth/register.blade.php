@@ -40,19 +40,22 @@
 
             <!-- Account type -->
             <div class="mt-4">
-                <x-label for="type" :value="__('I am:')"/>
+                <x-label for="type" :value="__('I am a:')"/>
 
                 <div class="flex mt-2">
                     <x-input id="owner" class="mx-1"
                                     type="radio"
                                     name="type" 
                                     value="owner" required />
+                    &nbsp;               
                     <x-label for="owner" :value="__('owner')" />
                     
+                    &nbsp;&nbsp;&nbsp;
                     <x-input id="tenant" class="mx-1"
                                     type="radio"
                                     value="tenant"
                                     name="type" required />
+                    &nbsp;
                     <x-label for="tenant" :value="__('tenant')" />
                     
                 </div>
