@@ -9,12 +9,18 @@
             <label>{{ __('Given Name') }}</label>
             <div class="mb-3">
                 <input name="given_name" type="text" class="form-control" value="{{ old('given_name') }}">
+                @error('given_name')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
             </div>
         </div>
         <div class="col-sm-6">
             <label>{{ __('Family Name') }}</label>
             <div class="mb-3">
                 <input name="family_name" type="text" class="form-control" value="{{ old('family_name') }}">
+                @error('family_name')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
             </div>
         </div>
     </div>
@@ -24,18 +30,22 @@
             <label>{{ __('Email') }}</label>
             <div class="mb-3">
                 <input name="email" type="email" class="form-control" aria-label="Email" aria-describedby="email-addon" value="{{ old('email') }}">
+                @error('email')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
             </div>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <label>{{ __('Type') }}</label>
             <div class="mb-3">
                 <select name="type" class="form-control" value="{{ old('type') }}">
-                    <label id="owner" for="owner">Owner</label>
+                    <option value="">Select an option</option>
                     <option value="owner">Owner</option>
-
-                    <label for="tenant"></label>
-                    <option id="tenant" value="tenant">Tenant</option>
+                    <option value="tenant">Tenant</option>
                 </select>
+                @error('type')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
             </div>
         </div>   
     </div>
