@@ -65,7 +65,7 @@
                                             <p class="text-xs font-weight-bold mb-0">{{ $user->created_at }}</p>
                                         </td>
                                         <td class="align-middle">
-                                            <a href="javascript:;" class="text-secondary font-weight-bold text-xs"
+                                            <a href="" class="text-secondary font-weight-bold text-xs"
                                                 data-toggle="tooltip" data-original-title="Edit user">
                                                 Edit
                                             </a>
@@ -78,8 +78,6 @@
                             </tbody>
                         </table>
                     </div>
-                    
-                    
                 </div>
 
                 <div class="card-footer">

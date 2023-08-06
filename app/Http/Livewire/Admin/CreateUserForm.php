@@ -2,8 +2,11 @@
 
 namespace App\Http\Livewire\Admin;
 
-use Illuminate\Validation\Rule;
+use App\Events\User\UserCreated;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Illuminate\Support\Str;
 
 class CreateUserForm extends Component
 {
@@ -19,22 +22,26 @@ class CreateUserForm extends Component
         'type'  => 'required|string', 
     ]; 
 
-    public function register()
+    public function create()
     {
         $this->validate();
 
-        // Save user data to the database or perform other actions here
-        dd($this->all());
-        // $default_password = ($request->given_name)[0] . '_' . ($request->family_name)[0] . $request->type;
-        // $password = ['password' => Hash::make($default_password)];
-        // $user_data = array_merge($request->only('email', 'type', 'given_name', 'family_name'), $password);
-        // dd($user_data);
-        // User::create($user_data); 
+        // Create a password for the user
+        $default_password = Str::random(10);
+        $password = ['password' => Hash::make($default_password)];
+        $user_data = array_merge($this->all(), $password);
+        
+        // Save user in DB
+        $user = User::create($user_data);  
+
+        $user->password = $default_password;
+
+        event(new UserCreated($user));
 
         // Clear form fields after successful registration
         $this->reset(['given_name', 'family_name', 'email', 'type']);
 
-        session()->flash('success', 'User registered successfully!');
+        return redirect()->back()->with(['success' => 'User created successfully!']);
     }
 
     public function render()
