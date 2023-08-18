@@ -2,13 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\OwnerProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class OwnerProfileFactory extends Factory
+class ListingFactory extends Factory
 {
-    protected $model = OwnerProfile::class; 
-
     /**
      * Define the model's default state.
      *
@@ -29,7 +26,7 @@ class OwnerProfileFactory extends Factory
             'security_deposit' => $this->faker->randomFloat(2, 100, 1000),
             'rental_agreement' => $this->faker->text,
             'preferred_tenant_profile' => $this->faker->sentence,
-            'additional_notes' => $this->faker->paragraph,
+            'additional_note' => $this->faker->paragraph,
         ];
     }
 }

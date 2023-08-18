@@ -24,22 +24,22 @@ Route::get('/', function () {
 
 require __DIR__.'/auth.php';
 
-Route::middleware('auth')->group(function () {
-    // Admin routes
-    Route::prefix('admin')->group(function () { 
-        Route::resource('users', UserController::class);
-    });
+// Route::middleware('auth')->group(function () {
+//     // Admin routes
+//     Route::prefix('admin')->group(function () { 
+//         Route::resource('users', UserController::class);
+//     });
 
-    // Owner routes
-    Route::prefix('owner')->group(function () {
-        Route::resource('/profile', OwnerController::class);
-    });
+//     // Owner routes
+//     Route::prefix('owner')->group(function () {
+//         Route::resource('/profile', OwnerController::class);
+//     });
 
-    // Tenant routes
-    Route::prefix('tenant')->group(function () {
-        Route::resource('/profile', TenantController::class);
-    });
+//     // Tenant routes
+//     Route::prefix('tenant')->group(function () {
+//         Route::resource('/profile', TenantController::class);
+//     });
 
-    Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-    Route::post('/register-user-type', [DashboardController::class, 'registerUserType'])->middleware(['auth'])->name('auth.register_user_type');
-});
+//     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+//     Route::post('/register-user-type', [DashboardController::class, 'registerUserType'])->middleware(['auth'])->name('auth.register_user_type');
+// });

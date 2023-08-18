@@ -19,7 +19,6 @@ class CreateAddressesTable extends Migration
             $table->string('city');
             $table->string('state');
             $table->string('postal_code');
-            $table->enum('type', ['personal', 'property'])->default('personal');
             $table->string('unit_number')->nullable();
             $table->boolean('is_primary')->default(false);
             $table->string('note')->nullable();

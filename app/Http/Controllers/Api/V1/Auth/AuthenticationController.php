@@ -1,28 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Resources\UserResource;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthenticationController extends Controller
 {
+    /**
+     *  Register a new user
+     */
     public function register(RegisterRequest $request)
     {
         try {
-            // Register a new user
-            $user = User::create([
-                'email' => $request->email,
-                'password' => bcrypt($request->password)
-            ]);
-
+            $user = User::create(array_merge($request->only(['email', 'type']), ['password' => bcrypt($request->password)]));
+            
             return response()->json([
                 'status' => 'success',
                 'message' => 'User registered successfully',
@@ -36,16 +34,19 @@ class AuthenticationController extends Controller
         }
     }
 
+    /**
+     *  Login 
+     */
     public function login(LoginRequest $request)
     {
         $credentials = $request->only(['email', 'password']);
 
         try {
             // Validate login creadentials
-            if (!$token = auth()->attempt($credentials)) {
+            if (!$token = JWTAuth::attempt($credentials)) { 
                 return response()->json(['error' => 'Wrong credentials'], 401);
             }
-
+        
             return response()->json(['token' => $token]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -55,6 +56,9 @@ class AuthenticationController extends Controller
         }
     }
 
+    /**
+     *  Refresh token
+     */
     public function refresh()
     {
         $old_token = request()->header('token');
@@ -71,13 +75,18 @@ class AuthenticationController extends Controller
         }
     }
 
-    // Redirect the user to the Google authentication page
+    /**
+     *  Redirect the user to the Google authentication page
+     */
     public function redirectToGoogle()
     {
         return Socialite::driver('google')->redirect();
     }
 
-    // Handle the callback from Google
+
+    /**
+     *  Handle the callback from Google
+     */
     public function handleGoogleCallback()
     {
         try {
@@ -105,7 +114,9 @@ class AuthenticationController extends Controller
         }
     }
 
-    // Handle user logout
+    /**
+     *  Handle user logout
+     */
     public function logout()
     {
         Auth::logout();

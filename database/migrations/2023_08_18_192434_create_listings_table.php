@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOwnerProfilesTable extends Migration
+class CreateListingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,21 @@ class CreateOwnerProfilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('owner_profiles', function (Blueprint $table) {
+        Schema::create('listings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('phone_number');
-            $table->string('property_address'); 
-            $table->enum('property_type', ['apartment', 'house', 'condo']); 
+            $table->string('property_address');
+            $table->enum('property_type', ['apartment', 'house', 'condo']);
             $table->text('property_description')->nullable();
-            $table->decimal('rental_price', 10, 2); 
-            $table->enum('lease_term', ['monthly', 'quarterly', 'yearly']); 
-            $table->date('availability')->nullable(); 
-            $table->enum('rent_payment_method', ['bank_transfer', 'check', 'cash']); 
-            $table->decimal('security_deposit', 10, 2); 
+            $table->decimal('rental_price', 10, 2);
+            $table->enum('lease_term', ['monthly', 'quarterly', 'yearly']);
+            $table->date('availability')->nullable();
+            $table->enum('rent_payment_method', ['bank_transfer', 'check', 'cash']);
+            $table->decimal('security_deposit', 10, 2);
             $table->text('rental_agreement')->nullable();
             $table->text('preferred_tenant_profile')->nullable();
-            $table->text('additional_notes')->nullable(); 
+            $table->text('additional_note')->nullable();
             $table->timestamps();
         });
     }
@@ -39,6 +39,6 @@ class CreateOwnerProfilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('owner_profiles');
+        Schema::dropIfExists('listings');
     }
 }

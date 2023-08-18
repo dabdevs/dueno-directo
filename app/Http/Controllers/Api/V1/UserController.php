@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateUserRequest;
+use App\Http\Requests\Api\V1\User\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
@@ -69,13 +73,41 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $user)
     {
-        //
+        try {
+            $user = User::find($user);
+
+            // If the user is not found
+            if (!$user) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'User not found!'
+                ], 400);
+            }
+
+            // Check if the authenticated user is the user being updated or admin user
+            if ($user->id != auth()->id() && auth()->user()->type != "admin") {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Action unauthorized!'
+                ], 401);
+            }
+
+            $user->update($request->except(['email', 'password', 'type']));
+
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'User updated successfully!',
+                'user' => $user
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Internal error!'
+            ], 500);
+        }
     }
 
     /**

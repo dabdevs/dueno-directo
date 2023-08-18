@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -24,12 +25,12 @@ class AdminController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function createUserAction(CreateUserRequest $request)
-    { 
+    {
         dd($request->all());
         $default_password = ($request->given_name)[0] . '_' . ($request->family_name)[0] . $request->type;
         $password = ['password' => Hash::make($default_password)];
         $user_data = array_merge($request->only('email', 'type', 'given_name', 'family_name'), $password);
         dd($user_data);
-        User::create($user_data); 
+        User::create($user_data);
     }
 }

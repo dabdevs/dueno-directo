@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(CountriesTableSeeder::class);
         \App\Models\User::factory(20)->create();
         \App\Models\Address::factory(20)->create();
-        \App\Models\OwnerProfile::factory(10)->create();
-        \App\Models\TenantProfile::factory(10)->create();
+        \App\Models\Listing::factory(30)->create();
     }
 }

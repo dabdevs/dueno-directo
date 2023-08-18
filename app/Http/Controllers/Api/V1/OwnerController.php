@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
-use App\Models\TenantProfile;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\CreateOwnerProfileRequest;
 use Illuminate\Http\Request;
 
-class TenantController extends Controller
+class OwnerController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -24,7 +25,7 @@ class TenantController extends Controller
      */
     public function create()
     {
-        //
+        return view('owner.profile.create');
     }
 
     /**
@@ -33,22 +34,9 @@ class TenantController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateOwnerProfileRequest $request)
     {
-        // Validate the form data (you can add more validation rules as needed)
-        $validatedData = $request->validate([
-            // Add validation rules for the Tenant profile fields
-            'full_name' => 'required|string',
-            'email' => 'required|email',
-            'phone_number' => 'required|string',
-            // Add more validation rules for other fields
-        ]);
-
-        // Create and store the Tenant profile
-        TenantProfile::create($validatedData); 
-
-        // Redirect to a thank you page or any other page as needed
-        return redirect()->route('profile.create')->with('success', 'Tenant profile created successfully!');
+        
     }
 
     /**
@@ -70,7 +58,7 @@ class TenantController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('owner.profile.edit');
     }
 
     /**
