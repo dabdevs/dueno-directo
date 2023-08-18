@@ -57,7 +57,7 @@ class AuthenticationController extends Controller
 
     public function refresh()
     {
-        $old_token = request()->header('token');
+        $old_token = request()->header(); 
 
         try {
             // Refresh token

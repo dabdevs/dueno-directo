@@ -61,7 +61,7 @@ class AuthenticationController extends Controller
      */
     public function refresh()
     {
-        $old_token = request()->header('token');
+        $old_token = request()->bearerToken();
 
         try {
             // Refresh token

@@ -19,6 +19,9 @@ class ConvertCamelCaseToSnakeCase
         // Get the JSON content from the request
         $jsonContent = $request->getContent();
 
+        if ($jsonContent == null)
+            return $next($request);
+
         // Decode the JSON content into an associative array
         $data = json_decode($jsonContent, true); 
 

@@ -51,12 +51,10 @@ Route::group(['prefix' => 'v1'], function () {
     // Secure routes
     Route::group(['middleware' => 'api'], function () {
         // User routes
-        Route::group(['prefix' => 'user'], function () {
-            Route::put('/{user}', [UserController::class, 'update']);
-        });
+        Route::resource('users', UserController::class);
 
         // Owner routes
-        Route::group(['middleware' => 'admin', 'prefix' => 'owner'], function () {
+        Route::group(['middleware' => 'admin', 'prefix' => 'owners'], function () {
             Route::resource('/listings', ListingController::class); 
         });
 
