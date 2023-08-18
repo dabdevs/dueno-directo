@@ -5,11 +5,9 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CreateUserRequest;
 use App\Http\Requests\Api\V1\User\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
@@ -100,7 +98,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'Success',
                 'message' => 'User updated successfully!',
-                'user' => $user
+                'user' => new UserResource($user) 
             ]);
         } catch (\Throwable $th) {
             return response()->json([
