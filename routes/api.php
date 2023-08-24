@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Auth\AuthenticationController;
 use App\Http\Controllers\Api\V1\ListingController;
+use App\Http\Controllers\Api\V1\TenantController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +53,9 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'check_token'], function () {
         // User routes
         Route::resource('users', UserController::class);
+
+        // Tenant routes
+        Route::resource('tenants', TenantController::class);
 
         // Owner routes
         Route::group(['middleware' => 'admin', 'prefix' => 'owners'], function () {

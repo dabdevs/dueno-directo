@@ -26,17 +26,10 @@ class CreateRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string'],
             'family_name' => ['required', 'string', 'max:255'],
             'given_name' => ['required', 'string', 'max:255'],
             'type'  => ['required', 'string', Rule::in(['owner', 'tenant'])],
-            'occupation' => ['required', 'string', 'max:150'],
-            'income' => ['required', 'numeric'], 
-            'desired_location' => ['required', 'string', 'max:150'],
-            'number_of_occupants' => ['required', 'numeric'],
-            'has_pets' => ['required', 'boolean'],
-            'smoker' => ['required', 'boolean'],
-            'employment_status'  => ['required', 'string', Rule::in(['employed', 'self-employed', 'unemployed', 'student'])],
-            'additional_note' => ['required', 'string', 'max:255'],
         ];
     }
 }

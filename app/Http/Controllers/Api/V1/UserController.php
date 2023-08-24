@@ -18,7 +18,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('admin.user.create', ['users' => User::orderBy('id', 'desc')->paginate(10)]);
+        return response()->json([
+            'status' => 'Success',
+            'users' => UserResource::collection(User::all())
+        ]);
     }
 
     /**
@@ -39,13 +42,6 @@ class UserController extends Controller
      */
     public function store(CreateRequest $request)
     {
-        $user = User::create(array_merge($request->except('password'), ['password' => Hash::make($request->password)]));
-
-        return response()->json([
-            'status' => 'Ok',
-            'message' => 'User created successfuly!',
-            'user' => new UserResource($user)
-        ], 201);
         try {
             $user = User::create(array_merge($request->except('password'), ['password' => Hash::make($request->password)]));
             
@@ -92,8 +88,7 @@ class UserController extends Controller
                 'status' => 'Error',
                 'message' => 'Internal error!'
             ], 500);
-        }
-        
+        } 
     }
 
     /**
@@ -123,14 +118,6 @@ class UserController extends Controller
                     'message' => 'User not found!'
                 ], 404);
             }
-
-            // Check if the authenticated user is the user being updated or admin user
-            // if ($user->id != auth()->id() && auth()->user()->type != "admin") {
-            //     return response()->json([
-            //         'status' => 'Error',
-            //         'message' => 'Action unauthorized!'
-            //     ], 401);
-            // }
 
             $user->update($request->except(['email', 'password', 'type']));
 

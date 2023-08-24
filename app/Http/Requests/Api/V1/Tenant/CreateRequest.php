@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Api\V1\Tenant;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CreateUserRequest extends FormRequest
+class CreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +25,7 @@ class CreateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'family_name' => ['required', 'string', 'max:255'],
-            'given_name' => ['required', 'string', 'max:255'],
-            'type'  => ['required', 'string', Rule::in(['owner', 'tenant'])],
+            'user_id' => ['required', 'numeric', 'exists:users,id'],
             'occupation' => ['required', 'string', 'max:150'],
             'income' => ['required', 'numeric'],
             'desired_location' => ['required', 'string', 'max:150'],

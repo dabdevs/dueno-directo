@@ -26,15 +26,6 @@ class UpdateRequest extends FormRequest
         return [
             'given_name' => 'nullable|string|max:150',
             'family_name' => 'nullable|string|max:150',
-            'occupation' => 'nullable|string|max:150',
-            'income' => 'nullable|numeric',
-            'desired_location' => 'nullable|string|max:150',
-            'number_of_occupants' => 'nullable|numeric',
-            'number_of_occupants' => 'nullable|numeric',
-            'has_pets' => 'nullable|boolean',
-            'smoker' => 'nullable|boolean',
-            'employment_status' => 'nullable|string|in:employed,self-employed,unemployed,student',
-            'additional_note' => 'nullable|string|max:255',
         ];
     }
 }
