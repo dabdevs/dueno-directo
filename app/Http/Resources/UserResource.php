@@ -19,7 +19,7 @@ class UserResource extends JsonResource
             "familyName" => $this->family_name,
             "emailVerifiedAt" => $this->email_verified_at ? $this->email_verified_at->format('Y-m-d') : null,
             "type" => $this->owner,
-            "occupation" => $this->ocupation,
+            "occupation" => $this->occupation,
             "income" => $this->income,
             "desiredLocation" => $this->desired_location,
             "numberOfOccupants" => $this->number_of_occupants,

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\CreateUserRequest;
-use App\Http\Requests\Api\V1\User\UpdateUserRequest;
+use App\Http\Requests\Api\V1\User\CreateRequest;
+use App\Http\Requests\Api\V1\User\UpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +37,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateUserRequest $request)
+    public function store(CreateRequest $request)
     {
         $user = User::create(array_merge($request->except('password'), ['password' => Hash::make($request->password)]));
 
@@ -111,7 +111,7 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      */
-    public function update(UpdateUserRequest $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         try {
             $user = User::find($id);

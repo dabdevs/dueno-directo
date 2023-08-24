@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\V1\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
         return [
             'given_name' => 'nullable|string|max:150',
             'family_name' => 'nullable|string|max:150',
-            'ocupation' => 'nullable|string|max:150',
+            'occupation' => 'nullable|string|max:150',
             'income' => 'nullable|numeric',
             'desired_location' => 'nullable|string|max:150',
             'number_of_occupants' => 'nullable|numeric',
