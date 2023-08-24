@@ -12,11 +12,12 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         return [
+            "id" => $this->id,
             "email" => $this->email,
             "dateRegistered" => $this->created_at->format('Y-m-d'),
             "givenName" => $this->given_name,
             "familyName" => $this->family_name,
-            "emailVerifiedAt" => $this-> email_verified_at->format('Y-m-d'),
+            "emailVerifiedAt" => $this->email_verified_at ? $this->email_verified_at->format('Y-m-d') : null,
             "type" => $this->owner,
             "occupation" => $this->ocupation,
             "income" => $this->income,
@@ -26,7 +27,7 @@ class UserResource extends JsonResource
             "smoker" => $this->smoker,
             "employmentStatus" => $this->employment_status,
             "additionalNote" => $this->additional_note,
-            "dateUpdated" => $this-> updated_at->format('Y-m-d')
+            "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null
         ];
     }
 }

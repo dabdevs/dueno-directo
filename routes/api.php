@@ -49,7 +49,7 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     // Secure routes
-    Route::group(['middleware' => 'api'], function () {
+    Route::group(['middleware' => 'check_token'], function () {
         // User routes
         Route::resource('users', UserController::class);
 

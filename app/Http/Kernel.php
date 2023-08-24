@@ -68,5 +68,6 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'owner' => \App\Http\Middleware\OwnerMiddleware::class,
         'tenant' => \App\Http\Middleware\TenantMiddleware::class,
+        'check_token' => \App\Http\Middleware\CheckTokenMiddleware::class,
     ];
 }
