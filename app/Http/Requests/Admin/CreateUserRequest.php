@@ -28,7 +28,7 @@ class CreateUserRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'family_name' => ['required', 'string', 'max:255'],
             'given_name' => ['required', 'string', 'max:255'],
-            'type'  => ['required', 'string', Rule::in(['owner', 'tenant'])],
+            'role'  => ['required', 'string', Rule::in(['owner', 'tenant'])],
             'occupation' => ['required', 'string', 'max:150'],
             'income' => ['required', 'numeric'],
             'desired_location' => ['required', 'string', 'max:150'],

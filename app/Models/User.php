@@ -13,17 +13,21 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    // Define user roles
+    const ROLE_OWNER = 'owner';
+    const ROLE_TENANT = 'tenant';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
-     */ 
+     */
     protected $fillable = [
         'given_name',
         'family_name',
         'email',
         'password',
-        'type',
+        'role',
     ];
 
     /**
