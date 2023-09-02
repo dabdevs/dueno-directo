@@ -3,25 +3,34 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\Tenant\CreateRequest;
-use App\Http\Requests\Api\V1\Tenant\UpdateRequest;
-use App\Http\Resources\TenantResource;
-use App\Models\Tenant;
+use App\Http\Requests\Api\V1\Property\CreateRequest;
+use App\Http\Requests\Api\V1\Property\UpdateRequest;
+use App\Http\Resources\PropertyResource;
+use App\Models\Property;
 use App\Models\User;
+use Illuminate\Http\Request;
 
-class TenantController extends Controller
+class PropertyController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a property of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return response()->json([
-            'status' => 'Success',
-            'tenants' => TenantResource::collection(Tenant::all())
-        ]);
+        try {
+            $properties = Property::all();
+
+            return response()->json([
+                "properties" => PropertyResource::collection($properties)
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'message' => 'Internal error!'
+            ], 500);
+        }
     }
 
     /**
@@ -36,35 +45,29 @@ class TenantController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function store(CreateRequest $request) 
-    { 
-        
+    public function store(CreateRequest $request)
+    {
         try {
-            $user = User::find($request->user_id); 
-    
-            if ($user->role != User::ROLE_TENANT) {
+            $user = User::findOrFail($request->user_id);
+
+            // If user's role is not owner 
+            if ($user->role != User::ROLE_OWNER)
                 return response()->json([
-                    'message' => 'User is not a tenant.'
-                ], 400);
-            }
-    
-            if ($user->profile) {
-                return response()->json([
-                    'message' => 'Profile already created.',
-                    'profile' => $user->profile
-                ]);
-            }
-    
-            $tenant = $user->tenant()->firstOrCreate($request->all());
+                    'message' => 'Invalid user.'
+                ], 401);
+
+            $property = $user->properties()->create($request->all());
 
             return response()->json([
-                'status' => 'Ok',
-                'message' => 'Tenant created successfuly!',
-                'tenant' => new TenantResource($tenant) 
+                'status' => 'Success',
+                'message' => 'Property created successfully!',
+                'property' => new PropertyResource($property)
             ], 201);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Internal error!'
@@ -81,22 +84,18 @@ class TenantController extends Controller
     public function show($id)
     {
         try {
-            $tenant = Tenant::find($id);
+            $property = Property::find($id);
 
-            // If the tenant is not found
-            if (!$tenant) {
+            if (!$property)
                 return response()->json([
-                    'status' => 'Ok',
-                    'message' => 'Tenant not found!'
+                    'message' => 'Property not found',
                 ], 404);
-            }
 
             return response()->json([
-                'status' => 'Ok',
-                'tentant' => new TenantResource($tenant)
+                'status' => 'Success',
+                'property' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Internal error!'
@@ -125,22 +124,22 @@ class TenantController extends Controller
     public function update(UpdateRequest $request, $id)
     {
         try {
-            $tenant = Tenant::find($id);
+            $property = Property::find($id);
 
-            // If the tenant is not found
-            if (!$tenant) {
+            // If the property is not found
+            if (!$property) {
                 return response()->json([
                     'status' => 'Ok',
-                    'message' => 'Tenant not found!'
+                    'message' => 'Property not found!'
                 ], 404);
             }
 
-            $tenant->update($request->all());
+            $property->update($request->all());
 
             return response()->json([
                 'status' => 'Success',
-                'message' => 'Tenant updated successfully!',
-                'tenant' => new TenantResource($tenant)
+                'message' => 'Property updated successfully!',
+                'property' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -159,24 +158,23 @@ class TenantController extends Controller
     public function destroy($id)
     {
         try {
-            $tenant = Tenant::find($id);
+            $property = Property::find($id);
 
-            // If the tenant is not found
-            if (!$tenant) {
+            // If the property is not found
+            if (!$property) {
                 return response()->json([
                     'status' => 'Ok',
-                    'message' => 'Tenant not found!'
+                    'message' => 'Property not found!'
                 ], 404);
             }
 
-            $tenant->delete();
+            $property->delete();
 
             return response()->json([
                 'status' => 'Success',
-                'message' => 'Tenant deleted successfully!'
+                'message' => 'Property deleted successfully!',
             ]);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Internal error!'

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\Auth\AuthenticationController;
 use App\Http\Controllers\Api\V1\ListingController;
+use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\Api\V1\TenantController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Support\Facades\Route;
@@ -53,23 +54,15 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'check_token'], function () {
         // User routes
         Route::resource('users', UserController::class);
+        Route::get('users/{user}/profile', [UserController::class, 'profile'])->name('user_profile');
 
         // Tenant routes
-        Route::resource('tenants', TenantController::class);
+        Route::resource('/tenants', TenantController::class);
+
+        // Property routes
+        Route::resource('properties', PropertyController::class);
 
         // Owner routes
-        Route::group(['middleware' => 'admin', 'prefix' => 'owners'], function () {
-            Route::resource('/listings', ListingController::class); 
-        });
-
-        // Tenant routes
-        // Route::prefix('tenant')->group(function () {
-        //     Route::resource('/profile', TenantController::class);
-        // });
-
-        // Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-        // Route::post('/register-user-type', [DashboardController::class, 'registerUserType'])->middleware(['auth'])->name('auth.register_user_type');
-
-
+        Route::resource('/listings', ListingController::class); 
     });
 });

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Tenant\CreateRequest as TenantCreateRequest;
 use App\Http\Requests\Api\V1\User\CreateRequest;
 use App\Http\Requests\Api\V1\User\UpdateRequest;
+use App\Http\Resources\TenantResource;
 use App\Http\Resources\UserResource;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -119,7 +122,7 @@ class UserController extends Controller
                 ], 404);
             }
 
-            $user->update($request->except(['email', 'password', 'type']));
+            $user->update($request->except(['email', 'password', 'role']));
 
             return response()->json([
                 'status' => 'Success',
@@ -159,6 +162,22 @@ class UserController extends Controller
                 'status' => 'Success',
                 'message' => 'User deleted successfully!'
             ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Internal error!'
+            ], 500);
+        }
+    }
+
+    public function profile(User $user)
+    {
+        try {
+            return response()->json([
+                'status' => 'Ok',
+                'profile' => new TenantResource($user->profile)
+            ], 201);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([

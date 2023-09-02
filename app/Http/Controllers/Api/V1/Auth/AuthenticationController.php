@@ -19,7 +19,7 @@ class AuthenticationController extends Controller
     public function register(RegisterRequest $request)
     {
         try {
-            $user = User::create(array_merge($request->only(['email', 'type']), ['password' => bcrypt($request->password)]));
+            $user = User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]));
             
             return response()->json([
                 'status' => 'success',

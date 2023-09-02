@@ -13,7 +13,8 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    // Define user roles
+    // User roles
+    const ROLE_ADMIN = 'admin';
     const ROLE_OWNER = 'owner';
     const ROLE_TENANT = 'tenant';
 
@@ -70,12 +71,12 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     }
 
     /**
-     * Get all the listings for the User
+     * Get all the properties for the User
      *
      */
-    public function listings()
+    public function properties()
     {
-        return $this->hasMany(Listing::class);
+        return $this->hasMany(Property::class);
     }
 
     /**
@@ -85,5 +86,23 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     public function addresses()
     {
         return $this->hasMany(Address::class);
+    }
+
+    /**
+     * Get the tenant associated with the User
+     *
+     */
+    public function tenant()
+    {
+        return $this->hasOne(Tenant::class);
+    }
+
+    public function profile()
+    {
+        if ($this->role == User::ROLE_TENANT) {
+            return $this->tenant();
+        }
+
+        return null;
     }
 }

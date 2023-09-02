@@ -15,7 +15,7 @@ class CreateTenantsTable extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->unique()->constrained()->onDelete('cascade');
             $table->string('occupation')->nullable();
             $table->decimal('income', 10, 2)->nullable();
             $table->string('desired_location')->nullable();
