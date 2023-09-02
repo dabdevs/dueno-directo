@@ -171,13 +171,43 @@ class UserController extends Controller
         }
     }
 
+    /**
+     *  Return a user's profile
+     */
     public function profile(User $user)
     {
         try {
             return response()->json([
                 'status' => 'Ok',
                 'profile' => new TenantResource($user->profile)
-            ], 201);
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'status' => 'Error',
+                'message' => 'Internal error!'
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete a user's profile
+     */
+    public function deleteProfile(User $user)
+    {
+        try {
+            if (!$user->profile) {
+                return response()->json([
+                    'message' => 'User has no profile.'
+                ], 400);
+            }
+    
+            $user->profile->delete();
+
+            return response()->json([
+                'status' => 'Ok',
+                'message' => 'Profile deleted successfuly!'
+            ], 200);
         } catch (\Throwable $th) {
             //throw $th;
             return response()->json([

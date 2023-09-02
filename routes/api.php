@@ -55,6 +55,8 @@ Route::group(['prefix' => 'v1'], function () {
         // User routes
         Route::resource('users', UserController::class);
         Route::get('users/{user}/profile', [UserController::class, 'profile'])->name('user_profile');
+        Route::delete('users/{user?}/profile/delete', [UserController::class, 'deleteProfile'])->name('user_delete_profile');
+        
 
         // Tenant routes
         Route::resource('/tenants', TenantController::class);
