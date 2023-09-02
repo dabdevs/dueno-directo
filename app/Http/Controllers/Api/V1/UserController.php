@@ -47,9 +47,9 @@ class UserController extends Controller
     {
         try {
             $user = User::create(array_merge($request->except('password'), ['password' => Hash::make($request->password)]));
-            
+
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'Success',
                 'message' => 'User created successfuly!',
                 'user' => new UserResource($user)
             ], 201);
@@ -76,13 +76,13 @@ class UserController extends Controller
             // If the user is not found
             if (!$user) {
                 return response()->json([
-                    'status' => 'Ok',
+                    'status' => 'Success',
                     'message' => 'User not found!'
                 ], 404);
             }
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'Success',
                 'user' => new UserResource($user)
             ]);
         } catch (\Throwable $th) {
@@ -91,7 +91,7 @@ class UserController extends Controller
                 'status' => 'Error',
                 'message' => 'Internal error!'
             ], 500);
-        } 
+        }
     }
 
     /**
@@ -117,7 +117,7 @@ class UserController extends Controller
             // If the user is not found
             if (!$user) {
                 return response()->json([
-                    'status' => 'Ok',
+                    'status' => 'Success',
                     'message' => 'User not found!'
                 ], 404);
             }
@@ -151,7 +151,7 @@ class UserController extends Controller
             // If the user is not found
             if (!$user) {
                 return response()->json([
-                    'status' => 'Ok',
+                    'status' => 'Success',
                     'message' => 'User not found!'
                 ], 404);
             }
@@ -178,7 +178,7 @@ class UserController extends Controller
     {
         try {
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'Success',
                 'profile' => new TenantResource($user->profile)
             ]);
         } catch (\Throwable $th) {
@@ -201,11 +201,11 @@ class UserController extends Controller
                     'message' => 'User has no profile.'
                 ], 400);
             }
-    
+
             $user->profile->delete();
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'Success',
                 'message' => 'Profile deleted successfuly!'
             ], 200);
         } catch (\Throwable $th) {

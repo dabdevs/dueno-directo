@@ -37,31 +37,31 @@ class TenantController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateRequest $request) 
-    { 
-        
+    public function store(CreateRequest $request)
+    {
+
         try {
-            $user = User::find($request->user_id); 
-    
+            $user = User::find($request->user_id);
+
             if ($user->role != User::ROLE_TENANT) {
                 return response()->json([
                     'message' => 'User is not a tenant.'
                 ], 400);
             }
-    
+
             if ($user->profile) {
                 return response()->json([
                     'message' => 'Profile already created.',
                     'profile' => $user->profile
                 ]);
             }
-    
+
             $tenant = $user->tenant()->firstOrCreate($request->all());
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'Success',
                 'message' => 'Tenant created successfuly!',
-                'tenant' => new TenantResource($tenant) 
+                'tenant' => new TenantResource($tenant)
             ], 201);
         } catch (\Throwable $th) {
             //throw $th;
@@ -86,13 +86,13 @@ class TenantController extends Controller
             // If the tenant is not found
             if (!$tenant) {
                 return response()->json([
-                    'status' => 'Ok',
+                    'status' => 'Success',
                     'message' => 'Tenant not found!'
                 ], 404);
             }
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'Success',
                 'tentant' => new TenantResource($tenant)
             ]);
         } catch (\Throwable $th) {
@@ -130,7 +130,7 @@ class TenantController extends Controller
             // If the tenant is not found
             if (!$tenant) {
                 return response()->json([
-                    'status' => 'Ok',
+                    'status' => 'Success',
                     'message' => 'Tenant not found!'
                 ], 404);
             }
@@ -164,7 +164,7 @@ class TenantController extends Controller
             // If the tenant is not found
             if (!$tenant) {
                 return response()->json([
-                    'status' => 'Ok',
+                    'status' => 'Success',
                     'message' => 'Tenant not found!'
                 ], 404);
             }

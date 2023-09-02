@@ -129,7 +129,7 @@ class PropertyController extends Controller
             // If the property is not found
             if (!$property) {
                 return response()->json([
-                    'status' => 'Ok',
+                    'status' => 'Success',
                     'message' => 'Property not found!'
                 ], 404);
             }
@@ -163,7 +163,7 @@ class PropertyController extends Controller
             // If the property is not found
             if (!$property) {
                 return response()->json([
-                    'status' => 'Ok',
+                    'status' => 'Success',
                     'message' => 'Property not found!'
                 ], 404);
             }
