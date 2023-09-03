@@ -64,10 +64,9 @@ class TenantController extends Controller
                 'tenant' => new TenantResource($tenant)
             ], 201);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -96,10 +95,9 @@ class TenantController extends Controller
                 'tentant' => new TenantResource($tenant)
             ]);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -176,10 +174,9 @@ class TenantController extends Controller
                 'message' => 'Tenant deleted successfully!'
             ]);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }

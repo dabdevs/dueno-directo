@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Tenant\CreateRequest as TenantCreateRequest;
 use App\Http\Requests\Api\V1\User\CreateRequest;
 use App\Http\Requests\Api\V1\User\UpdateRequest;
+use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Http\Resources\UserResource;
+use App\Models\Property;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -54,10 +56,9 @@ class UserController extends Controller
                 'user' => new UserResource($user)
             ], 201);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -86,10 +87,9 @@ class UserController extends Controller
                 'user' => new UserResource($user)
             ]);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -163,10 +163,9 @@ class UserController extends Controller
                 'message' => 'User deleted successfully!'
             ]);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -177,15 +176,20 @@ class UserController extends Controller
     public function profile(User $user)
     {
         try {
+            if ($user->profile == null) {
+                return response()->json([
+                    'message' => 'User has no profile.',
+                ], 400);
+            }
+
             return response()->json([
                 'status' => 'Success',
                 'profile' => new TenantResource($user->profile)
             ]);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -209,10 +213,27 @@ class UserController extends Controller
                 'message' => 'Profile deleted successfuly!'
             ], 200);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     *  Authenticated user's properties
+     */
+    public function myProperties()
+    {
+        try {
+            return response()->json([
+                'status' => 'Success',
+                'properties' => PropertyResource::collection(auth()->user()->properties)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
             ], 500);
         }
     }

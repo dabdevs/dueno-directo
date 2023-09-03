@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
@@ -99,10 +101,10 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 
     public function profile()
     {
-        if ($this->role == User::ROLE_TENANT) {
-            return $this->tenant();
+        if ($this->role != User::ROLE_TENANT) {
+            throw new Exception('Incorrect user role.');
         }
 
-        return null;
+        return $this->tenant();
     }
 }

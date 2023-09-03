@@ -36,4 +36,13 @@ class Property extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    /**
+     * Get all of the applications for the Property
+     *
+     */
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
 }

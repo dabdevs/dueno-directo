@@ -36,6 +36,7 @@ class PropertyResource extends JsonResource
             'preferredTenantProfile' => $this->preferred_tenant_profile,
             'additionalNote' => $this->additional_note,
             'user' => $this->owner, 
+            'active' => $this->active,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

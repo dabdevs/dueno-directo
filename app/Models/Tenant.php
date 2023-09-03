@@ -29,4 +29,13 @@ class Tenant extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get all of the applications for the tenant
+     *
+     */
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
+    }
 }

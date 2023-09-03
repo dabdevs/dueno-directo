@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ApplicationController;
 use App\Http\Controllers\Api\V1\Auth\AuthenticationController;
 use App\Http\Controllers\Api\V1\ListingController;
 use App\Http\Controllers\Api\V1\PropertyController;
@@ -56,15 +57,21 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('users', UserController::class);
         Route::get('users/{user}/profile', [UserController::class, 'profile'])->name('user_profile');
         Route::delete('users/{user?}/profile/delete', [UserController::class, 'deleteProfile'])->name('user_delete_profile');
-        
+        Route::get('my-properties', [UserController::class, 'myProperties'])->name('my_properties');
 
         // Tenant routes
         Route::resource('/tenants', TenantController::class);
-
+        
         // Property routes
         Route::resource('properties', PropertyController::class);
+        Route::get('properties/{property}/applications', [PropertyController::class, 'applications'])->name('property_applications');
+        Route::prefix('properties', function() {
+        });
+
+        // Application routes
+        Route::resource('applications', ApplicationController::class);
 
         // Owner routes
-        Route::resource('/listings', ListingController::class); 
+        // Route::resource('/listings', ListingController::class); 
     });
 });

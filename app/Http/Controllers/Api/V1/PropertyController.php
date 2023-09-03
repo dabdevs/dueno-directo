@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Property\CreateRequest;
 use App\Http\Requests\Api\V1\Property\UpdateRequest;
+use App\Http\Resources\ApplicationResource;
 use App\Http\Resources\PropertyResource;
 use App\Models\Property;
 use App\Models\User;
@@ -52,7 +53,7 @@ class PropertyController extends Controller
     public function store(CreateRequest $request)
     {
         try {
-            $user = User::findOrFail($request->user_id);
+            $user = $request->has('user_id') ? User::findOrFail($request->user_id) : auth()->user();
 
             // If user's role is not owner 
             if ($user->role != User::ROLE_OWNER)
@@ -68,6 +69,7 @@ class PropertyController extends Controller
                 'property' => new PropertyResource($property)
             ], 201);
         } catch (\Throwable $th) {
+            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Internal error!'
@@ -179,6 +181,24 @@ class PropertyController extends Controller
                 'status' => 'Error',
                 'message' => 'Internal error!'
             ], 500);
+        }
+    }
+
+    /**
+     *  Property applications
+     */
+    public function applications(Property $property)
+    {
+        try {
+            return response()->json([
+                'status' => 'Success',
+                'applications' => ApplicationResource::collection($property->applications)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ]);
         }
     }
 }

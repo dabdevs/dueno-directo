@@ -43,7 +43,7 @@ class CreateRequest extends FormRequest
             'rental_agreement' => 'nullable|string',
             'preferred_tenant_profile' => 'nullable|string',
             'additional_note' => 'nullable|string',
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'sometimes|exists:users,id|required',
         ];
     }
 }
