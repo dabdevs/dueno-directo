@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\Application\createRequest;
-use App\Http\Resources\ApplicationResource;
-use App\Models\Application;
+use App\Http\Requests\Api\V1\Preference\CreateRequest;
+use App\Http\Requests\Api\V1\Preference\UpdateRequest;
+use App\Http\Resources\PreferenceResource;
+use App\Models\Preference;
 use App\Models\Property;
-use App\Models\Tenant;
-use Illuminate\Http\Request;
 
-class ApplicationController extends Controller
+class PreferenceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,8 +20,8 @@ class ApplicationController extends Controller
     {
         try {
             return response()->json([
-                "status" => "Ok",
-                "applications" => ApplicationResource::collection(Application::all())
+                "status" => "Ok",  
+                "preferences" => PreferenceResource::collection(Preference::all())
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -51,40 +50,21 @@ class ApplicationController extends Controller
     public function store(createRequest $request)
     {
         try {
-            // Validate if tenant exists
-            $tenant = Tenant::find($request->tenant_id);
-            if (!$tenant) {
-                return response()->json([
-                    'message' => 'Tenant does not exist.'
-                ], 400);
-            }
-
             // Validate if property exists
             $property = Property::find($request->property_id);
             if (!$property) {
                 return response()->json([
                     'message' => 'Property does not exist.'
-                ], 400);
+                ], 404); 
             }
 
-            // Validate if tenant has already applied for the property
-            $application = Application::where([
-                "tenant_id" => $tenant->id,
-                "property_id" => $request->property_id
-            ])->first();
-
-            if ($application) {
-                return response()->json([
-                    'message' => 'You already applied for this property.'
-                ], 400);
-            }
-
-            $application = Property::find($request->property_id)->applications()->create($request->validated());
+            // Create preference
+            $preference = $property->preferences()->firstOrCreate($request->validated());
 
             return response()->json([
                 'status' => 'Ok',
-                'application' => new ApplicationResource($application),
-                'message' => 'Application created successfuly!'
+                'preference' => new PreferenceResource($preference),
+                'message' => 'Preference created successfuly!'
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
@@ -100,10 +80,10 @@ class ApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Application $application)
+    public function show(Preference $preference)
     {
         return response()->json([
-            'application' => new ApplicationResource($application)
+            'preference' => new PreferenceResource($preference)
         ]);
     }
 
@@ -125,14 +105,14 @@ class ApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Application $application)
+    public function update(UpdateRequest $request, Preference $preference)
     {
         try {
-            $application->update($request->validated());
+            $preference->update($request->validated());
 
             return response()->json([
                 'status' => 'Ok',
-                'application' => new ApplicationResource($application)
+                'preference' => new PreferenceResource($preference)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -148,14 +128,14 @@ class ApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Application $application)
+    public function destroy(Preference $preference)
     {
         try {
-            $application->delete();
+            $preference->delete();
 
             return response()->json([
                 'status' => 'Ok',
-                'message' => 'Application deleted successfuly'
+                'message' => 'Preference deleted successfuly'
             ]);
         } catch (\Throwable $th) {
             return response()->json([

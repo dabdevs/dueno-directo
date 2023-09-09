@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Tenant\CreateRequest;
 use App\Http\Requests\Api\V1\Tenant\UpdateRequest;
+use App\Http\Resources\ApplicationResource;
 use App\Http\Resources\TenantResource;
 use App\Models\Tenant;
 use App\Models\User;
@@ -19,7 +20,7 @@ class TenantController extends Controller
     public function index()
     {
         return response()->json([
-            'status' => 'Success',
+            'status' => 'Ok',
             'tenants' => TenantResource::collection(Tenant::all())
         ]);
     }
@@ -45,6 +46,7 @@ class TenantController extends Controller
 
             if ($user->role != User::ROLE_TENANT) {
                 return response()->json([
+                    'status' => 'Error',
                     'message' => 'User is not a tenant.'
                 ], 400);
             }
@@ -56,10 +58,10 @@ class TenantController extends Controller
                 ]);
             }
 
-            $tenant = $user->tenant()->firstOrCreate($request->all());
+            $tenant = $user->tenant()->firstOrCreate($request->validated());
 
             return response()->json([
-                'status' => 'Success',
+                'status' => 'Ok',
                 'message' => 'Tenant created successfuly!',
                 'tenant' => new TenantResource($tenant)
             ], 201);
@@ -85,13 +87,13 @@ class TenantController extends Controller
             // If the tenant is not found
             if (!$tenant) {
                 return response()->json([
-                    'status' => 'Success',
+                    'status' => 'Ok',
                     'message' => 'Tenant not found!'
                 ], 404);
             }
 
             return response()->json([
-                'status' => 'Success',
+                'status' => 'Ok',
                 'tentant' => new TenantResource($tenant)
             ]);
         } catch (\Throwable $th) {
@@ -128,15 +130,15 @@ class TenantController extends Controller
             // If the tenant is not found
             if (!$tenant) {
                 return response()->json([
-                    'status' => 'Success',
+                    'status' => 'Ok',
                     'message' => 'Tenant not found!'
                 ], 404);
             }
 
-            $tenant->update($request->all());
+            $tenant->update($request->validated());
 
             return response()->json([
-                'status' => 'Success',
+                'status' => 'Ok',
                 'message' => 'Tenant updated successfully!',
                 'tenant' => new TenantResource($tenant)
             ]);
@@ -162,7 +164,7 @@ class TenantController extends Controller
             // If the tenant is not found
             if (!$tenant) {
                 return response()->json([
-                    'status' => 'Success',
+                    'status' => 'Ok',
                     'message' => 'Tenant not found!'
                 ], 404);
             }
@@ -170,8 +172,23 @@ class TenantController extends Controller
             $tenant->delete();
 
             return response()->json([
-                'status' => 'Success',
+                'status' => 'Ok',
                 'message' => 'Tenant deleted successfully!'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function applications(Tenant $tenant)
+    {
+        try {
+            return response()->json([
+                'status' => 'Ok',
+                'applications' => ApplicationResource::collection($tenant->applications)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

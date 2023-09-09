@@ -45,4 +45,14 @@ class Property extends Model
     {
         return $this->hasMany(Application::class);
     }
+
+    /**
+     * 
+     * Get the preferences of the property
+     *
+     */
+    public function preferences()
+    {
+        return $this->hasOne(Preference::class);
+    }
 }

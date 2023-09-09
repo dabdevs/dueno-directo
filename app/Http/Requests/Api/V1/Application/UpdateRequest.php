@@ -25,8 +25,8 @@ class UpdateRequest extends FormRequest
     {
         return [
             'tenant_id' => 'required|exists:tenants,id',
-            'note' => 'nullable|string|max:255',
-            'property_id' => 'required|exists:properties,id'
+            'property_id' => 'required|exists:properties,id',
+            'note' => 'nullable|string|max:255'
         ];
     }
 }

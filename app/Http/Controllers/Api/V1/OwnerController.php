@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\CreateOwnerProfileRequest;
 use Illuminate\Http\Request;
 
 class OwnerController extends Controller
@@ -34,7 +33,7 @@ class OwnerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateOwnerProfileRequest $request)
+    public function store()
     {
         
     }

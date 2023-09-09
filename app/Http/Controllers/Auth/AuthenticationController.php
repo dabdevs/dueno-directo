@@ -24,7 +24,7 @@ class AuthenticationController extends Controller
             ]);
 
             return response()->json([
-                'status' => 'success',
+                'status' => 'Ok',
                 'message' => 'User registered successfully',
                 'user' => new UserResource($user)
             ]);
@@ -57,7 +57,7 @@ class AuthenticationController extends Controller
 
     public function refresh()
     {
-        $old_token = request()->header(); 
+        $old_token = request()->header();
 
         try {
             // Refresh token

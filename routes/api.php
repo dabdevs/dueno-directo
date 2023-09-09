@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\V1\ApplicationController;
 use App\Http\Controllers\Api\V1\Auth\AuthenticationController;
 use App\Http\Controllers\Api\V1\ListingController;
+use App\Http\Controllers\Api\V1\PreferenceController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\Api\V1\TenantController;
 use App\Http\Controllers\Api\V1\UserController;
@@ -61,12 +62,14 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Tenant routes
         Route::resource('/tenants', TenantController::class);
+        Route::get('tenants/{tenant}/applications', [TenantController::class, 'applications'])->name('tenant_applications');
         
         // Property routes
         Route::resource('properties', PropertyController::class);
         Route::get('properties/{property}/applications', [PropertyController::class, 'applications'])->name('property_applications');
-        Route::prefix('properties', function() {
-        });
+        
+        // Property preferences
+        Route::resource('preferences', PreferenceController::class);
 
         // Application routes
         Route::resource('applications', ApplicationController::class);

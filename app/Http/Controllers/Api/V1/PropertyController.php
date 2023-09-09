@@ -24,6 +24,7 @@ class PropertyController extends Controller
             $properties = Property::all();
 
             return response()->json([
+                "status" => "Ok",
                 "properties" => PropertyResource::collection($properties)
             ]);
         } catch (\Throwable $th) {
@@ -53,23 +54,24 @@ class PropertyController extends Controller
     public function store(CreateRequest $request)
     {
         try {
+            // Get the user
             $user = $request->has('user_id') ? User::findOrFail($request->user_id) : auth()->user();
 
             // If user's role is not owner 
-            if ($user->role != User::ROLE_OWNER)
+            if ($user->role != User::ROLE_OWNER) {
                 return response()->json([
                     'message' => 'Invalid user.'
                 ], 401);
+            }
 
-            $property = $user->properties()->create($request->all());
+            $property = $user->properties()->create($request->validated());
 
             return response()->json([
-                'status' => 'Success',
+                'status' => 'Ok',
                 'message' => 'Property created successfully!',
                 'property' => new PropertyResource($property)
             ], 201);
         } catch (\Throwable $th) {
-            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Internal error!'
@@ -94,7 +96,7 @@ class PropertyController extends Controller
                 ], 404);
 
             return response()->json([
-                'status' => 'Success',
+                'status' => 'Ok',
                 'property' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
@@ -131,15 +133,15 @@ class PropertyController extends Controller
             // If the property is not found
             if (!$property) {
                 return response()->json([
-                    'status' => 'Success',
+                    'status' => 'Ok',
                     'message' => 'Property not found!'
                 ], 404);
             }
 
-            $property->update($request->all());
+            $property->update($request->validated());
 
             return response()->json([
-                'status' => 'Success',
+                'status' => 'Ok',
                 'message' => 'Property updated successfully!',
                 'property' => new PropertyResource($property)
             ]);
@@ -165,7 +167,7 @@ class PropertyController extends Controller
             // If the property is not found
             if (!$property) {
                 return response()->json([
-                    'status' => 'Success',
+                    'status' => 'Ok',
                     'message' => 'Property not found!'
                 ], 404);
             }
@@ -173,7 +175,7 @@ class PropertyController extends Controller
             $property->delete();
 
             return response()->json([
-                'status' => 'Success',
+                'status' => 'Ok',
                 'message' => 'Property deleted successfully!',
             ]);
         } catch (\Throwable $th) {
@@ -191,7 +193,7 @@ class PropertyController extends Controller
     {
         try {
             return response()->json([
-                'status' => 'Success',
+                'status' => 'Ok',
                 'applications' => ApplicationResource::collection($property->applications)
             ]);
         } catch (\Throwable $th) {

@@ -20,9 +20,9 @@ class AuthenticationController extends Controller
     {
         try {
             $user = User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]));
-            
+
             return response()->json([
-                'status' => 'success',
+                'status' => 'Ok',
                 'message' => 'User registered successfully',
                 'user' => new UserResource($user)
             ]);
@@ -43,10 +43,10 @@ class AuthenticationController extends Controller
 
         try {
             // Validate login creadentials
-            if (!$token = JWTAuth::attempt($credentials)) { 
+            if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json(['error' => 'Wrong credentials'], 401);
             }
-        
+
             return response()->json(['token' => $token]);
         } catch (\Throwable $th) {
             return response()->json([

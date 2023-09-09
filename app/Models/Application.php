@@ -19,4 +19,13 @@ class Application extends Model
     {
         return $this->belongsTo(Tenant::class);
     }
+
+    /**
+     * Get the property that matches the Application
+     *
+     */
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
+    }
 }
