@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Property\CreateRequest;
 use App\Http\Requests\Api\V1\Property\UpdateRequest;
 use App\Http\Resources\ApplicationResource;
+use App\Http\Resources\PreferenceResource;
 use App\Http\Resources\PropertyResource;
 use App\Models\Property;
 use App\Models\User;
@@ -197,6 +198,25 @@ class PropertyController extends Controller
                 'applications' => ApplicationResource::collection($property->applications)
             ]);
         } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     *  Property references
+     */
+    public function preferences(Property $property)
+    {
+        try {
+            return response()->json([
+                'status' => 'Ok',
+                'preferences' => new PreferenceResource($property->preferences)
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()

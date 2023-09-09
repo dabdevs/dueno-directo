@@ -67,6 +67,7 @@ Route::group(['prefix' => 'v1'], function () {
         // Property routes
         Route::resource('properties', PropertyController::class);
         Route::get('properties/{property}/applications', [PropertyController::class, 'applications'])->name('property_applications');
+        Route::get('properties/{property}/preferences', [PropertyController::class, 'preferences'])->name('property_preferences');
         
         // Property preferences
         Route::resource('preferences', PreferenceController::class);

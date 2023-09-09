@@ -23,7 +23,7 @@ class PreferenceResource extends JsonResource
             'hasPets' => $this->has_pets,
             'smoker' => $this->smoker,
             'employmentStatus' => $this->employment_status,
-            "property" => $this->property,
+            "property" => new PropertyResource($this->property),
         ];
     }
 }
