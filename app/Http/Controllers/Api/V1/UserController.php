@@ -223,12 +223,12 @@ class UserController extends Controller
     /**
      *  Authenticated user's properties
      */
-    public function myProperties()
+    public function properties(User $user)
     {
         try {
             return response()->json([
                 'status' => 'Ok',
-                'properties' => PropertyResource::collection(auth()->user()->properties)
+                'properties' => PropertyResource::collection($user->properties)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

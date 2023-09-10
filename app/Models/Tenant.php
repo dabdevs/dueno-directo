@@ -38,4 +38,13 @@ class Tenant extends Model
     {
         return $this->hasMany(Application::class);
     }
+
+    /**
+     *  Get the property of the tenant
+     */
+
+    public function property()
+    {
+        return $this->hasOne(Property::class); 
+    }
 }

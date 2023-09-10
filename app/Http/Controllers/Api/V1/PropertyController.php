@@ -29,7 +29,6 @@ class PropertyController extends Controller
                 "properties" => PropertyResource::collection($properties)
             ]);
         } catch (\Throwable $th) {
-            //throw $th;
             return response()->json([
                 'message' => 'Internal error!'
             ], 500);
@@ -83,19 +82,10 @@ class PropertyController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Property $property)
     {
         try {
-            $property = Property::find($id);
-
-            if (!$property)
-                return response()->json([
-                    'message' => 'Property not found',
-                ], 404);
-
             return response()->json([
                 'status' => 'Ok',
                 'property' => new PropertyResource($property)
@@ -122,23 +112,10 @@ class PropertyController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(UpdateRequest $request, Property $property)
     {
         try {
-            $property = Property::find($id);
-
-            // If the property is not found
-            if (!$property) {
-                return response()->json([
-                    'status' => 'Ok',
-                    'message' => 'Property not found!'
-                ], 404);
-            }
-
             $property->update($request->validated());
 
             return response()->json([
@@ -201,7 +178,7 @@ class PropertyController extends Controller
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()
-            ]);
+            ], 500);
         }
     }
 
@@ -216,11 +193,32 @@ class PropertyController extends Controller
                 'preferences' => $property->preferences == null ? [] : new PreferenceResource($property->preferences)
             ]);
         } catch (\Throwable $th) {
-            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function assignTenant(Property $property)
+    {
+        try {
+            $data = request()->validate([
+                'tenant_id' => 'required|numeric|exists:tenants,id'
             ]);
+            
+            $property->tenant_id = $data['tenant_id'];
+            $property->save();
+
+            return response()->json([
+                'status' => 'Ok',
+                'message' => 'Tenant assigned to property successfuly'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 }

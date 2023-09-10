@@ -35,6 +35,7 @@ class CreatePropertiesTable extends Migration
             $table->text('preferred_tenant_profile')->nullable();
             $table->text('additional_note')->nullable();
             $table->foreignId('user_id')->constrained();
+            $table->foreignId('tenant_id')->nullable()->constrained();
             $table->boolean('active')->default(1);
             $table->timestamps();
         });

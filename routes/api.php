@@ -58,7 +58,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('users', UserController::class);
         Route::get('users/{user}/profile', [UserController::class, 'profile'])->name('user_profile');
         Route::delete('users/{user?}/profile/delete', [UserController::class, 'deleteProfile'])->name('user_delete_profile');
-        Route::get('my-properties', [UserController::class, 'myProperties'])->name('my_properties');
+        Route::get('users/{user}/properties', [UserController::class, 'properties'])->name('properties');
 
         // Tenant routes
         Route::resource('/tenants', TenantController::class);
@@ -68,7 +68,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('properties', PropertyController::class);
         Route::get('properties/{property}/applications', [PropertyController::class, 'applications'])->name('property_applications');
         Route::get('properties/{property}/preferences', [PropertyController::class, 'preferences'])->name('property_preferences');
-        
+        Route::post('properties/{property}/assign-tenant', [PropertyController::class, 'assignTenant'])->name('assign_tenant');
+
         // Property preferences
         Route::resource('preferences', PreferenceController::class);
 

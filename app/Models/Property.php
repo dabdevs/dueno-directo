@@ -32,9 +32,22 @@ class Property extends Model
         'user_id',
     ];
 
+    /**
+     * Get the owner of the Property
+     *
+     */
     public function owner()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id')->where(['role' => 'owner']);
+    }
+
+    /**
+     * Get the tenant of the Property
+     *
+     */
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
     }
 
     /**
