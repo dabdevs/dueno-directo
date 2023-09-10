@@ -34,7 +34,7 @@ class PropertyFactory extends Factory
             'preferred_tenant_profile' => $this->faker->text,
             'additional_note' => $this->faker->paragraph,
             'user_id' => function () {
-                return \App\Models\User::factory()->create()->id;
+                return \App\Models\User::factory()->create(['role' => 'owner'])->id;
             },
         ];
     }

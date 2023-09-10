@@ -28,4 +28,26 @@ class Application extends Model
     {
         return $this->belongsTo(Property::class);
     }
+
+    protected function accept()
+    {
+        try {
+            $this->status = 'accepted';
+            $this->save();
+            return true;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    protected function reject()
+    {
+        try {
+            $this->status = 'rejected';
+            $this->save();
+            return true;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

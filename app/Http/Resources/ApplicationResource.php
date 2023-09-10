@@ -16,8 +16,10 @@ class ApplicationResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "property" => new PropertyResource($this->property),
+            "note" => $this->note,
+            "status" => $this->status,
             "tenant" => new TenantResource($this->tenant),
+            "property" => new PropertyResource($this->property),
             "createdAt" => $this->updated_at->format('Y-m-d'),
             "updatedAt" => $this->created_at->format('Y-m-d')
         ];

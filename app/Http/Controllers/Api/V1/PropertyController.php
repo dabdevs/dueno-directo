@@ -213,7 +213,7 @@ class PropertyController extends Controller
         try {
             return response()->json([
                 'status' => 'Ok',
-                'preferences' => new PreferenceResource($property->preferences)
+                'preferences' => $property->preferences == null ? [] : new PreferenceResource($property->preferences)
             ]);
         } catch (\Throwable $th) {
             throw $th;

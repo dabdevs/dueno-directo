@@ -9,7 +9,7 @@ class Preference extends Model
 {
     use HasFactory;
 
-    public $guarded = [];
+    public $guarded = ['id'];
 
     /**
      * Get the property that owns the Preference
