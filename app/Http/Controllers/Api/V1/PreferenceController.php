@@ -21,7 +21,7 @@ class PreferenceController extends Controller
         try {
             return response()->json([
                 "status" => "Ok",  
-                "preferences" => PreferenceResource::collection(Preference::all())
+                "data" => PreferenceResource::collection(Preference::all())
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -63,7 +63,7 @@ class PreferenceController extends Controller
 
             return response()->json([
                 'status' => 'Ok',
-                'preference' => new PreferenceResource($preference),
+                'data' => new PreferenceResource($preference),
                 'message' => 'Preference created successfuly!'
             ], 201);
         } catch (\Throwable $th) {
@@ -83,7 +83,7 @@ class PreferenceController extends Controller
     public function show(Preference $preference)
     {
         return response()->json([
-            'preference' => new PreferenceResource($preference)
+            'data' => new PreferenceResource($preference)
         ]);
     }
 
@@ -112,7 +112,7 @@ class PreferenceController extends Controller
 
             return response()->json([
                 'status' => 'Ok',
-                'preference' => new PreferenceResource($preference)
+                'data' => new PreferenceResource($preference)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

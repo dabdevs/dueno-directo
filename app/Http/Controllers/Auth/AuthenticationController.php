@@ -31,7 +31,7 @@ class AuthenticationController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }

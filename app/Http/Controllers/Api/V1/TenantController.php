@@ -19,10 +19,28 @@ class TenantController extends Controller
      */
     public function index()
     {
-        return response()->json([
-            'status' => 'Ok',
-            'tenants' => TenantResource::collection(Tenant::all())
-        ]);
+        try {
+            $tenants = Tenant::paginate(10);
+
+            return response()->json([
+                "status" => "Ok",
+                "data" => TenantResource::collection($tenants),
+                'meta' => [
+                    'current_page' => $tenants->currentPage(),
+                    'from' => $tenants->firstItem(),
+                    'last_page' => $tenants->lastPage(),
+                    'path' => $tenants->path(),
+                    'per_page' => $tenants->perPage(),
+                    'to' => $tenants->lastItem(),
+                    'total' => $tenants->total(),
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -40,7 +58,6 @@ class TenantController extends Controller
      */
     public function store(CreateRequest $request)
     {
-
         try {
             $user = User::find($request->user_id);
 
@@ -54,7 +71,7 @@ class TenantController extends Controller
             if ($user->profile) {
                 return response()->json([
                     'message' => 'Profile already created.',
-                    'profile' => $user->profile
+                    'data' => $user->profile
                 ]);
             }
 
@@ -63,7 +80,7 @@ class TenantController extends Controller
             return response()->json([
                 'status' => 'Ok',
                 'message' => 'Tenant created successfuly!',
-                'tenant' => new TenantResource($tenant)
+                'data' => new TenantResource($tenant)
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
@@ -76,25 +93,13 @@ class TenantController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Tenant $tenant)
     {
         try {
-            $tenant = Tenant::find($id);
-
-            // If the tenant is not found
-            if (!$tenant) {
-                return response()->json([
-                    'status' => 'Ok',
-                    'message' => 'Tenant not found!'
-                ], 404);
-            }
-
             return response()->json([
                 'status' => 'Ok',
-                'tentant' => new TenantResource($tenant)
+                'data' => new TenantResource($tenant)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -116,36 +121,23 @@ class TenantController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update tenant.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(UpdateRequest $request, Tenant $tenant)
     {
         try {
-            $tenant = Tenant::find($id);
-
-            // If the tenant is not found
-            if (!$tenant) {
-                return response()->json([
-                    'status' => 'Ok',
-                    'message' => 'Tenant not found!'
-                ], 404);
-            }
-
             $tenant->update($request->validated());
 
             return response()->json([
                 'status' => 'Ok',
                 'message' => 'Tenant updated successfully!',
-                'tenant' => new TenantResource($tenant)
+                'data' => new TenantResource($tenant)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -156,19 +148,9 @@ class TenantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Tenant $tenant)
     {
         try {
-            $tenant = Tenant::find($id);
-
-            // If the tenant is not found
-            if (!$tenant) {
-                return response()->json([
-                    'status' => 'Ok',
-                    'message' => 'Tenant not found!'
-                ], 404);
-            }
-
             $tenant->delete();
 
             return response()->json([
@@ -188,7 +170,7 @@ class TenantController extends Controller
         try {
             return response()->json([
                 'status' => 'Ok',
-                'applications' => ApplicationResource::collection($tenant->applications)
+                'data' => ApplicationResource::collection($tenant->applications)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

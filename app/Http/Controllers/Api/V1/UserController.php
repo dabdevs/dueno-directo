@@ -23,10 +23,27 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json([
-            'status' => 'Ok',
-            'users' => UserResource::collection(User::all())
-        ]);
+        try {
+            $users = User::paginate(10);
+
+            return response()->json([
+                "status" => "Ok",
+                "data" => UserResource::collection($users),
+                'meta' => [
+                    'current_page' => $users->currentPage(),
+                    'from' => $users->firstItem(),
+                    'last_page' => $users->lastPage(),
+                    'path' => $users->path(),
+                    'per_page' => $users->perPage(),
+                    'to' => $users->lastItem(),
+                    'total' => $users->total(),
+                ]
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -53,7 +70,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'Ok',
                 'message' => 'User created successfuly!',
-                'user' => new UserResource($user)
+                'data' => new UserResource($user)
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
@@ -84,7 +101,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => 'Ok',
-                'user' => new UserResource($user)
+                'data' => new UserResource($user)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -127,12 +144,12 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'Ok',
                 'message' => 'User updated successfully!',
-                'user' => new UserResource($user)
+                'data' => new UserResource($user)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -184,7 +201,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => 'Ok',
-                'profile' => new TenantResource($user->profile)
+                'data' => new TenantResource($user->profile)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -228,7 +245,7 @@ class UserController extends Controller
         try {
             return response()->json([
                 'status' => 'Ok',
-                'properties' => PropertyResource::collection($user->properties)
+                'data' => PropertyResource::collection($user->properties)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

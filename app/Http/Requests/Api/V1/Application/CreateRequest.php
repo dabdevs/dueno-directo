@@ -24,9 +24,9 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'tenant_id' => 'required|integer',
+            'tenant_id' => 'required|integer|exists:tenants,id',
             'note' => 'nullable|string|max:255',
-            'property_id' => 'required|integer'
+            'property_id' => 'required|integer|exists:properties,id'
         ];
     }
 }

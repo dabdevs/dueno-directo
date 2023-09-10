@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Application\createRequest;
+use App\Http\Requests\Api\V1\Application\UpdateRequest;
 use App\Http\Resources\ApplicationResource;
 use App\Models\Application;
 use App\Models\Property;
@@ -20,9 +21,20 @@ class ApplicationController extends Controller
     public function index()
     {
         try {
+            $applications = Application::paginate(10);
+
             return response()->json([
                 "status" => "Ok",
-                "applications" => ApplicationResource::collection(Application::all())
+                "data" => ApplicationResource::collection($applications),
+                'meta' => [
+                    'current_page' => $applications->currentPage(),
+                    'from' => $applications->firstItem(),
+                    'last_page' => $applications->lastPage(),
+                    'path' => $applications->path(),
+                    'per_page' => $applications->perPage(),
+                    'to' => $applications->lastItem(),
+                    'total' => $applications->total(),
+                ]
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -51,21 +63,7 @@ class ApplicationController extends Controller
     public function store(createRequest $request)
     {
         try {
-            // Validate if tenant exists
-            $tenant = Tenant::find($request->tenant_id);
-            if (!$tenant) {
-                return response()->json([
-                    'message' => 'Tenant does not exist.'
-                ], 400);
-            }
-
-            // Validate if property exists
-            $property = Property::find($request->property_id);
-            if (!$property) {
-                return response()->json([
-                    'message' => 'Property does not exist.'
-                ], 400);
-            }
+            $tenant = Tenant::findOrFail($request->tenant_id);
 
             // Validate if tenant has already applied for the property
             $application = Application::where([
@@ -83,7 +81,7 @@ class ApplicationController extends Controller
 
             return response()->json([
                 'status' => 'Ok',
-                'application' => new ApplicationResource($application),
+                'data' => new ApplicationResource($application),
                 'message' => 'Application created successfuly!'
             ], 201);
         } catch (\Throwable $th) {
@@ -103,7 +101,7 @@ class ApplicationController extends Controller
     public function show(Application $application)
     {
         return response()->json([
-            'application' => new ApplicationResource($application)
+            'data' => new ApplicationResource($application)
         ]);
     }
 
@@ -125,14 +123,14 @@ class ApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Application $application)
+    public function update(UpdateRequest $request, Application $application)
     {
         try {
             $application->update($request->validated());
 
             return response()->json([
                 'status' => 'Ok',
-                'application' => new ApplicationResource($application)
+                'data' => new ApplicationResource($application)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

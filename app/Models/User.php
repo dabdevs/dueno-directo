@@ -102,7 +102,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     public function profile()
     {
         if ($this->role != User::ROLE_TENANT) {
-            throw new Exception('Incorrect user role.');
+            throw new Exception('User is not a tenant.');
         }
 
         return $this->tenant();

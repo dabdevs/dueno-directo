@@ -22,15 +22,24 @@ class PropertyController extends Controller
     public function index()
     {
         try {
-            $properties = Property::all();
+            $properties = Property::paginate(10);
 
             return response()->json([
                 "status" => "Ok",
-                "properties" => PropertyResource::collection($properties)
+                "data" => PropertyResource::collection($properties),
+                'meta' => [
+                    'current_page' => $properties->currentPage(),
+                    'from' => $properties->firstItem(),
+                    'last_page' => $properties->lastPage(),
+                    'path' => $properties->path(),
+                    'per_page' => $properties->perPage(),
+                    'to' => $properties->lastItem(),
+                    'total' => $properties->total(),
+                ]
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -46,7 +55,7 @@ class PropertyController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create a property.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -60,7 +69,7 @@ class PropertyController extends Controller
             // If user's role is not owner 
             if ($user->role != User::ROLE_OWNER) {
                 return response()->json([
-                    'message' => 'Invalid user.'
+                    'message' => 'User is not an owner.'
                 ], 401);
             }
 
@@ -69,12 +78,12 @@ class PropertyController extends Controller
             return response()->json([
                 'status' => 'Ok',
                 'message' => 'Property created successfully!',
-                'property' => new PropertyResource($property)
+                'data' => new PropertyResource($property)
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -88,12 +97,12 @@ class PropertyController extends Controller
         try {
             return response()->json([
                 'status' => 'Ok',
-                'property' => new PropertyResource($property)
+                'data' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -121,12 +130,12 @@ class PropertyController extends Controller
             return response()->json([
                 'status' => 'Ok',
                 'message' => 'Property updated successfully!',
-                'property' => new PropertyResource($property)
+                'data' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -159,7 +168,7 @@ class PropertyController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Error',
-                'message' => 'Internal error!'
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -172,7 +181,7 @@ class PropertyController extends Controller
         try {
             return response()->json([
                 'status' => 'Ok',
-                'applications' => ApplicationResource::collection($property->applications)
+                'data' => ApplicationResource::collection($property->applications)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -190,7 +199,7 @@ class PropertyController extends Controller
         try {
             return response()->json([
                 'status' => 'Ok',
-                'preferences' => $property->preferences == null ? [] : new PreferenceResource($property->preferences)
+                'data' => $property->preferences == null ? [] : new PreferenceResource($property->preferences)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -206,7 +215,7 @@ class PropertyController extends Controller
             $data = request()->validate([
                 'tenant_id' => 'required|numeric|exists:tenants,id'
             ]);
-            
+
             $property->tenant_id = $data['tenant_id'];
             $property->save();
 
