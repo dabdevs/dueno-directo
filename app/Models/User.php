@@ -107,4 +107,13 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 
         return $this->tenant();
     }
+
+    /**
+     * Get the verification request associated with the User
+     *
+     */
+    public function verification_request()
+    {
+        return $this->hasOne(VerificationRequest::class);
+    }
 }

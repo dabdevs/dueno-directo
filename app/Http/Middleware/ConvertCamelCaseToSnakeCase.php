@@ -19,11 +19,14 @@ class ConvertCamelCaseToSnakeCase
         // Get the JSON content from the request
         $jsonContent = $request->getContent();
 
-        if ($jsonContent == null)
-            return $next($request);
-
         // Decode the JSON content into an associative array
         $data = json_decode($jsonContent, true); 
+
+        if ($data == null) {
+            return $next($request);
+        }
+
+        
 
         // Convert camelCase keys to snake_case
         $snakeCaseData = $this->convertKeysToSnakeCase($data);
@@ -33,7 +36,7 @@ class ConvertCamelCaseToSnakeCase
 
         // Replace the request content with the modified JSON
         $request->replace(json_decode($jsonContent, true)); 
-
+        
         return $next($request);
     }
 

@@ -126,19 +126,9 @@ class UserController extends Controller
      * Update the specified resource in storage.
      *
      */
-    public function update(UpdateRequest $request, $id)
+    public function update(UpdateRequest $request, User $user)
     {
         try {
-            $user = User::find($id);
-
-            // If the user is not found
-            if (!$user) {
-                return response()->json([
-                    'status' => 'OK',
-                    'message' => 'User not found!'
-                ], 404);
-            }
-
             $user->update($request->except(['email', 'password', 'role']));
 
             return response()->json([
@@ -160,19 +150,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
         try {
-            $user = User::find($id);
-
-            // If the user is not found
-            if (!$user) {
-                return response()->json([
-                    'status' => 'OK',
-                    'message' => 'User not found!'
-                ], 404);
-            }
-
             $user->delete();
 
             return response()->json([

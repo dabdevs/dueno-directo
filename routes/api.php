@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\PreferenceController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\Api\V1\TenantController;
 use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\VerificationRequestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -77,7 +78,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('applications', ApplicationController::class);
         Route::post('applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->name('application.change_status');
 
-        // Owner routes
-        // Route::resource('/listings', ListingController::class); 
+        // VerificationRequest routes
+        Route::resource('/verification-requests', VerificationRequestController::class); 
     });
 });
