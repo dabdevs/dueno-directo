@@ -22,7 +22,7 @@ class AuthenticationController extends Controller
             $user = User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]));
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'User registered successfully',
                 'user' => new UserResource($user)
             ]);

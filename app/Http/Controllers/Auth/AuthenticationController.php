@@ -24,7 +24,7 @@ class AuthenticationController extends Controller
             ]);
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'User registered successfully',
                 'user' => new UserResource($user)
             ]);

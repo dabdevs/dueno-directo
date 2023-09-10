@@ -10,6 +10,7 @@ use App\Models\Application;
 use App\Models\Property;
 use App\Models\Tenant;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ApplicationController extends Controller
 {
@@ -24,7 +25,7 @@ class ApplicationController extends Controller
             $applications = Application::paginate(10);
 
             return response()->json([
-                "status" => "Ok",
+                'status' => 'OK',
                 "data" => ApplicationResource::collection($applications),
                 'meta' => [
                     'current_page' => $applications->currentPage(),
@@ -38,7 +39,7 @@ class ApplicationController extends Controller
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                "status" => "Ok",
+                'status' => 'OK',
                 "message" => $th->getMessage()
             ], 500);
         }
@@ -80,7 +81,7 @@ class ApplicationController extends Controller
             $application = Property::find($request->property_id)->applications()->create($request->validated());
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'data' => new ApplicationResource($application),
                 'message' => 'Application created successfuly!'
             ], 201);
@@ -129,7 +130,7 @@ class ApplicationController extends Controller
             $application->update($request->validated());
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'data' => new ApplicationResource($application)
             ]);
         } catch (\Throwable $th) {
@@ -152,8 +153,33 @@ class ApplicationController extends Controller
             $application->delete();
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'Application deleted successfuly'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     *  Change application status
+     */
+    public function changeStatus(Application $application, Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'status' => ['required', 'string', Rule::in(['pending', 'accepted', 'rejected'])]
+            ]);
+
+            $application->status = $data['status'];
+            $application->save();
+
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Status changed successfuly'
             ]);
         } catch (\Throwable $th) {
             return response()->json([

@@ -20,12 +20,12 @@ class PreferenceController extends Controller
     {
         try {
             return response()->json([
-                "status" => "Ok",  
+                'status' => 'OK',
                 "data" => PreferenceResource::collection(Preference::all())
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                "status" => "Ok",
+                'status' => 'OK',
                 "message" => $th->getMessage()
             ], 500);
         }
@@ -55,14 +55,14 @@ class PreferenceController extends Controller
             if (!$property) {
                 return response()->json([
                     'message' => 'Property does not exist.'
-                ], 404); 
+                ], 404);
             }
 
             // Create preference
             $preference = $property->preferences()->firstOrCreate($request->validated());
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'data' => new PreferenceResource($preference),
                 'message' => 'Preference created successfuly!'
             ], 201);
@@ -111,7 +111,7 @@ class PreferenceController extends Controller
             $preference->update($request->validated());
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'data' => new PreferenceResource($preference)
             ]);
         } catch (\Throwable $th) {
@@ -134,7 +134,7 @@ class PreferenceController extends Controller
             $preference->delete();
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'Preference deleted successfuly'
             ]);
         } catch (\Throwable $th) {

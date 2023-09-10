@@ -43,13 +43,13 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'v1'], function () {
     Route::get('health-check', function () {
         return response('OK', 200);
-    });
+    })->name('health_check');
 
     // Authentication routes
     Route::group(['prefix' => 'auth'], function () {
-        Route::post('/register', [AuthenticationController::class, 'register']);
-        Route::post('/login', [AuthenticationController::class, 'login']);
-        Route::post('/refresh', [AuthenticationController::class, 'refresh']); 
+        Route::post('/register', [AuthenticationController::class, 'register'])->name('register');
+        Route::post('/login', [AuthenticationController::class, 'login'])->name('login');
+        Route::post('/refresh-token', [AuthenticationController::class, 'refresh'])->name('refresh_token'); 
     });
 
     // Secure routes
@@ -75,6 +75,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Application routes
         Route::resource('applications', ApplicationController::class);
+        Route::post('applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->name('application.change_status');
 
         // Owner routes
         // Route::resource('/listings', ListingController::class); 

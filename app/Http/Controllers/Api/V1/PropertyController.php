@@ -25,7 +25,7 @@ class PropertyController extends Controller
             $properties = Property::paginate(10);
 
             return response()->json([
-                "status" => "Ok",
+                'status' => 'OK',
                 "data" => PropertyResource::collection($properties),
                 'meta' => [
                     'current_page' => $properties->currentPage(),
@@ -76,7 +76,7 @@ class PropertyController extends Controller
             $property = $user->properties()->create($request->validated());
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'Property created successfully!',
                 'data' => new PropertyResource($property)
             ], 201);
@@ -96,7 +96,7 @@ class PropertyController extends Controller
     {
         try {
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'data' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
@@ -128,7 +128,7 @@ class PropertyController extends Controller
             $property->update($request->validated());
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'Property updated successfully!',
                 'data' => new PropertyResource($property)
             ]);
@@ -154,7 +154,7 @@ class PropertyController extends Controller
             // If the property is not found
             if (!$property) {
                 return response()->json([
-                    'status' => 'Ok',
+                    'status' => 'OK',
                     'message' => 'Property not found!'
                 ], 404);
             }
@@ -162,7 +162,7 @@ class PropertyController extends Controller
             $property->delete();
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'Property deleted successfully!',
             ]);
         } catch (\Throwable $th) {
@@ -180,7 +180,7 @@ class PropertyController extends Controller
     {
         try {
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'data' => ApplicationResource::collection($property->applications)
             ]);
         } catch (\Throwable $th) {
@@ -198,7 +198,7 @@ class PropertyController extends Controller
     {
         try {
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'data' => $property->preferences == null ? [] : new PreferenceResource($property->preferences)
             ]);
         } catch (\Throwable $th) {
@@ -220,7 +220,7 @@ class PropertyController extends Controller
             $property->save();
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'Tenant assigned to property successfuly'
             ]);
         } catch (\Throwable $th) {

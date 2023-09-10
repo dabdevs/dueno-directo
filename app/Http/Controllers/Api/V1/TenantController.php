@@ -23,7 +23,7 @@ class TenantController extends Controller
             $tenants = Tenant::paginate(10);
 
             return response()->json([
-                "status" => "Ok",
+                'status' => 'OK',
                 "data" => TenantResource::collection($tenants),
                 'meta' => [
                     'current_page' => $tenants->currentPage(),
@@ -78,7 +78,7 @@ class TenantController extends Controller
             $tenant = $user->tenant()->firstOrCreate($request->validated());
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'Tenant created successfuly!',
                 'data' => new TenantResource($tenant)
             ], 201);
@@ -98,7 +98,7 @@ class TenantController extends Controller
     {
         try {
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'data' => new TenantResource($tenant)
             ]);
         } catch (\Throwable $th) {
@@ -130,7 +130,7 @@ class TenantController extends Controller
             $tenant->update($request->validated());
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'Tenant updated successfully!',
                 'data' => new TenantResource($tenant)
             ]);
@@ -154,7 +154,7 @@ class TenantController extends Controller
             $tenant->delete();
 
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'message' => 'Tenant deleted successfully!'
             ]);
         } catch (\Throwable $th) {
@@ -169,7 +169,7 @@ class TenantController extends Controller
     {
         try {
             return response()->json([
-                'status' => 'Ok',
+                'status' => 'OK',
                 'data' => ApplicationResource::collection($tenant->applications)
             ]);
         } catch (\Throwable $th) {
