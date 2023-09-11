@@ -8,7 +8,9 @@ use App\Http\Requests\Api\V1\Property\UpdateRequest;
 use App\Http\Resources\ApplicationResource;
 use App\Http\Resources\PreferenceResource;
 use App\Http\Resources\PropertyResource;
+use App\Http\Resources\TenantResource;
 use App\Models\Property;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -209,6 +211,9 @@ class PropertyController extends Controller
         }
     }
 
+    /**
+     * Assign the tenant to a property
+     */
     public function assignTenant(Property $property)
     {
         try {
@@ -222,6 +227,24 @@ class PropertyController extends Controller
             return response()->json([
                 'status' => 'OK',
                 'message' => 'Tenant assigned to property successfuly'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get the tenant of a property
+     */
+    public function tenant(Property $property)
+    {
+        try {
+            return response()->json([
+                'status' => 'OK',
+                'data' => $property->tenant == null ? [] : new TenantResource($property->tenant)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

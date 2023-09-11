@@ -62,7 +62,7 @@ class VerificationRequestController extends Controller
     public function store(CreateRequest $request)
     {
         try {
-            $user = User::findOrFail($request->user_id); 
+            $user = User::findOrFail($request->userId); 
 
             if ($user->verification_request != null) {
                 return response()->json([
@@ -132,7 +132,7 @@ class VerificationRequestController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, VerificationRequest $verification_request)
+    public function update(UpdateRequest $request, VerificationRequest $verification_request)
     {
         try { 
             $valid_data = $request->only(['phone', 'userId', 'status']); 

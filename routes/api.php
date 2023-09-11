@@ -70,6 +70,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('properties/{property}/applications', [PropertyController::class, 'applications'])->name('property_applications');
         Route::get('properties/{property}/preferences', [PropertyController::class, 'preferences'])->name('property_preferences');
         Route::post('properties/{property}/assign-tenant', [PropertyController::class, 'assignTenant'])->name('assign_tenant');
+        Route::get('properties/{property}/tenant', [PropertyController::class, 'tenant'])->name('property_tenant');
 
         // Property preferences
         Route::resource('preferences', PreferenceController::class);
