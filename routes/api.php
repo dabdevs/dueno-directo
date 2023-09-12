@@ -71,9 +71,9 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         // Property routes
-        Route::resource('properties', PropertyController::class)->middleware('role:admin', 'role:owner');
+        Route::resource('properties', PropertyController::class);
         Route::get('search', [PropertyController::class, 'search'])->name('properties.search');
-        Route::group(['prefix' =>'properties', 'middleware' => ['role:admin', 'role:owner']], function () {
+        Route::group(['prefix' =>'properties', 'middleware' => ['role:owner', 'role:admin']], function () {
             Route::get('{property}/applications', [PropertyController::class, 'applications'])->name('properties.applications');
             Route::get('{property}/preferences', [PropertyController::class, 'preferences'])->name('properties.preferences');
             Route::post('{property}/assign-tenant', [PropertyController::class, 'assignTenant'])->name('properties.assign_tenant');
@@ -84,7 +84,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('preferences', PreferenceController::class)->middleware('role:admin', 'role:owner');
 
         // Application routes
-        Route::resource('applications', ApplicationController::class)->middleware('role:tenant', 'role:admin')->except('changeStatus');
+        Route::resource('applications', ApplicationController::class)->middleware('role:tenant', 'role:admin');
         Route::post('applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->middleware('role:owner')->name('applications.change_status');
 
         // VerificationRequest routes

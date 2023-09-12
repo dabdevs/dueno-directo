@@ -15,6 +15,11 @@ use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:owner')->except(['index', 'show', 'search']);
+    }
+
     /**
      * Display a property of the resource.
      *
