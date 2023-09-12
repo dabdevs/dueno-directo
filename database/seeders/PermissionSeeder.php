@@ -19,7 +19,12 @@ class PermissionSeeder extends Seeder
         $roleTenant = Role::create(['name' => 'tenant']);
         $roleAgent = Role::create(['name' => 'agent']);
         $roleLawyer = Role::create(['name' => 'lawyer']);
-        $roleAdmin = Role::create(['name' => 'admin']); 
+        $roleAdmin = Role::create(['name' => 'admin']);
+
+        // Users
+        Permission::create(['name' => 'list users'])->assignRole($roleAdmin);
+        Permission::create(['name' => 'delete users'])->assignRole($roleAdmin);
+        Permission::create(['name' => 'view user'])->assignRole($roleAdmin);
 
         // Properties 
         Permission::create(['name' => 'create properties'])->syncRoles([$roleOwner, $roleAgent, $roleAdmin]);

@@ -8,13 +8,18 @@ use App\Http\Requests\Api\V1\User\UpdateRequest;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Http\Resources\UserResource;
-use Intervention\Image\Facades\Image;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:admin')->except(['update', 'profile']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -128,7 +133,21 @@ class UserController extends Controller
     public function update(UpdateRequest $request, User $user)
     {
         try {
-            $user->update($request->except(['email']));
+            // Validate if user have permission to update the resource
+            if ($user->id != auth()->id() && auth()->user()->role != User::ROLE_ADMIN) {
+                return response()->json([
+                    'status' => 'OK',
+                    'message' => 'User does not have the right roles.'
+                ], 403);
+            }
+
+            $data = $request->except(['email']);
+
+            if ($request->has('password')) {
+                $data['password'] = bcrypt($request->password);
+            }
+
+            $user->update($data);
 
             return response()->json([
                 'status' => 'OK',

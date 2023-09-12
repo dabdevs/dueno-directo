@@ -56,11 +56,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/refresh-token', [AuthenticationController::class, 'refresh'])->name('refresh_token');
     });
 
-    // Secure routes
+    // ===== SECURE ROUTES ========= //
     Route::group(['middleware' => 'check_token'], function () {
         // User routes
-        Route::resource('users', UserController::class)->middleware('role:admin');
-        Route::group(['prefix' => 'users', 'middleware' => 'role:admin'], function () {
+        Route::resource('users', UserController::class);
+        Route::group(['prefix' => 'users'], function () {
             Route::get('{user}/profile', [UserController::class, 'profile'])->name('users.profile');
             Route::delete('{user?}/profile/delete', [UserController::class, 'deleteProfile'])->name('users.delete_profile');
             Route::get('{user}/properties', [UserController::class, 'properties'])->name('users.properties');
@@ -76,7 +76,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Property routes
         Route::resource('properties', PropertyController::class);
-        Route::group(['prefix' =>'properties', 'middleware' => 'role:owner'], function () {
+        Route::group(['prefix' => 'properties', 'middleware' => 'role:owner'], function () {
             Route::get('{property}/applications', [PropertyController::class, 'applications'])->name('properties.applications');
             Route::get('{property}/preferences', [PropertyController::class, 'preferences'])->name('properties.preferences');
             Route::post('{property}/assign-tenant', [PropertyController::class, 'assignTenant'])->name('properties.assign_tenant');

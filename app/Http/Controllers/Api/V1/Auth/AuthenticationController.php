@@ -21,12 +21,11 @@ class AuthenticationController extends Controller
     public function register(CreateRequest $request)
     {
         try {
-            $user = User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]))->assignRole($request->role);
+            User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]))->assignRole($request->role);
             
             return response()->json([
                 'status' => 'OK',
-                'message' => 'User registered successfully',
-                //'user' => new UserResource($user)
+                'message' => 'User registered successfully'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
