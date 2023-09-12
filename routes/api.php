@@ -88,6 +88,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->middleware('role:owner')->name('applications.change_status');
 
         // VerificationRequest routes
-        Route::resource('/verification-requests', VerificationRequestController::class);
+        Route::resource('verification-requests', VerificationRequestController::class);
+        Route::post('/verification-requests/{verification_request}/change-status', [VerificationRequestController::class, 'changeStatus'])->middleware('role:admin')->name('verification_requests.change_status');
     });
 });

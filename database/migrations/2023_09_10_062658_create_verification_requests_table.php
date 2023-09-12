@@ -19,7 +19,7 @@ class CreateVerificationRequestsTable extends Migration
             $table->foreignId('tenant_id')->nullable()->constrained();
             $table->foreignId('property_id')->nullable()->constrained();
             $table->string('phone');
-            $table->enum('status', ['pending', 'approved', 'denied'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->integer('approved_by')->nullable();
             $table->timestamps();
         });

@@ -13,6 +13,7 @@ use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class VerificationRequestController extends Controller
 {
@@ -213,6 +214,32 @@ class VerificationRequestController extends Controller
                 'message' => 'User deleted successfully!'
             ]);
         } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     *  Change verification's request status
+     */
+    public function changeStatus(VerificationRequest $verification_request, Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'status' => ['required', 'string', Rule::in(['pending', 'approved', 'rejected'])]
+            ]); 
+
+            $verification_request->status = $data['status'];
+            $verification_request->save();
+
+            return response()->json([
+                'status' => 'OK',
+                'message' => "Application $request->status successfuly" 
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()
