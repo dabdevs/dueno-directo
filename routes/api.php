@@ -57,14 +57,14 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'check_token'], function () {
         // User routes
         Route::resource('users', UserController::class)->middleware('role:admin');
-        Route::group(['prefix' => 'users'], function () {
+        Route::group(['prefix' => 'users', 'middleware' => 'role:admin'], function () {
             Route::get('{user}/profile', [UserController::class, 'profile'])->name('users.profile');
             Route::delete('{user?}/profile/delete', [UserController::class, 'deleteProfile'])->name('users.delete_profile');
             Route::get('{user}/properties', [UserController::class, 'properties'])->name('users.properties');
         });
 
         // Tenant routes
-        Route::resource('/tenants', TenantController::class)->middleware('role:tenant', 'role:admin');
+        Route::resource('/tenants', TenantController::class)->middleware('role:tenant');
         Route::group(['prefix' => 'tenants', 'middleware' => ['role:admin', 'role:tenant']], function () {
             Route::get('{tenant}/applications', [TenantController::class, 'applications'])->name('tenants.applications');
             Route::post('{tenant}/request-verification', [TenantController::class, 'requestVerification'])->name('tenants.request_verification');
@@ -81,13 +81,13 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         // Properties Preferences
-        Route::resource('preferences', PreferenceController::class)->middleware('role:admin', 'role:owner');
+        Route::resource('preferences', PreferenceController::class)->middleware('role:owner');
 
         // Application routes
-        Route::resource('applications', ApplicationController::class)->middleware('role:tenant', 'role:admin');
+        Route::resource('applications', ApplicationController::class)->middleware('role:tenant');
         Route::post('applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->middleware('role:owner')->name('applications.change_status');
 
         // VerificationRequest routes
-        Route::resource('/verification-requests', VerificationRequestController::class)->middleware('role:admin', 'role:owner', 'role:tenant');
+        Route::resource('/verification-requests', VerificationRequestController::class);
     });
 });
