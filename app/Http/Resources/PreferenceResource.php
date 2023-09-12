@@ -24,6 +24,8 @@ class PreferenceResource extends JsonResource
             'smoker' => $this->smoker,
             'employmentStatus' => $this->employment_status,
             "property" => new PropertyResource($this->property),
+            "dateRegistered" => $this->created_at->format('Y-m-d'),
+            "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null
         ];
     }
 }

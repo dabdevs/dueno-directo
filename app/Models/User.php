@@ -33,6 +33,12 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         'email',
         'password',
         'role',
+        'telephone',
+        'country_id',
+        'city',
+        'number',
+        'appartment',
+        'zip_code'
     ];
 
     /**
@@ -127,5 +133,10 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     public function isTenant()
     {
         return $this->role == 'tenant' && $this->tenant() != null;
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }

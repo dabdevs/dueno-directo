@@ -38,8 +38,8 @@ class PropertyResource extends JsonResource
             'owner' => $this->owner, 
             'tenant' => new TenantResource($this->tenant),
             'active' => $this->active,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
+            "dateRegistered" => $this->created_at->format('Y-m-d'),
+            "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null
         ];
     }
 }

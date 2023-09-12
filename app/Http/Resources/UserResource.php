@@ -14,11 +14,17 @@ class UserResource extends JsonResource
         return [
             "id" => $this->id,
             "email" => $this->email,
-            "dateRegistered" => $this->created_at->format('Y-m-d'),
             "givenName" => $this->given_name,
             "familyName" => $this->family_name,
-            "emailVerifiedAt" => $this->email_verified_at ? $this->email_verified_at->format('Y-m-d') : null,
             "role" => $this->role,
+            'telephone' => $this->telephone,
+            'country' => new CountryResource($this->country),
+            'city' => $this->city,
+            'number' => $this->number,
+            'appartment' => $this->appartment,
+            'zipCode' => $this->zip_code,
+            "emailVerifiedAt" => $this->email_verified_at ? $this->email_verified_at->format('Y-m-d') : null,
+            "dateRegistered" => $this->created_at->format('Y-m-d'),
             "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null
         ];
     }

@@ -130,7 +130,7 @@ class UserController extends Controller
     public function update(UpdateRequest $request, User $user)
     {
         try {
-            $user->update($request->except(['email', 'password', 'role']));
+            $user->update($request->except(['email']));
 
             return response()->json([
                 'status' => 'OK',
@@ -138,6 +138,7 @@ class UserController extends Controller
                 'data' => new UserResource($user)
             ]);
         } catch (\Throwable $th) {
+            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()

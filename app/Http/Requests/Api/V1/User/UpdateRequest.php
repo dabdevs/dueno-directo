@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRequest extends FormRequest
 {
@@ -24,8 +25,16 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'given_name' => 'required|string|max:150',
-            'family_name' => 'required|string|max:150',
+            'family_name' => ['sometimes', 'string', 'max:150'],
+            'given_name' => ['sometimes', 'string', 'max:150'], 
+            'password' => ['sometimes', 'string'],
+            'role'  => ['sometimes', 'string', Rule::in(['owner', 'tenant', 'admin', 'lawyer', 'agent'])],
+            'telephone' => ['sometimes', 'string', 'numeric'],
+            'country_id' => ['sometimes', 'integer'],
+            'city' => ['sometimes', 'string'],
+            'number' => ['sometimes', 'integer', 'numeric'],
+            'appartment' =>['sometimes', 'string'],
+            'zip_code' => ['sometimes', 'string']
         ];
     }
 }

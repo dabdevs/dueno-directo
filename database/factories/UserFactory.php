@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -16,11 +17,18 @@ class UserFactory extends Factory
     {
         $roles = ['owner', 'tenant'];
         $role = $roles[array_rand($roles)];
+        $countries = Country::all()->pluck('id');
 
         return [
             'given_name' => $this->faker->firstName(),
             'family_name' => $this->faker->lastName(),
             'role' => $role,
+            'telephone' => $this->faker->phoneNumber(),
+            'country_id' => $this->faker->randomElement($countries),
+            'city' => $this->faker->city(),
+            'number' => $this->faker->numberBetween(1, 1000),
+            'appartment' => $this->faker->randomNumber(),
+            'zip_code' => $this->faker->numberBetween(1000, 9999), 
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => bcrypt('1234'), 

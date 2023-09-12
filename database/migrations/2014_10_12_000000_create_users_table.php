@@ -21,6 +21,13 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['owner', 'tenant', 'admin', 'lawyer', 'agent'])->nullable();
+            $table->string('telephone')->nullable();
+            $table->foreignId('country_id')->nullable()->constrained();
+            $table->string('city')->nullable();
+            $table->string('street')->nullable();
+            $table->string('number')->nullable();
+            $table->string('appartment')->nullable();
+            $table->string('zip_code')->nullable();
             $table->boolean('is_verified')->default(0);
             $table->rememberToken();
             $table->timestamps();

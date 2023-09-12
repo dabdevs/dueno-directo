@@ -19,8 +19,8 @@ class VerificationRequestResource extends JsonResource
             'status' => $this->status, 
             'phone' => $this->phone,
             'documents' => DocumentResource::collection($this->documents),
-            'createdAt' => $this->created_at->format('Y-m-d'),
-            'updatedAt' => $this->updated_at->format('Y-m-d')
+            "dateRegistered" => $this->created_at->format('Y-m-d'),
+            "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null
         ];
     }
 }

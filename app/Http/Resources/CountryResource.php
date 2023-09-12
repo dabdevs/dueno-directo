@@ -3,9 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
-class DocumentResource extends JsonResource
+class CountryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +16,9 @@ class DocumentResource extends JsonResource
     {
         return [
             'name' => $this->name,
-            'path' => Storage::path($this->path),
-            "dateUploaded" => $this->created_at->format('Y-m-d')
+            'code' => $this->code,
+            "dateRegistered" => $this->created_at->format('Y-m-d'),
+            "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null
         ];
     }
 }

@@ -65,7 +65,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Tenant routes
         Route::resource('/tenants', TenantController::class)->middleware('role:tenant');
-        Route::group(['prefix' => 'tenants', 'middleware' => ['role:admin', 'role:tenant']], function () {
+        Route::group(['prefix' => 'tenants', 'middleware' => 'role:tenant'], function () {
             Route::get('{tenant}/applications', [TenantController::class, 'applications'])->name('tenants.applications');
             Route::post('{tenant}/request-verification', [TenantController::class, 'requestVerification'])->name('tenants.request_verification');
         });
@@ -73,7 +73,7 @@ Route::group(['prefix' => 'v1'], function () {
         // Property routes
         Route::resource('properties', PropertyController::class);
         Route::get('search', [PropertyController::class, 'search'])->name('properties.search');
-        Route::group(['prefix' =>'properties', 'middleware' => ['role:owner', 'role:admin']], function () {
+        Route::group(['prefix' =>'properties', 'middleware' => 'role:owner'], function () {
             Route::get('{property}/applications', [PropertyController::class, 'applications'])->name('properties.applications');
             Route::get('{property}/preferences', [PropertyController::class, 'preferences'])->name('properties.preferences');
             Route::post('{property}/assign-tenant', [PropertyController::class, 'assignTenant'])->name('properties.assign_tenant');
