@@ -15,7 +15,7 @@ class CreatePropertiesTable extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->unique();
+            $table->string('title');
             $table->text('description');
             $table->decimal('price', 10, 2);
             $table->integer('bedrooms');
@@ -23,13 +23,12 @@ class CreatePropertiesTable extends Migration
             $table->integer('area');
             $table->string('location');
             $table->string('phone_number');
-            $table->string('property_type');
+            $table->enum('property_type', ['House', 'Apartment', 'Condo']);
             $table->string('property_address');
             $table->text('property_description');
-            $table->string('lease_term');
-            $table->string('availability');
-            $table->string('rent_payment_method');
-            $table->decimal('security_deposit', 10, 2);
+            $table->enum('lease_term', ['6 Months', '12 Months', '24 Months', '36 Months'])->nullable();
+            $table->string('rent_payment_method')->nullable();
+            $table->decimal('security_deposit', 10, 2)->nullable();
             $table->text('rental_agreement')->nullable();
             $table->text('preferred_tenant_profile')->nullable();
             $table->text('additional_note')->nullable();
@@ -37,6 +36,7 @@ class CreatePropertiesTable extends Migration
             $table->foreignId('tenant_id')->nullable()->constrained();
             $table->boolean('active')->default(1);
             $table->boolean('negotiable')->default(0);
+            $table->boolean('available')->default(1);
             $table->dateTime('verified_at')->nullable();
             $table->timestamps();
         });

@@ -46,6 +46,9 @@ Route::group(['prefix' => 'v1'], function () {
         return response('OK', 200);
     })->name('health_check');
 
+    // Search properties
+    Route::get('search', [PropertyController::class, 'search'])->name('properties.search');
+
     // Authentication routes
     Route::group(['prefix' => 'auth'], function () {
         Route::post('/register', [AuthenticationController::class, 'register'])->name('register');
@@ -72,7 +75,6 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Property routes
         Route::resource('properties', PropertyController::class);
-        Route::get('search', [PropertyController::class, 'search'])->name('properties.search');
         Route::group(['prefix' =>'properties', 'middleware' => 'role:owner'], function () {
             Route::get('{property}/applications', [PropertyController::class, 'applications'])->name('properties.applications');
             Route::get('{property}/preferences', [PropertyController::class, 'preferences'])->name('properties.preferences');

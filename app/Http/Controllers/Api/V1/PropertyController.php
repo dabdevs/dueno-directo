@@ -263,8 +263,9 @@ class PropertyController extends Controller
         try {
             $query = Property::query();
 
-            if ($request->has('title')) {
-                $query->where('title', 'like', '%' . $request->title . '%');
+            if ($request->has('keyword')) {
+                $query->where('title', 'like', '%' . $request->keyword . '%');
+                $query->orWhere('description', 'like', '%' . $request->keyword . '%');
             }
 
             if ($request->has('min_price')) {
@@ -296,7 +297,19 @@ class PropertyController extends Controller
             }
 
             if ($request->has('location')) {
-                $query->where('location', $request->location);
+                $query->where('location','like', '%' . $request->location . '%');
+            }
+
+            if ($request->has('negotiable')) {
+                $query->where('negotiable', 1);
+            }
+
+            if ($request->has('order')) {
+                $query->orderBy($request->order);
+            }
+
+            if ($request->has('limit')) {
+                $query->limit($request->limit);
             }
 
             $properties = $query->paginate(20);
