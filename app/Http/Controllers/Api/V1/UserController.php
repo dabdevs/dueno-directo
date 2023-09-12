@@ -10,14 +10,13 @@ use App\Http\Resources\TenantResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin')->except(['update', 'profile']);
+        $this->middleware('role:admin')->except(['update', 'profile', 'uploadAvatar']);
     }
 
     /**
@@ -192,6 +191,14 @@ class UserController extends Controller
     public function profile(User $user)
     {
         try {
+            // Validate if user have permission to view profile
+            if ($user->id != auth()->id() && auth()->user()->role != User::ROLE_ADMIN) {
+                return response()->json([
+                    'status' => 'OK',
+                    'message' => 'User does not have the right roles.'
+                ], 403);
+            }
+
             if ($user->profile == null) {
                 return response()->json([
                     'message' => 'User has no profile.',
