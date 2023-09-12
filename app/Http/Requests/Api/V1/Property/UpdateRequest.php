@@ -38,11 +38,11 @@ class UpdateRequest extends FormRequest
             'property_description' => 'sometimes|string',
             'rental_price' => 'sometimes|numeric|min:0',
             'lease_term' => ['sometimes', 'string', Rule::in(['6 Months', '12 Months', '24 Months', '36 Months'])],
-            'available' => 'sometimes|boolean',
             'rent_payment_method' => 'sometimes|string|max:255',
             'security_deposit' => 'sometimes|numeric|min:0',
             'rental_agreement' => 'nullable|string',
             'preferred_tenant_profile' => 'nullable|string',
+            'status' => ['sometimes', Rule::in(['Unlisted', 'Published', 'Booked', 'Rented'])],
             'additional_note' => 'nullable|string',
             'user_id' => 'sometimes|exists:users,id|required',
         ];

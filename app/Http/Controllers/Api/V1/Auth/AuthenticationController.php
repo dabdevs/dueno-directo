@@ -26,7 +26,7 @@ class AuthenticationController extends Controller
             return response()->json([
                 'status' => 'OK',
                 'message' => 'User registered successfully',
-                'user' => new UserResource($user)
+                //'user' => new UserResource($user)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

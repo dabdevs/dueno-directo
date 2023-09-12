@@ -13,12 +13,16 @@ class Tenant extends Model
         'user_id',
         'occupation',
         'income',
-        'desired_location',
+        'desired_locations',
         'number_of_occupants',
         'has_pets',
         'smoker',
         'employment_status',
         'additional_note'
+    ];
+
+    protected $casts = [
+        'desired_locations' => 'array'
     ];
 
     /**
@@ -45,7 +49,7 @@ class Tenant extends Model
 
     public function property()
     {
-        return $this->hasOne(Property::class); 
+        return $this->hasOne(Property::class);
     }
 
     public function verify()
@@ -54,7 +58,7 @@ class Tenant extends Model
         return $this->save();
     }
 
-    public function is_verified()
+    public function isVerified()
     {
         return $this->is_verified != null;
     }

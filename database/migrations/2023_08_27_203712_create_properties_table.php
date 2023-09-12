@@ -34,9 +34,8 @@ class CreatePropertiesTable extends Migration
             $table->text('additional_note')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('tenant_id')->nullable()->constrained();
-            $table->boolean('active')->default(1);
             $table->boolean('negotiable')->default(0);
-            $table->boolean('available')->default(1);
+            $table->enum('status', ['Unlisted', 'Published', 'Booked', 'Rented'])->default('Unlisted');
             $table->dateTime('verified_at')->nullable();
             $table->timestamps();
         });

@@ -28,12 +28,12 @@ class CreateRequest extends FormRequest
             'user_id' => ['required', 'numeric', 'exists:users,id'],
             'occupation' => ['required', 'string', 'max:150'],
             'income' => ['required', 'numeric'],
-            'desired_location' => ['required', 'string', 'max:150'],
+            'desired_locations' => ['required', 'array', 'max:255', Rule::in(['Buenos Aires', 'Los Angeles', 'Santiago', 'New York', 'Chicago', 'Boston', 'Lima', 'Montevideo', 'Madrid', 'Paris'])],
             'number_of_occupants' => ['required', 'numeric'],
             'has_pets' => ['required', 'boolean'],
             'smoker' => ['required', 'boolean'],
             'employment_status'  => ['required', 'string', Rule::in(['employed', 'self-employed', 'unemployed'])],
             'additional_note' => ['required', 'string', 'max:255'],
-        ]; 
+        ];
     }
 }

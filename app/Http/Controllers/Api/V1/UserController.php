@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Events\User\UserCreated;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\Tenant\CreateRequest as TenantCreateRequest;
 use App\Http\Requests\Api\V1\User\CreateRequest;
 use App\Http\Requests\Api\V1\User\UpdateRequest;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Http\Resources\UserResource;
-use App\Models\Property;
-use App\Models\Tenant;
+use Intervention\Image\Facades\Image;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -229,6 +227,30 @@ class UserController extends Controller
                 'status' => 'OK',
                 'data' => PropertyResource::collection($user->properties)
             ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function uploadAvatar(Request $request)
+    {
+        try {
+            $request->validate([
+                'avatar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            ]);
+
+            $user = User::find(auth()->id());
+            $path = $request->file('avatar')->store('images/users/avatars/' . $user->id);
+            $user->avatar = $path;
+            $user->save();
+
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Avatar uploaded successfuly.'
+            ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Error',

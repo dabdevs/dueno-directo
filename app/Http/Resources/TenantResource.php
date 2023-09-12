@@ -14,11 +14,11 @@ class TenantResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [ 
+        return [
             "id" => $this->id,
             "occupation" => $this->occupation,
             "income" => $this->income,
-            "desiredLocation" => $this->desired_location,
+            "desiredLocations" => $this->desired_locations,
             "numberOfOccupants" => $this->number_of_occupants,
             "hasPets" => $this->has_pets,
             "smoker" => $this->smoker,

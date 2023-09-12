@@ -25,7 +25,7 @@ class UserFactory extends Factory
             'role' => $role,
             'telephone' => $this->faker->phoneNumber(),
             'country_id' => $this->faker->randomElement($countries),
-            'city' => $this->faker->city(),
+            'city' => $this->faker->randomElement(['Buenos Aires', 'Los Angeles', 'Santiago', 'New York', 'Chicago', 'Boston', 'Lima', 'Montevideo', 'Madrid', 'Paris']),
             'number' => $this->faker->numberBetween(1, 1000),
             'appartment' => $this->faker->randomNumber(),
             'zip_code' => $this->faker->numberBetween(1000, 9999), 

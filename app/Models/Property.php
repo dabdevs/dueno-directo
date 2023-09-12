@@ -54,7 +54,7 @@ class Property extends Model
         return $this->save();
     }
 
-    public function is_verified()
+    public function isVerified()
     {
         return $this->is_verified != null;
     }
@@ -62,5 +62,17 @@ class Property extends Model
     public function verification_request()
     {
         return $this->hasOne(VerificationRequest::class);
+    }
+
+    public function changeStatus(string $status)
+    {
+        $this->status($status);
+        return $this->save();
+    }
+
+    public function assignTenant(Tenant $tenant)
+    {
+        $this->tenant_id = $tenant->id;
+        return $this->save();
     }
 }

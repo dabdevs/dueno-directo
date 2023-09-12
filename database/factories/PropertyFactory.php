@@ -20,7 +20,7 @@ class PropertyFactory extends Factory
             'bedrooms' => $this->faker->numberBetween(1, 5),
             'bathrooms' => $this->faker->numberBetween(1, 3),
             'area' => $this->faker->numberBetween(500, 5000),
-            'location' => $this->faker->city,
+            'location' => $this->faker->randomElement(['Buenos Aires', 'Los Angeles', 'Santiago', 'New York', 'Chicago', 'Boston', 'Lima', 'Montevideo', 'Madrid', 'Paris']),
             'phone_number' => $this->faker->phoneNumber,
             'property_type' => $this->faker->randomElement(['House', 'Apartment', 'Condo']),
             'property_address' => $this->faker->address,

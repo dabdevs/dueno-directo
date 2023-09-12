@@ -18,12 +18,12 @@ class CreateTenantsTable extends Migration
             $table->foreignId('user_id')->unique()->constrained()->onDelete('cascade');
             $table->string('occupation')->nullable();
             $table->decimal('income', 10, 2)->nullable();
-            $table->string('desired_location')->nullable();
+            $table->json('desired_locations')->nullable();
             $table->integer('number_of_occupants')->nullable();
             $table->boolean('has_pets')->default(false);
             $table->boolean('smoker')->default(false);
             $table->enum('employment_status', ['employed', 'self-employed', 'unemployed'])->nullable();
-            $table->text('additional_note')->nullable(); 
+            $table->text('additional_note')->nullable();
             $table->dateTime('verified_at')->nullable();
             $table->timestamps();
         });

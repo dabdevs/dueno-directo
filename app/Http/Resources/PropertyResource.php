@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Validation\Rule;
 
 class PropertyResource extends JsonResource
 {
@@ -38,7 +39,7 @@ class PropertyResource extends JsonResource
             'additionalNote' => $this->additional_note,
             'owner' => $this->owner, 
             'tenant' => new TenantResource($this->tenant),
-            'active' => $this->active,
+            'status' => $this->status,
             "dateRegistered" => $this->created_at->format('Y-m-d'),
             "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null
         ];

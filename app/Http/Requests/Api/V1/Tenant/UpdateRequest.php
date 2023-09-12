@@ -27,12 +27,12 @@ class UpdateRequest extends FormRequest
         return [
             'occupation' => ['nullable', 'string', 'max:150'],
             'income' => ['nullable', 'numeric'],
-            'desired_location' => ['nullable', 'string', 'max:150'],
+            'desired_locations' => ['nullable', 'string', 'max:255'],
             'number_of_occupants' => ['nullable', 'numeric'],
             'has_pets' => ['nullable', 'boolean'],
             'smoker' => ['nullable', 'boolean'],
             'employment_status'  => ['nullable', 'string', Rule::in(['employed', 'self-employed', 'unemployed'])],
             'additional_note' => ['nullable', 'string', 'max:255'],
-        ]; 
+        ];
     }
 }

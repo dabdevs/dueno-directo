@@ -16,9 +16,9 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         $roleOwner = Role::create(['name' => 'owner']);
+        $roleTenant = Role::create(['name' => 'tenant']);
         $roleAgent = Role::create(['name' => 'agent']);
         $roleLawyer = Role::create(['name' => 'lawyer']);
-        $roleTenant = Role::create(['name' => 'tenant']);
         $roleAdmin = Role::create(['name' => 'admin']); 
 
         // Properties permissions
@@ -28,10 +28,11 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'delete properties'])->assignRole($roleOwner);
         Permission::create(['name' => 'view property analytics'])->assignRole($roleOwner);
 
-        // Tenant Interaction
-        Permission::create(['name' => 'accept applications'])->assignRole($roleOwner);
-        Permission::create(['name' => 'reject applications'])->assignRole($roleOwner);
-        Permission::create(['name' => 'view tenant'])->assignRole($roleOwner);
+        // Tenant permissions
+        Permission::create(['name' => 'create tenants'])->assignRole($roleTenant);
+        Permission::create(['name' => 'list tenants'])->assignRole($roleTenant);
+        Permission::create(['name' => 'update tenants'])->assignRole($roleTenant);
+        Permission::create(['name' => 'delete tenants'])->assignRole($roleTenant);
 
         // Verification request
         Permission::create(['name' => 'create verification requests'])->syncRoles([$roleTenant, $roleOwner]);
@@ -61,6 +62,8 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'list applications'])->assignRole($roleTenant);
         Permission::create(['name' => 'delete applications'])->assignRole($roleTenant);
         Permission::create(['name' => 'change applications status'])->assignRole($roleOwner);
+        Permission::create(['name' => 'accept applications'])->assignRole($roleOwner);
+        Permission::create(['name' => 'reject applications'])->assignRole($roleOwner);
 
         // Reviews
         Permission::create(['name' => 'create reviews'])->syncRoles([$roleTenant, $roleOwner]);

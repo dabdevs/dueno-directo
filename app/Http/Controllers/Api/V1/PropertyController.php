@@ -301,15 +301,11 @@ class PropertyController extends Controller
             }
 
             if ($request->has('negotiable')) {
-                $query->where('negotiable', 1);
+                $query->where('negotiable', $request->negotiable);
             }
 
             if ($request->has('order')) {
                 $query->orderBy($request->order);
-            }
-
-            if ($request->has('limit')) {
-                $query->limit($request->limit);
             }
 
             $properties = $query->paginate(20);

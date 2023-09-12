@@ -100,12 +100,12 @@ class VerificationRequestController extends Controller
             // Creating documents
             $verification_request->documents()->create([
                 'name' => Document::ID_BACK,
-                'path' => $request->file('backId')->store('images/ids')
+                'path' => $request->file('backId')->store('documents/ids')
             ]);
 
             $verification_request->documents()->create([
                 'name' => Document::ID_FRONT,
-                'path' => $request->file('frontId')->store('images/ids')
+                'path' => $request->file('frontId')->store('documents/ids')
             ]);
 
             DB::commit();
@@ -173,14 +173,14 @@ class VerificationRequestController extends Controller
                     Storage::delete($verification_request->back_id);
                 }
 
-                $valid_data['back_id'] = $request->file('backId')->store('images/ids');
+                $valid_data['back_id'] = $request->file('backId')->store('documents/ids');
             }
 
             if ($request->has('frontId')) {
                 if (Storage::exists($verification_request->front_id)) {
                     Storage::delete($verification_request->front_id);
                 }
-                $valid_data['front_id'] = $request->file('frontId')->store('images/ids');
+                $valid_data['front_id'] = $request->file('frontId')->store('documents/ids');
             }
 
             $verification_request->update($valid_data);
