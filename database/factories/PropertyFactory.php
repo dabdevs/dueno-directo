@@ -25,7 +25,6 @@ class PropertyFactory extends Factory
             'property_type' => $this->faker->randomElement(['House', 'Apartment', 'Condo']),
             'property_address' => $this->faker->address,
             'property_description' => $this->faker->paragraph,
-            'rental_price' => $this->faker->randomFloat(2, 500, 5000),
             'lease_term' => $this->faker->randomElement(['1 Year', '6 Months', 'Month-to-Month']),
             'availability' => $this->faker->randomElement(['Available', 'Not Available']),
             'rent_payment_method' => $this->faker->randomElement(['Credit Card', 'Bank Transfer']),

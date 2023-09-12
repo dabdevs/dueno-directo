@@ -24,6 +24,7 @@ class CreateTenantsTable extends Migration
             $table->boolean('smoker')->default(false);
             $table->enum('employment_status', ['employed', 'self-employed', 'unemployed'])->nullable();
             $table->text('additional_note')->nullable(); 
+            $table->dateTime('verified_at')->nullable();
             $table->timestamps();
         });
     }

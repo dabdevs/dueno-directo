@@ -179,7 +179,7 @@ class ApplicationController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Status changed successfuly'
+                'message' => $data['status'] === 'accepted' ? 'Application accepted successfuly' : 'Application rejected successfuly'
             ]);
         } catch (\Throwable $th) {
             return response()->json([

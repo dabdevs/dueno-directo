@@ -47,4 +47,20 @@ class Property extends Model
     {
         return $this->hasOne(Preference::class);
     }
+
+    public function verify()
+    {
+        $this->verified_at = now();
+        return $this->save();
+    }
+
+    public function is_verified()
+    {
+        return $this->is_verified != null;
+    }
+
+    public function verification_request()
+    {
+        return $this->hasOne(VerificationRequest::class);
+    }
 }

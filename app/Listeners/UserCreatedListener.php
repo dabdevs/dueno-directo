@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Listeners\User;
+namespace App\Listeners;
 
-use App\Notifications\User\SendRegistrationMessage as Notification;
+use App\Events\User\UserCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SendRegistrationMessage
+class UserCreatedListener
 {
     /**
      * Create the event listener.
@@ -21,11 +21,10 @@ class SendRegistrationMessage
     /**
      * Handle the event.
      *
-     * @param  object  $event
-     * @return void
      */
-    public function handle($event)
+    public function handle(UserCreated $event)
     {
-        // $event->user->notify(new Notification($event->user)); 
+        $user = $event->user; 
+        $user->assignRole($user->role);
     }
 }

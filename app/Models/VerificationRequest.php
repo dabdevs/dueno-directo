@@ -10,11 +10,9 @@ class VerificationRequest extends Model
     use HasFactory;
 
     public $fillable = [
-        'user_id',
-        'phone',
-        'status',
-        'front_id',
-        'back_id'
+        'property_id',
+        'tenant_id',
+        'phone'
     ];
 
     protected function approve()
@@ -33,8 +31,23 @@ class VerificationRequest extends Model
      * Get the user that owns the verification request
      *
      */
-    public function user()
+    public function owner()
     {
-        return $this->belongsTo(User::class);
+        return $this->type === 'tenant' ? $this->tenant() : $this->property();
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
     }
 }

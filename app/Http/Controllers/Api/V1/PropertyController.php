@@ -10,7 +10,6 @@ use App\Http\Resources\PreferenceResource;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Models\Property;
-use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -246,6 +245,71 @@ class PropertyController extends Controller
                 'status' => 'OK',
                 'data' => $property->tenant == null ? [] : new TenantResource($property->tenant)
             ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function search(Request $request)
+    {
+        try {
+            $query = Property::query();
+
+            if ($request->has('title')) {
+                $query->where('title', 'like', '%' . $request->title . '%');
+            }
+
+            if ($request->has('min_price')) {
+                $query->where('price', '>=', $request->min_price);
+            }
+
+            if ($request->has('max_price')) {
+                $query->where('price', '<=', $request->max_price);
+            }
+
+            if ($request->has('lease_term')) {
+                $query->where('lease_term', $request->lease_term);
+            }
+
+            if ($request->has('bedrooms')) {
+                $query->where('bedrooms', $request->bedrooms);
+            }
+
+            if ($request->has('bathrooms')) {
+                $query->where('bathrooms', $request->bathrooms);
+            }
+
+            if ($request->has('min_area')) {
+                $query->where('area', '>=', $request->min_area);
+            }
+
+            if ($request->has('max_area')) {
+                $query->where('area', '<=', $request->max_area);
+            }
+
+            if ($request->has('location')) {
+                $query->where('location', $request->location);
+            }
+
+            $properties = $query->paginate(20);
+
+            return response()->json([
+                'status' => 'OK',
+                "data" => PropertyResource::collection($properties),
+                'meta' => [
+                    'current_page' => $properties->currentPage(),
+                    'from' => $properties->firstItem(),
+                    'last_page' => $properties->lastPage(),
+                    'path' => $properties->path(),
+                    'per_page' => $properties->perPage(),
+                    'to' => $properties->lastItem(),
+                    'total' => $properties->total(),
+                ]
+            ]);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Error',

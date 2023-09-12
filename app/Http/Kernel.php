@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'owner' => \App\Http\Middleware\OwnerMiddleware::class,
         'tenant' => \App\Http\Middleware\TenantMiddleware::class,
         'check_token' => \App\Http\Middleware\CheckTokenMiddleware::class,
+        'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
     ];
 }

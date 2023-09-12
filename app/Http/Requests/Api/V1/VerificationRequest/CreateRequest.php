@@ -24,7 +24,9 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'userId' => 'required|exists:users,id',
+            'propertyId' => 'sometimes|exists:properties,id',
+            'type' => 'required|string',
+            'tenantId' => 'sometimes|exists:tenants,id',
             'phone' => 'required|string',
             'backId' => 'required|image|max:2048|mimes:jpeg,jpg,png',
             'frontId' => 'required|image|max:2048|mimes:jpeg,jpg,png'

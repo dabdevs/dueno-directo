@@ -26,7 +26,6 @@ class CreatePropertiesTable extends Migration
             $table->string('property_type');
             $table->string('property_address');
             $table->text('property_description');
-            $table->decimal('rental_price', 10, 2);
             $table->string('lease_term');
             $table->string('availability');
             $table->string('rent_payment_method');
@@ -37,6 +36,8 @@ class CreatePropertiesTable extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('tenant_id')->nullable()->constrained();
             $table->boolean('active')->default(1);
+            $table->boolean('negotiable')->default(0);
+            $table->dateTime('verified_at')->nullable();
             $table->timestamps();
         });
     }

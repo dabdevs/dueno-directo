@@ -15,8 +15,8 @@ class CreateApplicationsTable extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained();
-            $table->foreignId('property_id')->constrained();
+            $table->foreignId('tenant_id')->onDelete('cascade');
+            $table->foreignId('property_id')->onDelete('cascade');
             $table->text('note')->nullable();
             $table->boolean('viewed')->default(0);
             $table->enum('status', ['accepted', 'rejected', 'pending'])->default('pending');

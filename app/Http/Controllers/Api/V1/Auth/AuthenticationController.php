@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Events\User\UserCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
-use App\Http\Requests\Api\V1\Auth\RegisterRequest;
+use App\Http\Requests\Api\V1\User\CreateRequest;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Resources\UserResource;
+use App\Models\Role;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthenticationController extends Controller
@@ -16,11 +18,11 @@ class AuthenticationController extends Controller
     /**
      *  Register a new user
      */
-    public function register(RegisterRequest $request)
+    public function register(CreateRequest $request)
     {
         try {
-            $user = User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]));
-
+            $user = User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]))->assignRole($request->role);
+            
             return response()->json([
                 'status' => 'OK',
                 'message' => 'User registered successfully',
@@ -28,7 +30,7 @@ class AuthenticationController extends Controller
             ]);
         } catch (\Throwable $th) {
             return response()->json([
-                'status' => 'error',
+                'status' => 'Error',
                 'message' => $th->getMessage()
             ], 500);
         }
@@ -44,13 +46,13 @@ class AuthenticationController extends Controller
         try {
             // Validate login creadentials
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Wrong credentials'], 401);
+                return response()->json(['status' => 'Error', 'message' => 'Wrong credentials'], 401);
             }
 
             return response()->json(['token' => $token]);
         } catch (\Throwable $th) {
             return response()->json([
-                'status' => 'error',
+                'status' => 'Error',
                 'message' => 'Could not generate token'
             ], 500);
         }
@@ -66,10 +68,10 @@ class AuthenticationController extends Controller
         try {
             // Refresh token
             $token = JWTAuth::setToken($old_token)->refresh();
-            return response()->json(['token' => $token]);
+            return response()->json(['message' => 'Token generated', 'token' => $token]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'error',
+                'status' => 'Error',
                 'message' => 'Invalid or expired token'
             ], 401);
         }

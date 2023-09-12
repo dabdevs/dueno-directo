@@ -3,8 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
-class VerificationRequestResource extends JsonResource
+class DocumentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,12 +16,8 @@ class VerificationRequestResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'status' => $this->status, 
-            'phone' => $this->phone,
-            'documents' => DocumentResource::collection($this->documents),
-            'createdAt' => $this->created_at->format('Y-m-d'),
-            'updatedAt' => $this->updated_at->format('Y-m-d')
+            'name' => $this->name,
+            'path' => Storage::path($this->path) 
         ];
     }
 }

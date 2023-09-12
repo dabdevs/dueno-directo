@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\User\UserCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Tenant\CreateRequest as TenantCreateRequest;
 use App\Http\Requests\Api\V1\User\CreateRequest;
@@ -65,7 +66,7 @@ class UserController extends Controller
     public function store(CreateRequest $request)
     {
         try {
-            $user = User::create(array_merge($request->except('password'), ['password' => Hash::make($request->password)]));
+            $user = User::create(array_merge($request->except('password'), ['password' => Hash::make($request->password)]))->assignRole($request->role);
 
             return response()->json([
                 'status' => 'OK',

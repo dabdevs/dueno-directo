@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Tenant\CreateRequest;
 use App\Http\Requests\Api\V1\Tenant\UpdateRequest;
+use App\Http\Requests\Api\V1\VerificationRequest\CreateRequest as VerificationCreateRequest;
 use App\Http\Resources\ApplicationResource;
 use App\Http\Resources\TenantResource;
+use App\Models\Document;
+use App\Models\Property;
 use App\Models\Tenant;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class TenantController extends Controller
 {
@@ -173,6 +177,66 @@ class TenantController extends Controller
                 'data' => ApplicationResource::collection($tenant->applications)
             ]);
         } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function apply(Tenant $tenant, Property $property)
+    {
+        try {
+            $tenant->apply($property);
+
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Application submited successfuly.'
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function requestVerification(Tenant $tenant, VerificationCreateRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            // verification request's data
+            $vr_data = $request->only(["type", "phone"]);
+
+            if ($tenant->verification_request != null) {
+                return response()->json([
+                    'status' => 'OK',
+                    'message' => 'Verification already requested'
+                ], 400);
+            }
+
+            $verification_request = $tenant->verification_request()->create($vr_data);
+
+            // Creating documents
+            $verification_request->documents()->create([
+                'name' => Document::ID_BACK, 
+                'path' => $request->file('backId')->store('images/ids')
+            ]);
+
+            $verification_request->documents()->create([
+                'name' => Document::ID_FRONT,
+                'path' => $request->file('frontId')->store('images/ids')
+            ]);
+
+            DB::commit(); 
+
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Verification request submited successfuly.'
+            ]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()

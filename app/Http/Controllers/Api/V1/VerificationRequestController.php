@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\VerificationRequest\CreateRequest;
 use App\Http\Requests\Api\V1\VerificationRequest\UpdateRequest;
 use App\Http\Resources\VerificationRequestResource;
-use App\Models\User;
+use App\Models\Document;
+use App\Models\Property;
+use App\Models\Tenant;
 use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class VerificationRequestController extends Controller
@@ -62,23 +65,49 @@ class VerificationRequestController extends Controller
     public function store(CreateRequest $request)
     {
         try {
-            $user = User::findOrFail($request->userId); 
+            DB::beginTransaction(); 
 
-            if ($user->verification_request != null) {
-                return response()->json([
-                    'status' => 'OK',
-                    'message' => 'Validation already requested'
-                ], 400);
+            // verification request's data
+            $vr_data = $request->only(["type", "phone"]);
+
+            if ($request->has('propertyId')) {
+                $vr_data['property_id'] = $request->propertyId;
+                $property = Property::findOrFail($request->propertyId);
+
+                if ($property->verification_request != null) {
+                    return response()->json([
+                        'status' => 'OK',
+                        'message' => 'Verification already requested'
+                    ], 400);
+                }
+                $verification_request = $property->verification_request()->create($vr_data);
             }
 
-            $back_id_path = $request->file('back_id')->store('images/ids');
-            $front_id_path = $request->file('front_id')->store('images/ids');
+            if ($request->has('tenantId')) {
+                $vr_data['tenant_id'] = $request->tenantId;
+                $tenant = Tenant::findOrFail($request->tenantId);
 
-            $verification_request = $user->verification_request()->create([
-                "back_id" => $back_id_path,
-                "front_id" => $front_id_path,
-                "phone" => $request->phone
+                if ($tenant->verification_request != null) {
+                    return response()->json([
+                        'status' => 'OK',
+                        'message' => 'Verification already requested'
+                    ], 400);
+                }
+                $verification_request = Tenant::findOrFail($request->tenantId)->verification_request()->create($vr_data);
+            }
+
+            // Creating documents
+            $verification_request->documents()->create([
+                'name' => Document::ID_BACK,
+                'path' => $request->file('backId')->store('images/ids')
             ]);
+
+            $verification_request->documents()->create([
+                'name' => Document::ID_FRONT,
+                'path' => $request->file('frontId')->store('images/ids')
+            ]);
+
+            DB::commit();
 
             return response()->json([
                 'status' => 'OK',
@@ -86,6 +115,7 @@ class VerificationRequestController extends Controller
                 'data' => new VerificationRequestResource($verification_request)
             ], 201);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()
@@ -134,8 +164,8 @@ class VerificationRequestController extends Controller
      */
     public function update(UpdateRequest $request, VerificationRequest $verification_request)
     {
-        try { 
-            $valid_data = $request->only(['phone', 'userId', 'status']); 
+        try {
+            $valid_data = $request->only(['phone', 'userId', 'status']);
 
             if ($request->has('backId')) {
                 if (Storage::exists($verification_request->back_id)) {
@@ -152,7 +182,7 @@ class VerificationRequestController extends Controller
                 $valid_data['front_id'] = $request->file('frontId')->store('images/ids');
             }
 
-            $verification_request->update($valid_data); 
+            $verification_request->update($valid_data);
 
             return response()->json([
                 'status' => 'OK',

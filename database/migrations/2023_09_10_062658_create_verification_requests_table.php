@@ -15,9 +15,9 @@ class CreateVerificationRequestsTable extends Migration
     {
         Schema::create('verification_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->string('front_id');
-            $table->string('back_id');
+            $table->enum('type', ['tenant', 'property']);
+            $table->foreignId('tenant_id')->nullable()->constrained();
+            $table->foreignId('property_id')->nullable()->constrained();
             $table->string('phone');
             $table->enum('status', ['pending', 'approved', 'denied'])->default('pending');
             $table->integer('approved_by')->nullable();

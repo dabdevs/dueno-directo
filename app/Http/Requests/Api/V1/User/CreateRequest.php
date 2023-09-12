@@ -29,7 +29,7 @@ class CreateRequest extends FormRequest
             'password' => ['required', 'string'],
             'family_name' => ['required', 'string', 'max:255'],
             'given_name' => ['required', 'string', 'max:255'],
-            'role'  => ['required', 'string', Rule::in(['owner', 'tenant'])],
+            'role'  => ['required', 'string', Rule::in(['owner', 'tenant', 'admin', 'lawyer', 'agent'])],
         ];
     }
 }

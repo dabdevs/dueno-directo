@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Events\User\UserCreated;
 use App\Listeners\SendVerificationNotification;
 use App\Listeners\User\SendRegistrationMessage;
+use App\Listeners\UserCreatedListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -21,6 +22,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserCreated::class => [
             SendRegistrationMessage::class,
+            UserCreatedListener::class, 
         ],
     ];
 

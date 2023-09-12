@@ -5,20 +5,22 @@ namespace App\Models;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles; 
 
     // User roles
     const ROLE_ADMIN = 'admin';
     const ROLE_OWNER = 'owner';
     const ROLE_TENANT = 'tenant';
+    const ROLE_AGENT = 'agent';
+    const ROLE_LAWYER = 'lawyer';
 
     /**
      * The attributes that are mass assignable.
@@ -115,5 +117,15 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     public function verification_request()
     {
         return $this->hasOne(VerificationRequest::class);
+    }
+
+    public function isOwner()
+    {
+        return $this->role == 'owner' && $this->properties() != null;
+    }
+
+    public function isTenant()
+    {
+        return $this->role == 'tenant' && $this->tenant() != null;
     }
 }

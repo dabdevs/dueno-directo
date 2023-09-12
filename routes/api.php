@@ -50,36 +50,44 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => 'auth'], function () {
         Route::post('/register', [AuthenticationController::class, 'register'])->name('register');
         Route::post('/login', [AuthenticationController::class, 'login'])->name('login');
-        Route::post('/refresh-token', [AuthenticationController::class, 'refresh'])->name('refresh_token'); 
+        Route::post('/refresh-token', [AuthenticationController::class, 'refresh'])->name('refresh_token');
     });
 
     // Secure routes
     Route::group(['middleware' => 'check_token'], function () {
         // User routes
-        Route::resource('users', UserController::class);
-        Route::get('users/{user}/profile', [UserController::class, 'profile'])->name('user_profile');
-        Route::delete('users/{user?}/profile/delete', [UserController::class, 'deleteProfile'])->name('user_delete_profile');
-        Route::get('users/{user}/properties', [UserController::class, 'properties'])->name('properties');
+        Route::resource('users', UserController::class)->middleware('role:admin');
+        Route::group(['prefix' => 'users'], function () {
+            Route::get('{user}/profile', [UserController::class, 'profile'])->name('users.profile');
+            Route::delete('{user?}/profile/delete', [UserController::class, 'deleteProfile'])->name('users.delete_profile');
+            Route::get('{user}/properties', [UserController::class, 'properties'])->name('users.properties');
+        });
 
         // Tenant routes
-        Route::resource('/tenants', TenantController::class);
-        Route::get('tenants/{tenant}/applications', [TenantController::class, 'applications'])->name('tenant_applications');
-        
-        // Property routes
-        Route::resource('properties', PropertyController::class);
-        Route::get('properties/{property}/applications', [PropertyController::class, 'applications'])->name('property_applications');
-        Route::get('properties/{property}/preferences', [PropertyController::class, 'preferences'])->name('property_preferences');
-        Route::post('properties/{property}/assign-tenant', [PropertyController::class, 'assignTenant'])->name('assign_tenant');
-        Route::get('properties/{property}/tenant', [PropertyController::class, 'tenant'])->name('property_tenant');
+        Route::resource('/tenants', TenantController::class)->middleware('role:tenant', 'role:admin');
+        Route::group(['prefix' => 'tenants', 'middleware' => ['role:admin', 'role:tenant']], function () {
+            Route::get('{tenant}/applications', [TenantController::class, 'applications'])->name('tenants.applications');
+            Route::post('{tenant}/request-verification', [TenantController::class, 'requestVerification'])->name('tenants.request_verification');
+        });
 
-        // Property preferences
-        Route::resource('preferences', PreferenceController::class);
+        // Property routes
+        Route::resource('properties', PropertyController::class)->middleware('role:admin', 'role:owner');
+        Route::get('search', [PropertyController::class, 'search'])->name('properties.search');
+        Route::group(['prefix' =>'properties', 'middleware' => ['role:admin', 'role:owner']], function () {
+            Route::get('{property}/applications', [PropertyController::class, 'applications'])->name('properties.applications');
+            Route::get('{property}/preferences', [PropertyController::class, 'preferences'])->name('properties.preferences');
+            Route::post('{property}/assign-tenant', [PropertyController::class, 'assignTenant'])->name('properties.assign_tenant');
+            Route::get('{property}/tenant', [PropertyController::class, 'tenant'])->name('properties.tenant');
+        });
+
+        // Properties Preferences
+        Route::resource('preferences', PreferenceController::class)->middleware('role:admin', 'role:owner');
 
         // Application routes
-        Route::resource('applications', ApplicationController::class);
-        Route::post('applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->name('application.change_status');
+        Route::resource('applications', ApplicationController::class)->middleware('role:tenant', 'role:admin')->except('changeStatus');
+        Route::post('applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->middleware('role:owner')->name('applications.change_status');
 
         // VerificationRequest routes
-        Route::resource('/verification-requests', VerificationRequestController::class); 
+        Route::resource('/verification-requests', VerificationRequestController::class)->middleware('role:admin', 'role:owner', 'role:tenant');
     });
 });
