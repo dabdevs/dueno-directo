@@ -74,11 +74,21 @@ class ApplicationController extends Controller
 
             if ($application) {
                 return response()->json([
+                    'status' => 'Error',
                     'message' => 'You already applied for this property.'
                 ], 400);
             }
 
-            $application = Property::find($request->property_id)->applications()->create($request->validated());
+            $property = Property::findOrFail($request->property_id);
+
+            if (!$property->isAvailable()) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'The property is not available.'
+                ], 400);
+            }
+
+            $application = $property->applications()->create($request->validated());
 
             return response()->json([
                 'status' => 'OK',

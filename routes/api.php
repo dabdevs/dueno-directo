@@ -21,26 +21,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth')->group(function () {
-//     // Admin routes
-//     Route::prefix('admin')->group(function () {
-//         Route::resource('users', UserController::class);  
-//     });
-
-//     // Owner routes
-//     Route::prefix('owner')->group(function () { 
-//         Route::resource('/profile', OwnerController::class);
-//     });
-
-//     // Tenant routes
-//     Route::prefix('tenant')->group(function () {
-//         Route::resource('/profile', TenantController::class);
-//     });
-
-//     Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-//     Route::post('/register-user-type', [DashboardController::class, 'registerUserType'])->middleware(['auth'])->name('auth.register_user_type');
-// });
-
 Route::group(['prefix' => 'v1'], function () {
     Route::get('health-check', function () {
         return response('OK', 200);
@@ -48,6 +28,9 @@ Route::group(['prefix' => 'v1'], function () {
 
     // Search properties
     Route::get('search', [PropertyController::class, 'search'])->name('properties.search');
+    
+    // Show property
+    Route::get('properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
 
     // Authentication routes
     Route::group(['prefix' => 'auth'], function () {
@@ -75,12 +58,12 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         // Property routes
-        Route::resource('properties', PropertyController::class);
-        Route::group(['prefix' => 'properties', 'middleware' => 'role:owner'], function () {
+        Route::resource('properties', PropertyController::class)->except('show');
+        Route::group(['prefix' => 'properties'], function () {
             Route::get('{property}/applications', [PropertyController::class, 'applications'])->name('properties.applications');
             Route::get('{property}/preferences', [PropertyController::class, 'preferences'])->name('properties.preferences');
             Route::post('{property}/assign-tenant', [PropertyController::class, 'assignTenant'])->name('properties.assign_tenant');
-            Route::get('{property}/tenant', [PropertyController::class, 'tenant'])->name('properties.tenant');
+            Route::get('{property}/tenant', [PropertyController::class, 'getTenant'])->name('properties.get_tenant');
         });
 
         // Properties Preferences

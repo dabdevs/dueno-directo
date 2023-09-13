@@ -32,8 +32,12 @@ class CreatePropertiesTable extends Migration
             $table->text('rental_agreement')->nullable();
             $table->text('preferred_tenant_profile')->nullable();
             $table->text('additional_note')->nullable();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('tenant_id')->nullable()->constrained();
+            $table->unsignedBigInteger('owner_id');
+            $table->foreign('owner_id')->references('id')->on('users');
+            $table->unsignedBigInteger('tenant_id')->nullable();
+            $table->foreign('tenant_id')->references('id')->on('users');
+            $table->unsignedBigInteger('agent_id')->nullable();
+            $table->foreign('agent_id')->references('id')->on('users');
             $table->boolean('negotiable')->default(0);
             $table->enum('status', ['Unlisted', 'Published', 'Booked', 'Rented'])->default('Unlisted');
             $table->dateTime('verified_at')->nullable();

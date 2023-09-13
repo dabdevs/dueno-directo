@@ -17,7 +17,7 @@ class Property extends Model
      */
     public function owner()
     {
-        return $this->belongsTo(User::class, 'user_id')->where(['role' => 'owner']);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -74,5 +74,15 @@ class Property extends Model
     {
         $this->tenant_id = $tenant->id;
         return $this->save();
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function isAvailable()
+    {
+        return $this->status == 'Published';
     }
 }

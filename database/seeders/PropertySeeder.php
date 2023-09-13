@@ -39,15 +39,22 @@ class PropertySeeder extends Seeder
             ->count(10)
             ->hasOwner()
             ->hasPreferences()
-            ->hasApplications(13)
+            ->hasApplications(5)
             ->create();
 
         Property::factory()
-            ->count(18)
+            ->count(10)
             ->hasOwner()
             ->hasPreferences()
             ->hasTenant()
-            ->hasApplications(22)
+            ->hasApplications(12)
+            ->create();
+
+        Property::factory()
+            ->count(3)
+            ->hasOwner()
+            ->hasTenant()
+            ->hasPreferences()
             ->create();
     }
 }

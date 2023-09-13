@@ -15,63 +15,131 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        $roleOwner = Role::create(['name' => 'owner']);
-        $roleTenant = Role::create(['name' => 'tenant']);
-        $roleAgent = Role::create(['name' => 'agent']);
-        $roleLawyer = Role::create(['name' => 'lawyer']);
-        $roleAdmin = Role::create(['name' => 'admin']);
+        Permission::create(['name' => 'delete users']);
+        Permission::create(['name' => 'create properties']);
+        Permission::create(['name' => 'list properties']);
+        Permission::create(['name' => 'update properties']);
+        Permission::create(['name' => 'view property']);
+        Permission::create(['name' => 'delete properties']);
+        Permission::create(['name' => 'view properties analytics']);
+        Permission::create(['name' => 'create applications']);
+        Permission::create(['name' => 'update applications']);
+        Permission::create(['name' => 'list applications']);
+        Permission::create(['name' => 'view application']);
+        Permission::create(['name' => 'delete applications']);
+        Permission::create(['name' => 'change applications status']);
+        Permission::create(['name' => 'create tenants']);
+        Permission::create(['name' => 'update tenants']);
+        Permission::create(['name' => 'list tenants']);
+        Permission::create(['name' => 'view tenant']);
+        Permission::create(['name' => 'delete tenants']);
+        Permission::create(['name' => 'search tenants']);
+        Permission::create(['name' => 'create lease agreements']);
+        Permission::create(['name' => 'list lease agreements']);
+        Permission::create(['name' => 'update lease agreements']);
+        Permission::create(['name' => 'delete lease agreements']);
+        Permission::create(['name' => 'view lease agreement']);
+        Permission::create(['name' => 'sign lease agreement']);
+        Permission::create(['name' => 'terminate lease agreement']);
+        Permission::create(['name' => 'change lease agreements status']);
+        Permission::create(['name' => 'create reviews']);
+        Permission::create(['name' => 'delete reviews']);
+        Permission::create(['name' => 'create maintenance requests']);
+        Permission::create(['name' => 'list maintenance requests']);
+        Permission::create(['name' => 'update maintenance requests']);
+        Permission::create(['name' => 'delete maintenance requests']);
+        Permission::create(['name' => 'view maintenance request']);
+        Permission::create(['name' => 'change maintenance requests status']);
+        
+        // Owner role with permissions
+        Role::create(['name' => 'owner'])
+            ->syncPermissions([
+                // Properties
+                'create properties', 
+                'list properties',
+                'view property',
+                'update properties',
+                'delete properties',  
+                'view properties analytics',
 
-        // Users
-        Permission::create(['name' => 'list users'])->assignRole($roleAdmin);
-        Permission::create(['name' => 'delete users'])->assignRole($roleAdmin);
-        Permission::create(['name' => 'view user'])->assignRole($roleAdmin);
+                // Applications
+                'change applications status',
 
-        // Properties 
-        Permission::create(['name' => 'create properties'])->syncRoles([$roleOwner, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'list properties'])->syncRoles([$roleOwner, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'update properties'])->syncRoles([$roleOwner, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'delete properties'])->syncRoles([$roleOwner, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'view property analytics'])->syncRoles([$roleOwner, $roleAgent, $roleAdmin]);
+                // Tenants
+                'list tenants',
+                'view tenant',
+                'search tenants',
 
-        // Tenant 
-        Permission::create(['name' => 'create tenants'])->syncRoles([$roleTenant, $roleAdmin]);
-        Permission::create(['name' => 'list tenants'])->assignRole($roleAdmin);
-        Permission::create(['name' => 'update tenants'])->syncRoles([$roleTenant, $roleAdmin]);
-        Permission::create(['name' => 'delete tenants'])->assignRole($roleAdmin);
-        Permission::create(['name' => 'view tenant'])->syncRoles([$roleOwner, $roleAgent, $roleLawyer, $roleAdmin]);
-        Permission::create(['name' => 'search tenants'])->syncRoles([$roleOwner, $roleAgent, $roleLawyer, $roleAdmin]);
+                // Lease agreements
+                'create lease agreements',
+                'list lease agreements',
+                'update lease agreements',
+                'delete lease agreements',
+                'view lease agreement',
+                'terminate lease agreement',
 
-        // Verification request
-        Permission::create(['name' => 'change verification requests status'])->assignRole($roleAdmin);
-
-        // Lease Agreement
-        Permission::create(['name' => 'create lease agreements'])->syncRoles([$roleOwner, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'list lease agreements'])->syncRoles([$roleLawyer, $roleOwner, $roleAdmin]);
-        Permission::create(['name' => 'update lease agreements'])->syncRoles([$roleOwner, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'delete lease agreements'])->syncRoles([$roleOwner, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'view lease agreement'])->syncRoles([$roleLawyer, $roleTenant, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'terminate lease agreements'])->syncRoles([$roleOwner, $roleLawyer, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'sign lease agreements'])->syncRoles([$roleOwner, $roleAgent, $roleTenant]);
-
-        // Maintenance Requests
-        Permission::create(['name' => 'create maintenance requests'])->assignRole($roleTenant);
-        Permission::create(['name' => 'list maintenance requests'])->assignRole($roleAdmin);
-        Permission::create(['name' => 'update maintenance requests'])->syncRoles([$roleOwner, $roleTenant, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'delete maintenance requests'])->syncRoles([$roleTenant, $roleAdmin]);
-        Permission::create(['name' => 'change maintenance request status'])->syncRoles([$roleOwner, $roleTenant, $roleAgent, $roleAdmin]);
+                // Reviews
+                'create reviews',
+            ]);
 
 
-        // Applications
-        Permission::create(['name' => 'create applications'])->syncRoles([$roleTenant, $roleAdmin]);
-        Permission::create(['name' => 'update applications'])->syncRoles([$roleTenant, $roleAdmin]);
-        Permission::create(['name' => 'list applications'])->syncRoles([$roleTenant, $roleOwner, $roleAgent, $roleAdmin]);
-        Permission::create(['name' => 'delete applications'])->syncRoles([$roleTenant, $roleAdmin]);
-        Permission::create(['name' => 'change applications status'])->syncRoles([$roleOwner, $roleAgent, $roleAdmin]);
+        // Tenant role with permissions
+        Role::create(['name' => 'tenant'])
+            ->syncPermissions([
+                // Tenants
+                'create tenants',
+                'update tenants',
 
-        // Reviews
-        Permission::create(['name' => 'create reviews'])->syncRoles([$roleTenant, $roleOwner]);
-        Permission::create(['name' => 'update reviews'])->assignRole($roleAdmin);
-        Permission::create(['name' => 'delete reviews'])->assignRole($roleAdmin);
+                // Applications
+                'create applications',
+                'update applications',
+                'delete applications',
 
+                // Lease agreements
+                'sign lease agreement',
+
+                // Maintenance requests
+                'create maintenance requests',
+                'list maintenance requests',
+                'view maintenance request',
+                'delete maintenance requests',
+                'change maintenance requests status',
+
+                // Reviews
+                'create reviews',
+            ]);
+
+        // Agent role with permissions
+        Role::create(['name' => 'agent'])
+            ->syncPermissions([
+                'create properties',
+                'update properties',
+                'view property',
+                'delete properties',
+                'view properties analytics',
+                'view tenant',
+                'change applications status',
+                'sign lease agreement',
+                'change maintenance requests status',
+                'create reviews',
+            ]);
+
+        // Lawyer role with permissions
+        Role::create(['name' => 'lawyer'])
+            ->syncPermissions([
+                'view property',
+                'view lease agreement',
+                'list lease agreements',
+                'sign lease agreement',
+                'change lease agreements status'
+            ]);
+
+        // Admin role with permissions
+        Role::create(['name' => 'admin'])
+            ->syncPermissions([
+                'delete users',
+                'delete tenants',
+                'delete reviews'
+            ]);
     }
 }

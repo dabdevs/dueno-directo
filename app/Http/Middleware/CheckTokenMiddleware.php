@@ -25,14 +25,14 @@ class CheckTokenMiddleware
                 return response()->json([
                     'status' => 'Error',
                     'message' => 'Invalid token'
-                ], 401);
+                ], 403);
             }
         } catch (TokenInvalidException $e) {
             // Token is invalid
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Invalid token'
-            ], 401);
+            ], 500);
         }
 
         return $next($request);

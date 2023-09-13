@@ -43,7 +43,7 @@ class AuthenticationController extends Controller
         try {
             // Validate login creadentials
             if (!$token = auth()->attempt($credentials)) {
-                return response()->json(['error' => 'Wrong credentials'], 401);
+                return response()->json(['error' => 'Wrong credentials'], 403);
             }
 
             return response()->json(['token' => $token]);
@@ -67,7 +67,7 @@ class AuthenticationController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid or expired token'
-            ], 401);
+            ], 500);
         }
     }
 

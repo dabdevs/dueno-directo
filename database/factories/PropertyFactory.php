@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PropertyFactory extends Factory
@@ -31,9 +32,8 @@ class PropertyFactory extends Factory
             'rental_agreement' => $this->faker->text,
             'preferred_tenant_profile' => $this->faker->text,
             'additional_note' => $this->faker->paragraph,
-            'user_id' => function () {
-                return \App\Models\User::factory()->create(['role' => 'owner'])->id;
-            },
+            'owner_id' => User::factory()->create(['role' => 'owner'])->id,
+            'agent_id' => $this->faker->randomElement([null, User::factory()->create(['role' => 'agent'])->id])
         ];
     }
 }

@@ -45,7 +45,7 @@ class AuthenticationController extends Controller
         try {
             // Validate login creadentials
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['status' => 'Error', 'message' => 'Wrong credentials'], 401);
+                return response()->json(['status' => 'Error', 'message' => 'Wrong credentials'], 403);
             }
 
             return response()->json(['token' => $token]);
@@ -72,7 +72,7 @@ class AuthenticationController extends Controller
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Invalid or expired token'
-            ], 401);
+            ], 500);
         }
     }
 

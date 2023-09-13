@@ -10,16 +10,12 @@ use App\Http\Resources\PreferenceResource;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Models\Property;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('role:owner')->except(['index', 'show', 'search']);
-    }
-
     /**
      * Display a property of the resource.
      *
@@ -28,6 +24,13 @@ class PropertyController extends Controller
     public function index()
     {
         try {
+            if (auth()->check() && !auth()->user()->can('list properties')) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'User does not have the right roles.'
+                ], 403);
+            }
+
             $properties = Property::paginate(10);
 
             return response()->json([
@@ -51,32 +54,28 @@ class PropertyController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Create a property.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(CreateRequest $request)
     {
         try {
+            if (auth()->check() && !auth()->user()->can('create properties')) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'User does not have the right roles.'
+                ], 403);
+            }
+
             // Get the user
             $user = $request->has('user_id') ? User::findOrFail($request->user_id) : auth()->user();
 
             // If user's role is not owner 
             if ($user->role != User::ROLE_OWNER) {
                 return response()->json([
+                    'status' => 'Error',
                     'message' => 'User is not an owner.'
-                ], 401);
+                ], 403);
             }
 
             $property = $user->properties()->create($request->validated());
@@ -106,22 +105,12 @@ class PropertyController extends Controller
                 'data' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
+            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()
             ], 500);
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -131,6 +120,13 @@ class PropertyController extends Controller
     public function update(UpdateRequest $request, Property $property)
     {
         try {
+            if (auth()->check() && !auth()->user()->can('update properties')) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'User does not have the right roles.'
+                ], 403);
+            }
+
             $property->update($request->validated());
 
             return response()->json([
@@ -147,22 +143,17 @@ class PropertyController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Property $property)
     {
         try {
-            $property = Property::find($id);
-
-            // If the property is not found
-            if (!$property) {
+            if (auth()->check() && !auth()->user()->can('delete properties')) {
                 return response()->json([
-                    'status' => 'OK',
-                    'message' => 'Property not found!'
-                ], 404);
+                    'status' => 'Error',
+                    'message' => 'User does not have the right roles.'
+                ], 403);
             }
 
             $property->delete();
@@ -185,11 +176,22 @@ class PropertyController extends Controller
     public function applications(Property $property)
     {
         try {
+            $allowed_ids = [$property->owner->id, $property->agent ? $property->agent->id : null];
+
+            // Validate the user
+            if (!in_array(auth()->user()->id, $allowed_ids) && auth()->user()->role != User::ROLE_ADMIN) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'User does not have the right roles.'
+                ], 403);
+            }
+
             return response()->json([
                 'status' => 'OK',
                 'data' => ApplicationResource::collection($property->applications)
             ]);
         } catch (\Throwable $th) {
+            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()
@@ -203,6 +205,13 @@ class PropertyController extends Controller
     public function preferences(Property $property)
     {
         try {
+            if (auth()->check() && !auth()->user()->can('view preferences')) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'User does not have the right roles.'
+                ], 403);
+            }
+
             return response()->json([
                 'status' => 'OK',
                 'data' => $property->preferences == null ? [] : new PreferenceResource($property->preferences)
@@ -221,6 +230,13 @@ class PropertyController extends Controller
     public function assignTenant(Property $property)
     {
         try {
+            if (auth()->check() && !auth()->user()->can('assign tenants')) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'User does not have the right roles.'
+                ], 403);
+            }
+
             $data = request()->validate([
                 'tenant_id' => 'required|numeric|exists:tenants,id'
             ]);
@@ -243,12 +259,22 @@ class PropertyController extends Controller
     /**
      * Get the tenant of a property
      */
-    public function tenant(Property $property)
+    public function getTenant(Property $property)
     {
         try {
+            $allowed_ids = [$property->owner->id, $property->agent ? $property->agent->id : null];
+
+            // Validate the user
+            if (!in_array(auth()->user()->id, $allowed_ids) && auth()->user()->role != User::ROLE_ADMIN) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'User does not have the right roles.'
+                ], 403);
+            }
+
             return response()->json([
                 'status' => 'OK',
-                'data' => $property->tenant == null ? [] : new TenantResource($property->tenant)
+                'data' => $property->tenant == null ? null : new TenantResource($property->tenant)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
