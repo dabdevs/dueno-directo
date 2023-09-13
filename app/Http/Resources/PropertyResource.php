@@ -27,8 +27,6 @@ class PropertyResource extends JsonResource
             'phoneNumber' => $this->phone_number,
             'propertyType' => $this->property_type,
             'propertyAddress' => $this->property_address,
-            'propertyDescription' => $this->property_description,
-            'rentalPrice' => $this->rental_price,
             'leaseTerm' => $this->lease_term,
             'negotiable' => $this->negotiable,
             'available' => $this->available,

@@ -19,7 +19,6 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'create properties']);
         Permission::create(['name' => 'list properties']);
         Permission::create(['name' => 'update properties']);
-        Permission::create(['name' => 'view property']);
         Permission::create(['name' => 'delete properties']);
         Permission::create(['name' => 'view properties analytics']);
         Permission::create(['name' => 'create applications']);
@@ -57,7 +56,6 @@ class PermissionSeeder extends Seeder
                 // Properties
                 'create properties', 
                 'list properties',
-                'view property',
                 'update properties',
                 'delete properties',  
                 'view properties analytics',
@@ -114,7 +112,6 @@ class PermissionSeeder extends Seeder
             ->syncPermissions([
                 'create properties',
                 'update properties',
-                'view property',
                 'delete properties',
                 'view properties analytics',
                 'view tenant',
@@ -127,7 +124,6 @@ class PermissionSeeder extends Seeder
         // Lawyer role with permissions
         Role::create(['name' => 'lawyer'])
             ->syncPermissions([
-                'view property',
                 'view lease agreement',
                 'list lease agreements',
                 'sign lease agreement',

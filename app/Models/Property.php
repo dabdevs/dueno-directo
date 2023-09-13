@@ -9,7 +9,25 @@ class Property extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'title',
+        'description',
+        'price',
+        'bedrooms',
+        'bathrooms',
+        'area',
+        'location',
+        'phone_number',
+        'property_type',
+        'property_address',
+        'lease_term',
+        'rent_payment_method',
+        'security_deposit',
+        'rental_agreement',
+        'prefred_tenant_profile',
+        'additional_note',
+        'user_id'
+    ];
 
     /**
      * Get the owner of the Property
@@ -17,7 +35,7 @@ class Property extends Model
      */
     public function owner()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
@@ -78,7 +96,7 @@ class Property extends Model
 
     public function agent()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'agent_id');
     }
 
     public function isAvailable()

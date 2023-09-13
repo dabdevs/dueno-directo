@@ -35,15 +35,13 @@ class CreateRequest extends FormRequest
             'phone_number' => 'required|string|max:20',
             'property_type' => ['required', 'string', 'max:255', Rule::in(['House', 'Apartment', 'Condo'])],
             'property_address' => 'required|string',
-            'property_description' => 'required|string',
-            'rental_price' => 'required|numeric|min:0',
             'lease_term' => ['required', 'string', Rule::in(['6 Months', '12 Months', '24 Months', '36 Months'])],
             'rent_payment_method' => 'required|string|max:255',
             'security_deposit' => 'required|numeric|min:0',
             'rental_agreement' => 'nullable|string',
             'preferred_tenant_profile' => 'nullable|string',
             'additional_note' => 'nullable|string',
-            'user_id' => 'sometimes|exists:users,id|required',
+            'user_id' => 'required|integer|exists:users,id',
         ];
     }
 }

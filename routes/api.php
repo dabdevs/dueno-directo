@@ -43,10 +43,10 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'check_token'], function () {
         // User routes
         Route::resource('users', UserController::class);
+        Route::get('my-properties', [UserController::class, 'myProperties'])->name('users.my_properties');
         Route::group(['prefix' => 'users'], function () {
             Route::get('{user}/profile', [UserController::class, 'profile'])->name('users.profile');
             Route::delete('{user?}/profile/delete', [UserController::class, 'deleteProfile'])->name('users.delete_profile');
-            Route::get('{user}/properties', [UserController::class, 'properties'])->name('users.properties');
             Route::post('upload-avatar', [UserController::class, 'uploadAvatar'])->name('users.upload_avatar');
         });
 

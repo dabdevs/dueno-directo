@@ -25,14 +25,13 @@ class PropertyFactory extends Factory
             'phone_number' => $this->faker->phoneNumber,
             'property_type' => $this->faker->randomElement(['House', 'Apartment', 'Condo']),
             'property_address' => $this->faker->address,
-            'property_description' => $this->faker->paragraph,
             'lease_term' => $this->faker->randomElement(['6 Months', '12 Months', '24 Months', '36 Months']),
             'rent_payment_method' => $this->faker->randomElement(['Credit Card', 'Bank Transfer']),
             'security_deposit' => $this->faker->randomFloat(2, 100, 1000),
             'rental_agreement' => $this->faker->text,
             'preferred_tenant_profile' => $this->faker->text,
             'additional_note' => $this->faker->paragraph,
-            'owner_id' => User::factory()->create(['role' => 'owner'])->id,
+            'user_id' => User::factory()->create(['role' => 'owner'])->id,
             'agent_id' => $this->faker->randomElement([null, User::factory()->create(['role' => 'agent'])->id])
         ];
     }

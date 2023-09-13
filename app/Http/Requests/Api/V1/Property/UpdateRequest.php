@@ -35,8 +35,6 @@ class UpdateRequest extends FormRequest
             'phone_number' => 'sometimes|string|max:20',
             'property_type' => ['somtimes', 'string', 'max:255', Rule::in(['House', 'Apartment', 'Condo'])],
             'property_address' => 'sometimes|string',
-            'property_description' => 'sometimes|string',
-            'rental_price' => 'sometimes|numeric|min:0',
             'lease_term' => ['sometimes', 'string', Rule::in(['6 Months', '12 Months', '24 Months', '36 Months'])],
             'rent_payment_method' => 'sometimes|string|max:255',
             'security_deposit' => 'sometimes|numeric|min:0',
@@ -45,6 +43,8 @@ class UpdateRequest extends FormRequest
             'status' => ['sometimes', Rule::in(['Unlisted', 'Published', 'Booked', 'Rented'])],
             'additional_note' => 'nullable|string',
             'user_id' => 'sometimes|exists:users,id|required',
+            'tenant_id' => 'sometimes|exists:tenants,id|required',
+            'agent_id' => 'nullable|exists:users,id'
         ];
     }
 }

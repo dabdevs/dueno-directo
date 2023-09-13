@@ -16,7 +16,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:admin')->except(['update', 'profile', 'uploadAvatar']);
+        $this->middleware('role:admin')->except(['update', 'profile', 'uploadAvatar', 'myProperties']);
     }
 
     /**
@@ -246,12 +246,12 @@ class UserController extends Controller
     /**
      *  Authenticated user's properties
      */
-    public function properties(User $user)
+    public function myProperties()
     {
         try {
             return response()->json([
                 'status' => 'OK',
-                'data' => PropertyResource::collection($user->properties)
+                'data' => PropertyResource::collection(auth()->user()->properties)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

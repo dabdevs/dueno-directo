@@ -86,7 +86,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
      */
     public function properties()
     {
-        return $this->hasMany(Property::class, 'property_id', 'user_id');
+        return $this->hasMany(Property::class);
     }
 
     /**

@@ -60,6 +60,7 @@ class PropertyController extends Controller
     public function store(CreateRequest $request)
     {
         try {
+            // Validate user's permission
             if (auth()->check() && !auth()->user()->can('create properties')) {
                 return response()->json([
                     'status' => 'Error',
@@ -74,7 +75,7 @@ class PropertyController extends Controller
             if ($user->role != User::ROLE_OWNER) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'User is not an owner.'
+                    'message' => 'User does not have the right roles.'
                 ], 403);
             }
 
