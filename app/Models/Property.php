@@ -25,7 +25,7 @@ class Property extends Model
         'security_deposit',
         'rental_agreement',
         'prefred_tenant_profile',
-        'additional_note',
+        'note',
         'user_id'
     ];
 
@@ -97,6 +97,11 @@ class Property extends Model
     public function agent()
     {
         return $this->belongsTo(User::class, 'agent_id');
+    }
+
+    public function requirements()
+    {
+        return $this->hasMany(Requirement::class);
     }
 
     public function isAvailable()

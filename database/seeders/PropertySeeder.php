@@ -31,6 +31,7 @@ class PropertySeeder extends Seeder
         Property::factory()
             ->count(10)
             ->hasOwner()
+            ->hasRequirements(1)
             ->hasPreferences()
             ->hasApplications(20)
             ->create();
@@ -47,6 +48,7 @@ class PropertySeeder extends Seeder
             ->hasOwner()
             ->hasPreferences()
             ->hasTenant()
+            ->hasRequirements(3)
             ->hasApplications(12)
             ->create();
 

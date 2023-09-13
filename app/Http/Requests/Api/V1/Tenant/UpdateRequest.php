@@ -31,8 +31,8 @@ class UpdateRequest extends FormRequest
             'number_of_occupants' => ['nullable', 'numeric'],
             'has_pets' => ['nullable', 'boolean'],
             'smoker' => ['nullable', 'boolean'],
-            'employment_status'  => ['nullable', 'string', Rule::in(['employed', 'self-employed', 'unemployed'])],
-            'additional_note' => ['nullable', 'string', 'max:255'],
+            'employment_status'  => ['nullable', 'string', Rule::in(['Employed', 'Self-Employed', 'Unemployed'])],
+            'note' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

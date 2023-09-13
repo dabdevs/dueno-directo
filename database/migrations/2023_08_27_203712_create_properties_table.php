@@ -30,7 +30,7 @@ class CreatePropertiesTable extends Migration
             $table->decimal('security_deposit', 10, 2)->nullable();
             $table->text('rental_agreement')->nullable();
             $table->text('preferred_tenant_profile')->nullable();
-            $table->text('additional_note')->nullable();
+            $table->text('note')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->unsignedBigInteger('tenant_id')->nullable();
             $table->foreign('tenant_id')->references('id')->on('users');

@@ -24,8 +24,8 @@ class TenantFactory extends Factory
             'number_of_occupants' => $this->faker->numberBetween(1, 5),
             'has_pets' => $this->faker->randomElement([0, 1]),
             'smoker' => $this->faker->randomElement([0, 1]),
-            'employment_status' => $this->faker->randomElement(['employed', 'self-employed', 'unemployed']),
-            'additional_note' => $this->faker->paragraph()
+            'employment_status' => $this->faker->randomElement(['Employed', 'Self-Employed', 'Unemployed']),
+            'note' => $this->faker->paragraph()
         ];
     }
 }

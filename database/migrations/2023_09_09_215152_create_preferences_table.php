@@ -15,14 +15,16 @@ class CreatePreferencesTable extends Migration
     {
         Schema::create('preferences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('property_id')->constrained();
+            $table->foreignId('property_id')->unique()->constrained();
             $table->string('occupation')->nullable();
             $table->decimal('min_income', 10, 2)->nullable();
             $table->decimal('max_income', 10, 2)->nullable();
             $table->integer('number_of_occupants')->nullable();
             $table->boolean('has_pets')->default(0);
             $table->boolean('smoker')->default(0);
-            $table->enum('employment_status', ['employed', 'self-employed', 'unemployed'])->nullable();
+            $table->boolean('only_verified')->default(0);
+            $table->boolean('with_avatar')->default(0);
+            $table->enum('employment_status', ['Employed', 'Self-Employed', 'Unemployed'])->nullable();
             $table->timestamps();
         });
     }

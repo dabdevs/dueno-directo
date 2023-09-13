@@ -22,8 +22,8 @@ class CreateTenantsTable extends Migration
             $table->integer('number_of_occupants')->nullable();
             $table->boolean('has_pets')->default(false);
             $table->boolean('smoker')->default(false);
-            $table->enum('employment_status', ['employed', 'self-employed', 'unemployed'])->nullable();
-            $table->text('additional_note')->nullable();
+            $table->enum('employment_status', ['Employed', 'Self-Employed', 'Unemployed'])->nullable();
+            $table->text('note')->nullable();
             $table->dateTime('verified_at')->nullable();
             $table->timestamps();
         });

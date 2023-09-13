@@ -35,8 +35,8 @@ class CreateUserRequest extends FormRequest
             'number_of_occupants' => ['required', 'numeric'],
             'has_pets' => ['required', 'boolean'],
             'smoker' => ['required', 'boolean'],
-            'employment_status'  => ['required', 'string', Rule::in(['employed', 'self-employed', 'unemployed'])],
-            'additional_note' => ['required', 'string', 'max:255'],
+            'employment_status'  => ['required', 'string', Rule::in(['Employed', 'Self-Employed', 'Unemployed'])],
+            'note' => ['required', 'string', 'max:255'],
         ];
     }
 }

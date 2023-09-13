@@ -23,7 +23,7 @@ class TenantResource extends JsonResource
             "hasPets" => $this->has_pets,
             "smoker" => $this->smoker,
             "employmentStatus" => $this->employment_status,
-            "additional_note" => $this->additional_note,
+            "note" => $this->note,
             "dateRegistered" => $this->created_at->format('Y-m-d'),
             "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null,
             "user" => new UserResource($this->user),

@@ -30,7 +30,7 @@ class PropertyFactory extends Factory
             'security_deposit' => $this->faker->randomFloat(2, 100, 1000),
             'rental_agreement' => $this->faker->text,
             'preferred_tenant_profile' => $this->faker->text,
-            'additional_note' => $this->faker->paragraph,
+            'note' => $this->faker->paragraph,
             'user_id' => User::factory()->create(['role' => 'owner'])->id,
             'agent_id' => $this->faker->randomElement([null, User::factory()->create(['role' => 'agent'])->id])
         ];

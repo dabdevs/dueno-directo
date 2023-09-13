@@ -18,7 +18,7 @@ class Tenant extends Model
         'has_pets',
         'smoker',
         'employment_status',
-        'additional_note'
+        'note'
     ];
 
     protected $casts = [

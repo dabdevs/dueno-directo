@@ -40,7 +40,7 @@ class CreateRequest extends FormRequest
             'security_deposit' => 'required|numeric|min:0',
             'rental_agreement' => 'nullable|string',
             'preferred_tenant_profile' => 'nullable|string',
-            'additional_note' => 'nullable|string',
+            'note' => 'nullable|string',
             'user_id' => 'required|integer|exists:users,id',
         ];
     }

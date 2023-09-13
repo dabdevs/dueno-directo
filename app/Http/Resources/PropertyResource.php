@@ -33,10 +33,10 @@ class PropertyResource extends JsonResource
             'securityDeposit' => $this->security_deposit,
             'rentalAgreement' => $this->rental_agreement,
             'preferredTenantProfile' => $this->preferred_tenant_profile,
-            'additionalNote' => $this->additional_note,
-            'owner' => new UserResource($this->owner), 
+            'additionalNote' => $this->note,
+            'owner' => new UserResource($this->owner),
             'tenant' => new TenantResource($this->tenant),
-            'agent' => new UserResource($this->agent), 
+            'agent' => new UserResource($this->agent),
             'status' => $this->status,
             "dateRegistered" => $this->created_at->format('Y-m-d'),
             "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null

@@ -41,7 +41,7 @@ class UpdateRequest extends FormRequest
             'rental_agreement' => 'nullable|string',
             'preferred_tenant_profile' => 'nullable|string',
             'status' => ['sometimes', Rule::in(['Unlisted', 'Published', 'Booked', 'Rented'])],
-            'additional_note' => 'nullable|string',
+            'note' => 'nullable|string',
             'user_id' => 'sometimes|exists:users,id|required',
             'tenant_id' => 'sometimes|exists:tenants,id|required',
             'agent_id' => 'nullable|exists:users,id'
