@@ -9,15 +9,16 @@ use App\Http\Resources\ApplicationResource;
 use App\Models\Application;
 use App\Models\Property;
 use App\Models\Tenant;
+use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class ApplicationController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display all applications.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -46,24 +47,21 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Store new application
      *
-     * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(createRequest $request)
+    public function store(CreateRequest $request)
     {
         try {
+            $property = Property::findOrFail($request->property_id);
+
+            if (!$property->isAvailable()) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'The property is not available.'
+                ], 400);
+            }
+
             $tenant = Tenant::findOrFail($request->tenant_id);
 
             // Validate if tenant has already applied for the property
@@ -76,15 +74,6 @@ class ApplicationController extends Controller
                 return response()->json([
                     'status' => 'Error',
                     'message' => 'You already applied for this property.'
-                ], 400);
-            }
-
-            $property = Property::findOrFail($request->property_id);
-
-            if (!$property->isAvailable()) {
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'The property is not available.'
                 ], 400);
             }
 
@@ -104,39 +93,33 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show application
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function show(Application $application)
     {
-        return response()->json([
-            'data' => new ApplicationResource($application)
-        ]);
+        try {
+            $this->validateUserAction($application);
+
+            return response()->json([
+                'data' => new ApplicationResource($application)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Update application
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(UpdateRequest $request, Application $application)
     {
         try {
+            $this->validateUserAction($application);
             $application->update($request->validated());
 
             return response()->json([
@@ -152,14 +135,12 @@ class ApplicationController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Delete application
      */
     public function destroy(Application $application)
     {
         try {
+            $this->validateUserAction($application);
             $application->delete();
 
             return response()->json([
@@ -180,6 +161,8 @@ class ApplicationController extends Controller
     public function changeStatus(Application $application, Request $request)
     {
         try {
+            $this->validateUserAction($application);
+
             $data = $request->validate([
                 'status' => ['required', 'string', Rule::in(['pending', 'accepted', 'rejected'])]
             ]);
@@ -196,6 +179,22 @@ class ApplicationController extends Controller
                 'status' => 'Error',
                 'message' => $th->getMessage()
             ], 500);
+        }
+    }
+
+    private function validateUserAction(Application $application = null, string $permission = null)
+    {
+        $user = auth()->user();
+
+        if ($permission != null && !$user->can($permission)) {
+            throw new Exception('User does not have the right roles.');
+        }
+
+        if ($application != null) {
+            // Validate the user
+            if ($user->id != $application->tenant_id || $user->role != User::ROLE_ADMIN) {
+                throw new Exception('User does not have the right roles.');
+            }
         }
     }
 }

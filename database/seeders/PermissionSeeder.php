@@ -92,6 +92,7 @@ class PermissionSeeder extends Seeder
                 'create applications',
                 'update applications',
                 'delete applications',
+                'view application',
 
                 // Lease agreements
                 'sign lease agreement',

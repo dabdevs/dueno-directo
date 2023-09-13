@@ -29,7 +29,6 @@ class PropertyResource extends JsonResource
             'propertyAddress' => $this->property_address,
             'leaseTerm' => $this->lease_term,
             'negotiable' => $this->negotiable,
-            'available' => $this->available,
             'rentPaymentMethod' => $this->rent_payment_method,
             'securityDeposit' => $this->security_deposit,
             'rentalAgreement' => $this->rental_agreement,

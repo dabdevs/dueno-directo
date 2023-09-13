@@ -33,7 +33,7 @@ class UpdateRequest extends FormRequest
             'area' => 'sometimes|integer|min:1',
             'location' => 'sometimes|string|max:255|required',
             'phone_number' => 'sometimes|string|max:20',
-            'property_type' => ['somtimes', 'string', 'max:255', Rule::in(['House', 'Apartment', 'Condo'])],
+            'property_type' => ['sometimes', 'string', 'max:255', Rule::in(['House', 'Apartment', 'Condo'])],
             'property_address' => 'sometimes|string',
             'lease_term' => ['sometimes', 'string', Rule::in(['6 Months', '12 Months', '24 Months', '36 Months'])],
             'rent_payment_method' => 'sometimes|string|max:255',

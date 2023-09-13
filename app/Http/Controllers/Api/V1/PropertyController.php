@@ -12,6 +12,7 @@ use App\Http\Resources\TenantResource;
 use App\Models\Property;
 use App\Models\Role;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 
 class PropertyController extends Controller
@@ -24,12 +25,7 @@ class PropertyController extends Controller
     public function index()
     {
         try {
-            if (auth()->check() && !auth()->user()->can('list properties')) {
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'User does not have the right roles.'
-                ], 403);
-            }
+            $this->validateUserAction('list properties');
 
             $properties = Property::paginate(10);
 
@@ -177,22 +173,13 @@ class PropertyController extends Controller
     public function applications(Property $property)
     {
         try {
-            $allowed_ids = [$property->owner->id, $property->agent ? $property->agent->id : null];
-
-            // Validate the user
-            if (!in_array(auth()->user()->id, $allowed_ids) && auth()->user()->role != User::ROLE_ADMIN) {
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'User does not have the right roles.'
-                ], 403);
-            }
+            $this->validateUserAction($property);
 
             return response()->json([
                 'status' => 'OK',
                 'data' => ApplicationResource::collection($property->applications)
             ]);
         } catch (\Throwable $th) {
-            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()
@@ -263,15 +250,7 @@ class PropertyController extends Controller
     public function getTenant(Property $property)
     {
         try {
-            $allowed_ids = [$property->owner->id, $property->agent ? $property->agent->id : null];
-
-            // Validate the user
-            if (!in_array(auth()->user()->id, $allowed_ids) && auth()->user()->role != User::ROLE_ADMIN) {
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'User does not have the right roles.'
-                ], 403);
-            }
+            $this->validateUserAction($property);
 
             return response()->json([
                 'status' => 'OK',
@@ -324,7 +303,7 @@ class PropertyController extends Controller
             }
 
             if ($request->has('location')) {
-                $query->where('location','like', '%' . $request->location . '%');
+                $query->where('location', 'like', '%' . $request->location . '%');
             }
 
             if ($request->has('negotiable')) {
@@ -350,12 +329,29 @@ class PropertyController extends Controller
                     'total' => $properties->total(),
                 ]
             ]);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()
             ], 500);
+        }
+    }
+
+    private function validateUserAction(Property $property = null, string $permission = null)
+    {
+        $user = auth()->user();
+
+        if ($permission != null && !$user->can($permission)) {
+            throw new Exception('User does not have the right roles.');
+        }
+
+        if ($property != null) {
+            $allowed_ids = [$property->owner->id, $property->agent ? $property->agent->id : null];
+
+            // Validate the user
+            if (!in_array($user->id, $allowed_ids) && $user->role != User::ROLE_ADMIN) {
+                throw new Exception('User does not have the right roles.');
+            }
         }
     }
 }
