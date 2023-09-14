@@ -25,7 +25,7 @@ class PropertyController extends Controller
     public function index()
     {
         try {
-            $this->validateUserAction('list properties');
+            $this->validateUserAction(null, 'list properties');
 
             $properties = Property::paginate(10);
 
@@ -60,7 +60,7 @@ class PropertyController extends Controller
             if (auth()->check() && !auth()->user()->can('create properties')) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'User does not have the right roles.'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -71,7 +71,7 @@ class PropertyController extends Controller
             if ($user->role != User::ROLE_OWNER) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'User does not have the right roles.'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -120,7 +120,7 @@ class PropertyController extends Controller
             if (auth()->check() && !auth()->user()->can('update properties')) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'User does not have the right roles.'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -149,7 +149,7 @@ class PropertyController extends Controller
             if (auth()->check() && !auth()->user()->can('delete properties')) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'User does not have the right roles.'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -196,7 +196,7 @@ class PropertyController extends Controller
             if (auth()->check() && !auth()->user()->can('view preferences')) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'User does not have the right roles.'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -221,7 +221,7 @@ class PropertyController extends Controller
             if (auth()->check() && !auth()->user()->can('assign tenants')) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'User does not have the right roles.'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -342,7 +342,7 @@ class PropertyController extends Controller
         $user = auth()->user();
 
         if ($permission != null && !$user->can($permission)) {
-            throw new Exception('User does not have the right roles.');
+            throw new Exception('Forbidden');
         }
 
         if ($property != null) {
@@ -350,7 +350,7 @@ class PropertyController extends Controller
 
             // Validate the user
             if (!in_array($user->id, $allowed_ids) && $user->role != User::ROLE_ADMIN) {
-                throw new Exception('User does not have the right roles.');
+                throw new Exception('Forbidden');
             }
         }
     }

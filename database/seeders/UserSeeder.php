@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -32,12 +33,14 @@ class UserSeeder extends Seeder
             ])->assignRole('owner');
 
             // Tenant test user
-            User::factory()->create([
+            $user = User::factory()->create([
                 'email' => 'tenant@duenodirecto.com',
                 'family_name' => 'Pierre',
                 'given_name' => 'Martine',
                 'role' => 'tenant'
-            ])->assignRole('tenant');
+            ])->assignRole('tenant'); 
+            Tenant::factory()->create(['user_id' => $user->id]);
+
 
             // Agent test user
             User::factory()->create([

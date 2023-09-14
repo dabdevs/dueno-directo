@@ -17,7 +17,7 @@ class RequirementFactory extends Factory
             'property_id' => $this->faker->numberBetween(1, 20),
             'name'  => $this->faker->randomElement(['Months deposit', 'Criminal records', 'Bank records']),
             'quantity' => 1,
-            'note' => $this->faker->paragraph(3)
+            'note' => $this->faker->paragraph(1)
         ];
     }
 }

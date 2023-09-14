@@ -126,7 +126,6 @@ class PermissionSeeder extends Seeder
         Role::create(['name' => 'lawyer'])
             ->syncPermissions([
                 'view lease agreement',
-                'list lease agreements',
                 'sign lease agreement',
                 'change lease agreements status'
             ]);

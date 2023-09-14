@@ -15,9 +15,7 @@ class PreferenceFactory extends Factory
     public function definition()
     {
         return [
-            'property_id' => function () {
-                return \App\Models\Property::factory()->create()->id;
-            },
+            'property_id' => \App\Models\Property::factory()->create()->id,
             'occupation' => $this->faker->randomElement(['student', 'doctor', 'engineer', 'athelete', 'musician', 'salesman', 'architect', 'lawyer', 'businessman', 'constructor']),
             'min_income' => $this->faker->numberBetween(10000, 20000),
             'max_income' => $this->faker->numberBetween(100000, 500000),

@@ -23,7 +23,8 @@ class ApplicationController extends Controller
     public function index()
     {
         try {
-            $applications = Application::paginate(10);
+            $user = auth()->user(); dd($user);
+            $applications = $user->role == 'admin' ? Application::paginate(10) : $user->tenant->applications->paginate(10);
 
             return response()->json([
                 'status' => 'OK',
@@ -119,7 +120,7 @@ class ApplicationController extends Controller
     public function update(UpdateRequest $request, Application $application)
     {
         try {
-            $this->validateUserAction($application);
+            $this->validateUserAction($application, 'update applications');
             $application->update($request->validated());
 
             return response()->json([
@@ -187,13 +188,13 @@ class ApplicationController extends Controller
         $user = auth()->user();
 
         if ($permission != null && !$user->can($permission)) {
-            throw new Exception('User does not have the right roles.');
+            throw new Exception('Forbidden');
         }
 
         if ($application != null) {
             // Validate the user
             if ($user->id != $application->tenant_id || $user->role != User::ROLE_ADMIN) {
-                throw new Exception('User does not have the right roles.');
+                throw new Exception('Forbidden');
             }
         }
     }

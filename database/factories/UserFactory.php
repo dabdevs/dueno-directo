@@ -15,14 +15,12 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $roles = ['owner', 'tenant'];
-        $role = $roles[array_rand($roles)];
         $countries = Country::all()->pluck('id');
 
         return [
             'given_name' => $this->faker->firstName(),
             'family_name' => $this->faker->lastName(),
-            'role' => $role,
+            'role' => $this->faker->randomElement(['owner', 'tenant']),
             'telephone' => $this->faker->phoneNumber(),
             'country_id' => $this->faker->randomElement($countries),
             'city' => $this->faker->randomElement(['Buenos Aires', 'Los Angeles', 'Santiago', 'New York', 'Chicago', 'Boston', 'Lima', 'Montevideo', 'Madrid', 'Paris']),

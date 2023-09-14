@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ApplicationFactory extends Factory
+class PhotoFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -14,9 +14,7 @@ class ApplicationFactory extends Factory
     public function definition()
     {
         return [
-            'note' => $this->faker->paragraph(),
-            'property_id' => \App\Models\Property::factory()->create()->id, 
-            'tenant_id' => \App\Models\Tenant::factory()->create()->id
+            'path' => 'https://dummyimage.com/600x400/b2b2b2/000.jpg',
         ];
     }
 }

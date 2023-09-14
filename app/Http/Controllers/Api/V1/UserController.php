@@ -136,7 +136,7 @@ class UserController extends Controller
             if ($user->id != auth()->id() && auth()->user()->role != User::ROLE_ADMIN) {
                 return response()->json([
                     'status' => 'OK',
-                    'message' => 'User does not have the right roles.'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -195,7 +195,7 @@ class UserController extends Controller
             if ($user->id != auth()->id() && auth()->user()->role != User::ROLE_ADMIN) {
                 return response()->json([
                     'status' => 'OK',
-                    'message' => 'User does not have the right roles.'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
