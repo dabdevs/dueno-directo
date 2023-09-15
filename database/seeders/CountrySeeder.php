@@ -43,6 +43,42 @@ class CountrySeeder extends Seeder
                     'created_at' => now()
                 ],
             ]);
+
+            DB::table('cities')
+                ->insert([
+                    [
+                        'name' => 'New York',
+                        'country_id' => 4
+                    ],
+                    [
+                        'name' => 'Miami',
+                        'country_id' => 4
+                    ],
+                    [
+                        'name' => 'Buenos Aires',
+                        'country_id' => 1
+                    ],
+                    [
+                        'name' => 'Mendoza',
+                        'country_id' => 1
+                    ],
+                    [
+                        'name' => 'Rio de Janeiro',
+                        'country_id' => 2
+                    ],
+                    [
+                        'name' => 'Sao Paolo',
+                        'country_id' => 2
+                    ],
+                    [
+                        'name' => 'Santiago de Chile',
+                        'country_id' => 3
+                    ],
+                    [
+                        'name' => 'Uruguay',
+                        'country_id' => 5
+                    ],
+                ]);
         } catch (\Throwable $th) {
             throw $th;
         }

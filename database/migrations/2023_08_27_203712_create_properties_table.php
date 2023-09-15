@@ -21,7 +21,7 @@ class CreatePropertiesTable extends Migration
             $table->integer('bedrooms');
             $table->integer('bathrooms');
             $table->integer('area');
-            $table->string('location');
+            $table->string('email')->nullable();
             $table->string('phone_number');
             $table->enum('property_type', ['House', 'Apartment', 'Condo']);
             $table->string('property_address');
@@ -36,6 +36,11 @@ class CreatePropertiesTable extends Migration
             $table->foreign('tenant_id')->references('id')->on('users');
             $table->unsignedBigInteger('agent_id')->nullable();
             $table->foreign('agent_id')->references('id')->on('users');
+            $table->foreignId('country_id')->constrained();
+            $table->foreignId('city_id')->constrained();
+            $table->string('state')->nullable();
+            $table->string('neighborhood')->nullable();
+            $table->enum('get_notified_by', ['Phone', 'Email'])->default('Email');
             $table->boolean('negotiable')->default(0);
             $table->enum('status', ['Unlisted', 'Published', 'Booked', 'Rented'])->default('Unlisted');
             $table->dateTime('verified_at')->nullable();

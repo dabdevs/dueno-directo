@@ -38,6 +38,7 @@ class PropertyResource extends JsonResource
             'tenant' => new TenantResource($this->tenant),
             'agent' => new UserResource($this->agent),
             'status' => $this->status,
+            'photos' => $this->photos,
             "dateRegistered" => $this->created_at->format('Y-m-d'),
             "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null
         ];

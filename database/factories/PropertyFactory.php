@@ -21,7 +21,6 @@ class PropertyFactory extends Factory
             'bedrooms' => $this->faker->numberBetween(1, 5),
             'bathrooms' => $this->faker->numberBetween(1, 3),
             'area' => $this->faker->numberBetween(500, 5000),
-            'location' => $this->faker->randomElement(['Buenos Aires', 'Los Angeles', 'Santiago', 'New York', 'Chicago', 'Boston', 'Lima', 'Montevideo', 'Madrid', 'Paris']),
             'phone_number' => $this->faker->phoneNumber,
             'property_type' => $this->faker->randomElement(['House', 'Apartment', 'Condo']),
             'property_address' => $this->faker->address,
@@ -32,7 +31,9 @@ class PropertyFactory extends Factory
             'preferred_tenant_profile' => $this->faker->text,
             'note' => $this->faker->paragraph,
             'user_id' => User::factory()->create(['role' => 'owner'])->id,
-            'agent_id' => $this->faker->randomElement([null, User::factory()->create(['role' => 'agent'])->id])
+            'agent_id' => $this->faker->randomElement([null, User::factory()->create(['role' => 'agent'])->id]),
+            'country_id' => $this->faker->randomElement([1, 3]),
+            'city_id' => $this->faker->randomElement([1, 3])
         ];
     }
 }

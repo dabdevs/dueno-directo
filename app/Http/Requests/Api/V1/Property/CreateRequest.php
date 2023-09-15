@@ -31,7 +31,6 @@ class CreateRequest extends FormRequest
             'bedrooms' => 'required|integer|min:1',
             'bathrooms' => 'required|integer|min:1',
             'area' => 'required|integer|min:1',
-            'location' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
             'property_type' => ['required', 'string', 'max:255', Rule::in(['House', 'Apartment', 'Condo'])],
             'property_address' => 'required|string',
@@ -42,6 +41,11 @@ class CreateRequest extends FormRequest
             'preferred_tenant_profile' => 'nullable|string',
             'note' => 'nullable|string',
             'user_id' => 'required|integer|exists:users,id',
+            'country_id' => 'required|integer|exists:countries,id',
+            'city_id' => 'required|integer|exists:cities,id',
+            'state' => 'string|max:150',
+            'neighborhood' => 'string|max:150',
+            'get_notified_by' => ['string', 'max:150', Rule::in(['Phone', 'Email'])]
         ];
     }
 }

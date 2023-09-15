@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePhotosTable extends Migration
+class CreateCitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreatePhotosTable extends Migration
      */
     public function up()
     {
-        Schema::create('photos', function (Blueprint $table) {
+        Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('path')->default('https://dummyimage.com/600x400/b2b2b2/000.jpg');
-            $table->foreignId('property_id');
-            $table->boolean('is_primary')->default(0);
+            $table->string('name');
+            $table->foreignId('country_id');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreatePhotosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('photos');
+        Schema::dropIfExists('cities');
     }
 }
