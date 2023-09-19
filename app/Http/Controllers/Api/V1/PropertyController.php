@@ -27,7 +27,7 @@ class PropertyController extends Controller
         try {
             $this->validateUserAction(null, 'list properties');
 
-            $properties = Property::paginate(10);
+            $properties = Property::with('photos')->paginate(10);
 
             return response()->json([
                 'status' => 'OK',
@@ -43,6 +43,7 @@ class PropertyController extends Controller
                 ]
             ]);
         } catch (\Throwable $th) {
+            throw $th;
             return response()->json([
                 'message' => $th->getMessage()
             ], 500);

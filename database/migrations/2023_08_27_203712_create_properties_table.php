@@ -21,15 +21,10 @@ class CreatePropertiesTable extends Migration
             $table->integer('bedrooms');
             $table->integer('bathrooms');
             $table->integer('area');
+            $table->boolean('balcony')->default(0);
             $table->string('email')->nullable();
             $table->string('phone_number');
-            $table->enum('property_type', ['House', 'Apartment', 'Condo']);
-            $table->string('property_address');
-            $table->enum('lease_term', ['6 Months', '12 Months', '24 Months', '36 Months'])->nullable();
-            $table->string('rent_payment_method')->nullable();
-            $table->decimal('security_deposit', 10, 2)->nullable();
-            $table->text('rental_agreement')->nullable();
-            $table->text('preferred_tenant_profile')->nullable();
+            $table->enum('type', ['House', 'Apartment', 'Condo']);
             $table->text('note')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->unsignedBigInteger('tenant_id')->nullable();

@@ -18,7 +18,6 @@ class TenantFactory extends Factory
             'user_id' => \App\Models\User::factory()->create(['role' => 'tenant'])->id,
             'occupation' => $this->faker->randomElement(['Student', 'Doctor', 'Engineer', 'Athelete', 'Musician', 'Salesman', 'Architect', 'Lawyer', 'Businessman', 'Constructor']),
             'income' => $this->faker->numberBetween(100000, 300000),
-            'desired_locations' => $this->faker->randomElement(['Buenos Aires', 'Los Angeles', 'Santiago', 'New York', 'Chicago', 'Boston', 'Lima', 'Montevideo', 'Madrid', 'Paris']),
             'number_of_occupants' => $this->faker->numberBetween(1, 5),
             'has_pets' => $this->faker->randomElement([0, 1]),
             'smoker' => $this->faker->randomElement([0, 1]),

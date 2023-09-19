@@ -15,6 +15,7 @@ class Property extends Model
         'price',
         'bedrooms',
         'bathrooms',
+        'balcony',
         'area',
         'country_id',
         'city_id',
@@ -22,14 +23,9 @@ class Property extends Model
         'neighborhood',
         'get_notified_by',
         'phone_number',
-        'property_type',
-        'property_address',
-        'lease_term',
-        'rent_payment_method',
-        'security_deposit',
-        'rental_agreement',
-        'prefred_tenant_profile',
+        'type',
         'note',
+        'email',
         'user_id'
     ];
 
@@ -116,5 +112,10 @@ class Property extends Model
     public function photos()
     {
         return $this->hasMany(Photo::class);
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }

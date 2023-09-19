@@ -5,12 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class City extends Model
+class Navigation extends Model
 {
     use HasFactory;
 
-    public $fillable = [
+    protected $fillable = [
         'name',
-        'code',
+        'endpoint',
+        'allowed_roles'
+    ];
+
+    protected $casts = [
+        'allowed_roles' => 'array'
     ];
 }

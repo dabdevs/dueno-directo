@@ -20,10 +20,10 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['owner', 'tenant', 'admin', 'lawyer', 'agent'])->nullable();
+            $table->enum('role', ['owner', 'tenant', 'admin', 'lawyer', 'agent']);
             $table->string('telephone')->nullable();
             $table->foreignId('country_id')->nullable()->constrained();
-            $table->string('city')->nullable();
+            $table->foreignId('city_id')->nullable()->constrained();
             $table->string('street')->nullable();
             $table->string('number')->nullable();
             $table->string('appartment')->nullable();

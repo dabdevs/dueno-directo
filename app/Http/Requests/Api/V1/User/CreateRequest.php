@@ -26,9 +26,7 @@ class CreateRequest extends FormRequest
     {
         return [
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string'],
-            'family_name' => ['required', 'string', 'max:150'],
-            'given_name' => ['required', 'string', 'max:150'],
+            'password' => ['required', 'string', 'regex:/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,20}$/'],
             'role'  => ['required', 'string', Rule::in(['owner', 'tenant', 'admin', 'lawyer', 'agent'])],
         ];
     }

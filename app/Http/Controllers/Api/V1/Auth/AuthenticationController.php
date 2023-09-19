@@ -6,10 +6,12 @@ use App\Events\User\UserCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\User\CreateRequest;
+use App\Http\Resources\NavigationResource;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Resources\UserResource;
+use App\Models\Navigation;
 use App\Models\Role;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -40,16 +42,27 @@ class AuthenticationController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $credentials = $request->only(['email', 'password']);
-
         try {
+            $credentials = $request->only(['email', 'password']);  
+            
             // Validate login creadentials
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['status' => 'Error', 'message' => 'Wrong credentials'], 403);
+                return response()->json(['status' => 'Error', 'message' => 'Wrong credentials'], 401);
             }
+            $user = auth()->user();
+            $roles = $user->roles->pluck('name')->toArray();
+            $token = JWTAuth::fromUser($user, ['roles' => $roles]);
+            $navigation = NavigationResource::collection(Navigation::whereJsonContains('allowed_roles', $user->role)->whereActive(1)->get());
 
-            return response()->json(['token' => $token]);
+            return response()->json([
+                'token' => $token, 
+                'user' => new UserResource($user),
+                'roles' => $user->getRoleNames(),
+                'permissions' => $user->getAllPermissions()->pluck('name')->toArray(),
+                'navigation' => $navigation
+            ]);
         } catch (\Throwable $th) {
+            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Could not generate token'
@@ -62,17 +75,17 @@ class AuthenticationController extends Controller
      */
     public function refresh()
     {
-        $old_token = request()->bearerToken();
+        $old_token = request()->bearerToken(); 
 
         try {
             // Refresh token
             $token = JWTAuth::setToken($old_token)->refresh();
-            return response()->json(['message' => 'Token generated', 'token' => $token]);
+            return response()->json(['message' => 'Token refreshed', 'token' => $token]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Invalid or expired token'
-            ], 500);
+            ], 401);
         }
     }
 
