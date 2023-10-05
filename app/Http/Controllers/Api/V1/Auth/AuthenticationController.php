@@ -13,6 +13,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Http\Resources\UserResource;
 use App\Models\Navigation;
 use App\Models\Role;
+use Tymon\JWTAuth\Contracts\Providers\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthenticationController extends Controller
@@ -46,19 +47,26 @@ class AuthenticationController extends Controller
             $credentials = $request->only(['email', 'password']);  
             
             // Validate login creadentials
-            if (!$token = JWTAuth::attempt($credentials)) {
+            if (!$token = JWTAuth::attempt($credentials, ['expires' => now()->addMinutes(1)->timestamp])) {
                 return response()->json(['status' => 'Error', 'message' => 'Wrong credentials'], 401);
             }
+
+            $payload = JWTAuth::setToken($token)->getPayload();
+
+            $token_exp = date('Y-m-d H:i:s', $payload['exp']);
+
             $user = auth()->user();
-            $roles = $user->roles->pluck('name')->toArray();
-            $token = JWTAuth::fromUser($user, ['roles' => $roles]);
+            $roles = $user->getRoleNames();
+            $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+            $token = JWTAuth::fromUser($user, ['roles' => $roles, 'permissions' => $permissions]);
             $navigation = NavigationResource::collection(Navigation::whereJsonContains('allowed_roles', $user->role)->whereActive(1)->get());
 
             return response()->json([
-                'token' => $token, 
+                'token' => $token,
+                'exp' => $token_exp,
                 'user' => new UserResource($user),
-                'roles' => $user->getRoleNames(),
-                'permissions' => $user->getAllPermissions()->pluck('name')->toArray(),
+                'roles' => $roles,
+                'permissions' => $permissions,
                 'navigation' => $navigation
             ]);
         } catch (\Throwable $th) {
@@ -82,6 +90,7 @@ class AuthenticationController extends Controller
             $token = JWTAuth::setToken($old_token)->refresh();
             return response()->json(['message' => 'Token refreshed', 'token' => $token]);
         } catch (\Exception $e) {
+            throw $e;
             return response()->json([
                 'status' => 'Error',
                 'message' => 'Invalid or expired token'
@@ -133,9 +142,9 @@ class AuthenticationController extends Controller
      */
     public function logout()
     {
-        Auth::logout();
+        Auth::logout(); 
 
         // Redirect to the login page
-        return redirect('/login');
+        return response()->json([]);
     }
 }

@@ -36,6 +36,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => 'auth'], function () {
         Route::post('/register', [AuthenticationController::class, 'register'])->name('register');
         Route::post('/login', [AuthenticationController::class, 'login'])->name('login');
+        Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
         Route::post('/refresh-token', [AuthenticationController::class, 'refresh'])->name('refresh_token');
     });
 

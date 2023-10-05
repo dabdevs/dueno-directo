@@ -269,9 +269,12 @@ class UserController extends Controller
             ]);
 
             $user = User::find(auth()->id());
-            $path = $request->file('avatar')->store('images/users/avatars/' . $user->id);
-            $user->avatar = $path;
-            $user->save();
+
+            if ($request->has('avatar')) {
+                $path = $request->file('avatar')->store('images/users/avatars/' . $user->id);
+                $user->avatar = $path;
+                $user->save();
+            }
 
             return response()->json([
                 'status' => 'OK',

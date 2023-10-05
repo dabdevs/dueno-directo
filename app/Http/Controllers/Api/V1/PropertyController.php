@@ -27,8 +27,8 @@ class PropertyController extends Controller
         try {
             $this->validateUserAction(null, 'list properties');
 
-            $properties = Property::with('photos')->paginate(10);
-
+            $properties = auth()->user()->role == 'admin' ? Property::with('photos')->paginate(20) : Property::where('user_id', auth()->id())->paginate(20); 
+            
             return response()->json([
                 'status' => 'OK',
                 "data" => PropertyResource::collection($properties),
