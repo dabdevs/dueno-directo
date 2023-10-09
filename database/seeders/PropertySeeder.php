@@ -15,40 +15,40 @@ class PropertySeeder extends Seeder
     public function run()
     {
         Property::factory()
-            ->count(10)
+            ->count(2)
             ->hasOwner()
             ->hasPreferences()
             ->hasApplications(1)
-            ->hasPhotos(10)
+            ->hasPhotos(5)
             ->create();
 
         Property::factory()
-        ->count(10)
+        ->count(1)
         ->hasOwner()
         ->hasPreferences()
         ->hasApplications(5)
-        ->hasPhotos(8)
+        ->hasPhotos(2)
         ->create();
 
         Property::factory()
-            ->count(10)
+            ->count(3)
             ->hasOwner()
             ->hasRequirements(1)
             ->hasPreferences()
-            ->hasApplications(20)
-            ->hasPhotos(7)
+            ->hasApplications(7)
+            ->hasPhotos(6)
             ->create();
 
         Property::factory()
-            ->count(10)
+            ->count(2)
             ->hasOwner()
             ->hasPreferences()
-            ->hasApplications(5)
-            ->hasPhotos(10)
+            ->hasApplications(2)
+            ->hasPhotos(3)
             ->create();
 
         Property::factory()
-            ->count(10)
+            ->count(4)
             ->hasOwner()
             ->hasPreferences()
             ->hasTenant()
@@ -63,7 +63,7 @@ class PropertySeeder extends Seeder
             ->hasTenant()
             ->hasRequirements(5)
             ->hasPreferences()
-            ->hasPhotos(8)
+            ->hasPhotos(2)
             ->create();
     }
 }

@@ -15,11 +15,11 @@ class CreateApplicationsTable extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->onDelete('cascade');
+            $table->foreignId('user_id')->onDelete('cascade');
             $table->foreignId('property_id')->onDelete('cascade');
             $table->text('note')->nullable();
             $table->boolean('viewed')->default(0);
-            $table->enum('status', ['approved', 'rejected', 'pending'])->default('pending');
+            $table->enum('status', ['Approved', 'Rejected', 'Pending'])->default('pending');
             $table->timestamps();
         });
     }

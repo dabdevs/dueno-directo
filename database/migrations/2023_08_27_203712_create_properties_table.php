@@ -16,6 +16,7 @@ class CreatePropertiesTable extends Migration
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug');
             $table->text('description');
             $table->decimal('price', 10, 2);
             $table->integer('bedrooms');
@@ -24,16 +25,24 @@ class CreatePropertiesTable extends Migration
             $table->boolean('balcony')->default(0);
             $table->string('email')->nullable();
             $table->string('phone_number');
+            $table->string('address')->nullable();
             $table->enum('type', ['House', 'Apartment', 'Condo']);
+            $table->boolean('patio')->default(0);
             $table->text('note')->nullable();
+            $table->text('preferred_tenant_profile')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->unsignedBigInteger('tenant_id')->nullable();
             $table->foreign('tenant_id')->references('id')->on('users');
             $table->unsignedBigInteger('agent_id')->nullable();
             $table->foreign('agent_id')->references('id')->on('users');
+            $table->unsignedBigInteger('lawyer_id')->nullable();
+            $table->foreign('lawyer_id')->references('id')->on('users');
             $table->foreignId('country_id')->constrained();
             $table->foreignId('city_id')->constrained();
             $table->string('state')->nullable();
+            $table->string('lease_term')->nullable();
+            $table->string('payment_method')->nullable();
+            $table->string('security_deposit')->nullable();
             $table->string('neighborhood')->nullable();
             $table->enum('get_notified_by', ['Phone', 'Email'])->default('Email');
             $table->boolean('negotiable')->default(0);

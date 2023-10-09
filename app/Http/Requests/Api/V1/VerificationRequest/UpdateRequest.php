@@ -29,7 +29,7 @@ class UpdateRequest extends FormRequest
             'backId' => 'sometimes|image|max:2048|mimes:jpeg,jpg,png',
             'frontId' => 'sometimes|image|max:2048|mimes:jpeg,jpg,png',
             'userId' => 'required|exists:users,id',
-            'status' => ['sometimes', 'string', Rule::in(['pending', 'approved', 'rejected'])]
+            'status' => ['sometimes', 'string', Rule::in(['Pending', 'Ppproved', 'Rejected'])]
         ];
     }
 }

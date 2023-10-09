@@ -14,8 +14,11 @@ class PropertyFactory extends Factory
      */
     public function definition()
     {
+        $title = $this->faker->sentence;
+
         return [
-            'title' => $this->faker->sentence,
+            'title' => $title,
+            'slug' => str_replace('', '-', $title), 
             'description' => $this->faker->paragraph,
             'price' => $this->faker->randomFloat(2, 1000, 100000),
             'bedrooms' => $this->faker->numberBetween(1, 5),

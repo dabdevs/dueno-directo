@@ -23,7 +23,8 @@ class ApplicationController extends Controller
     public function index()
     {
         try {
-            $user = auth()->user(); dd($user);
+            $user = auth()->user();
+            dd($user);
             $applications = $user->role == 'admin' ? Application::paginate(10) : $user->tenant->applications->paginate(10);
 
             return response()->json([
@@ -55,11 +56,11 @@ class ApplicationController extends Controller
     {
         try {
             $property = Property::findOrFail($request->property_id);
-
-            if (!$property->isAvailable()) {
+            
+            if (!$property->isPublished()) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'The property is not available.'
+                    'message' => 'This property is not published.'
                 ], 400);
             }
 
@@ -74,7 +75,8 @@ class ApplicationController extends Controller
             if ($application) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'You already applied for this property.'
+                    'message' => 'You already applied for this property.',
+                    'data' => new ApplicationResource($application)
                 ], 400);
             }
 
@@ -161,19 +163,27 @@ class ApplicationController extends Controller
      */
     public function changeStatus(Application $application, Request $request)
     {
+        $request->validate([
+            'status' => ['required', 'string', Rule::in(['Pending', 'Approved', 'Rejected'])]
+        ]);
+
         try {
-            $this->validateUserAction($application);
+            $user = User::findOrFail(auth()->id()); 
 
-            $data = $request->validate([
-                'status' => ['required', 'string', Rule::in(['pending', 'accepted', 'rejected'])]
-            ]);
+            if ($application->user_id != $user->id && !$user->hasRole(User::ROLE_ADMIN)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
 
-            $application->status = $data['status'];
+            $application->status = $request->status;
             $application->save();
 
             return response()->json([
                 'status' => 'OK',
-                'message' => $data['status'] === 'accepted' ? 'Application accepted successfuly' : 'Application rejected successfuly'
+                'message' => 'Application updated successfuly',
+                'data' => new ApplicationResource($application)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

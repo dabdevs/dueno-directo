@@ -12,9 +12,9 @@ use App\Providers\RouteServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Resources\UserResource;
 use App\Models\Navigation;
-use App\Models\Role;
 use Tymon\JWTAuth\Contracts\Providers\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Spatie\Permission\Models\Role;
 
 class AuthenticationController extends Controller
 {
@@ -24,7 +24,8 @@ class AuthenticationController extends Controller
     public function register(CreateRequest $request)
     {
         try {
-            User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]))->assignRole($request->role);
+            $role = Role::create(['name' => $request->role]);
+            User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]))->assignRole($role);
             
             return response()->json([
                 'status' => 'OK',

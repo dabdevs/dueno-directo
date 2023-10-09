@@ -10,7 +10,7 @@ use App\Http\Resources\PreferenceResource;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Models\Property;
-use App\Models\Role;
+use Illuminate\Validation\Rule;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -57,26 +57,21 @@ class PropertyController extends Controller
     public function store(CreateRequest $request)
     {
         try {
-            // Validate user's permission
-            if (auth()->check() && !auth()->user()->can('create properties')) {
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'Forbidden'
-                ], 403);
+            if (!$request->has('user_id')) {
+                return response()->json(['message' => 'Missing user'], 400);
             }
 
             // Get the user
-            $user = $request->has('user_id') ? User::findOrFail($request->user_id) : auth()->user();
+            $user = User::findOrFail($request->user_id);
 
-            // If user's role is not owner 
-            if ($user->role != User::ROLE_OWNER) {
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'Forbidden'
-                ], 403);
+            if (!$user->hasRole(User::ROLE_OWNER)) {
+                return response()->json(['message' => 'User is not an owner'], 403);
             }
 
-            $property = $user->properties()->create($request->validated());
+            $data = $request->validated();
+            $data['slug'] = str_replace('', '-', $request->title);
+
+            $property = $user->properties()->create($data);
 
             return response()->json([
                 'status' => 'OK',
@@ -353,6 +348,29 @@ class PropertyController extends Controller
             if (!in_array($user->id, $allowed_ids) && $user->role != User::ROLE_ADMIN) {
                 throw new Exception('Forbidden');
             }
+        }
+    }
+
+    public function changeStatus(Request $request, Property $property)
+    {
+        $request->validate([
+            'status' => 'required|string|'.Rule::in(['Unlisted', 'Published', 'Booked', 'Rented'])
+        ]);
+
+        try {
+            $property->status = $request->status;
+            $property->save();
+
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Status changed successfuly',
+                'data' => new PropertyResource($property) 
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 }

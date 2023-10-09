@@ -140,4 +140,9 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     {
         return $this->belongsTo(Country::class);
     }
+
+    public function hasRole($role)
+    {
+        return in_array($role, $this->getRoleNames()->toArray());
+    }
 }

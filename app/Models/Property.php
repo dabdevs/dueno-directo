@@ -11,22 +11,32 @@ class Property extends Model
 
     protected $fillable = [
         'title',
+        'slug',
         'description',
         'price',
         'bedrooms',
         'bathrooms',
         'balcony',
+        'negotiable',
+        'patio',
         'area',
         'country_id',
         'city_id',
+        'tenant_id',
+        'agent_id',
+        'payment_method',
         'state',
         'neighborhood',
         'get_notified_by',
         'phone_number',
+        'lease_term',
+        'security_deposit',
         'type',
         'note',
         'email',
-        'user_id'
+        'user_id',
+        'status',
+        'preferred_tenant_profile',
     ];
 
     /**
@@ -88,9 +98,21 @@ class Property extends Model
         return $this->save();
     }
 
-    public function assignTenant(Tenant $tenant)
+    private function assignTenant(Tenant $tenant)
     {
         $this->tenant_id = $tenant->id;
+        return $this->save();
+    }
+
+    private function assignAgent(Agent $agent)
+    {
+        $this->agent_id = $agent->id;
+        return $this->save();
+    }
+
+    private function assignLawyer(Lawyer $lawyer)
+    {
+        $this->lawyer_id = $lawyer->id;
         return $this->save();
     }
 
@@ -104,7 +126,7 @@ class Property extends Model
         return $this->hasMany(Requirement::class);
     }
 
-    public function isAvailable()
+    public function isPublished()
     {
         return $this->status == 'Published';
     }

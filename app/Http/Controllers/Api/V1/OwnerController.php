@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Property\CreateRequest;
+use App\Http\Resources\OwnerResource;
+use App\Http\Resources\PropertyResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OwnerController extends Controller
@@ -14,7 +18,12 @@ class OwnerController extends Controller
      */
     public function index()
     {
-        //
+        $owners = User::whereRole('owner')->get();
+
+        return response()->json([
+            'status' => 'OK',
+            'data' => OwnerResource::collection($owners)
+        ]);
     }
 
     /**
@@ -81,5 +90,44 @@ class OwnerController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function myProperties()
+    {
+        try {
+            return response()->json([ 
+                'status' => 'OK',
+                'data' => PropertyResource::collection(auth()->user()->properties)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function createProperty(CreateRequest $request)
+    {
+        try {
+            $user = User::findOrFail(auth()->id());
+
+            if (!$user->hasRole(User::ROLE_OWNER)) {
+                return response()->json(['message' => 'User is not an owner'], 403);
+            }
+
+            $data = $request->validated();
+            $data['slug'] = str_replace('', '-', $request->title);
+
+            $property = $user->properties()->create($data);
+            
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Property created successfuly',
+                'data' => new PropertyResource($property)
+            ], 201);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

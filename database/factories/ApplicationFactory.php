@@ -16,7 +16,7 @@ class ApplicationFactory extends Factory
         return [
             'note' => $this->faker->paragraph(),
             'property_id' => \App\Models\Property::factory()->create()->id, 
-            'tenant_id' => \App\Models\Tenant::factory()->create()->id
+            'user_id' => \App\Models\User::factory()->create(['role' => 'tenant'])->id
         ];
     }
 }

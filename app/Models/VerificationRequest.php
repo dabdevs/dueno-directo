@@ -17,13 +17,13 @@ class VerificationRequest extends Model
 
     protected function approve()
     {
-        $this->status = 'approved';
+        $this->status = 'Approved';
         return $this->save();
     }
 
-    protected function deny()
+    protected function reject()
     {
-        $this->status = 'denied';
+        $this->status = 'Rejected';
         return $this->save();
     }
 

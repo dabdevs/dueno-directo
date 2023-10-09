@@ -228,7 +228,7 @@ class VerificationRequestController extends Controller
     {
         try {
             $data = $request->validate([
-                'status' => ['required', 'string', Rule::in(['pending', 'approved', 'rejected'])]
+                'status' => ['required', 'string', Rule::in(['Pending', 'Approved', 'Rejected'])]
             ]); 
 
             $verification_request->status = $data['status'];

@@ -9,7 +9,7 @@ class Application extends Model
 {
     use HasFactory;
 
-    public $fillable = ['status', 'note', 'tenant_id', 'property_id'];
+    public $fillable = ['status', 'note', 'user_id', 'property_id'];
 
     /**
      * Get the user that owns the Application
@@ -29,10 +29,10 @@ class Application extends Model
         return $this->belongsTo(Property::class);
     }
 
-    protected function accept()
+    protected function approve()
     {
         try {
-            $this->status = 'accepted';
+            $this->status = 'Approved';
             $this->save();
             return true;
         } catch (\Throwable $th) {
@@ -43,7 +43,7 @@ class Application extends Model
     protected function reject()
     {
         try {
-            $this->status = 'rejected';
+            $this->status = 'Rejected';
             $this->save();
             return true;
         } catch (\Throwable $th) {
