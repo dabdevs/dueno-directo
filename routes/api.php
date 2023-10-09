@@ -48,27 +48,30 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Property routes
         Route::resource('properties', PropertyController::class);
-
     });
 
     // ===== OWNER ROUTES ========= //
     Route::group(['prefix' => 'owners', 'middleware' => ['auth', 'role:owner']], function () {
+        // Property
         Route::get('/properties', [OwnerController::class, 'myProperties'])->name('owner.properties');
-        Route::post('/create-property', [OwnerController::class, 'createProperty'])->name('owner.create_property');
-
+        Route::post('/create-property', [PropertyController::class, 'store'])->name('properties.store');
+        Route::put('/update-property/{property}', [PropertyController::class, 'update'])->name('properties.update');
+        Route::delete('/delete-property/{property}', [PropertyController::class, 'destroy'])->name('properties.destroy');
         Route::get('/property-applications/{property}', [PropertyController::class, 'applications'])->name('properties.applications');
         Route::get('/property-preferences/{property}', [PropertyController::class, 'preferences'])->name('properties.preferences');
         Route::post('/change-property-status/{property}', [PropertyController::class, 'changeStatus'])->name('properties.change_status');
-        Route::post('/change-application-status/{application}', [ApplicationController::class, 'changeStatus'])->name('application.change_status');
         Route::post('/assign-tenant/{property}', [PropertyController::class, 'assignTenant'])->name('properties.assign_tenant');
         Route::get('/property-tenant/{property}', [PropertyController::class, 'getTenant'])->name('properties.get_tenant');
+        
+        // Application
+        Route::post('/change-application-status/{application}', [ApplicationController::class, 'changeStatus'])->name('application.change_status');
     });
 
     // ===== TENANT ROUTES ========= //
     Route::group(['prefix' => 'tenants', 'middleware' => ['auth', 'role:tenant']], function () {
-        // Application routes
-        Route::resource('applications', ApplicationController::class)->middleware('role:tenant');
-        Route::post('applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->middleware('role:owner')->name('applications.change_status');
+        // Application
+        Route::resource('applications', ApplicationController::class);
+        Route::post('applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->name('applications.change_status');
         Route::get('{tenant}/applications', [TenantController::class, 'applications'])->name('tenants.applications');
         Route::post('{tenant}/request-verification', [TenantController::class, 'requestVerification'])->name('tenants.request_verification');
     });
@@ -94,8 +97,6 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Tenant routes
         Route::resource('/tenants', TenantController::class)->middleware('role:tenant');
-        
-
         
 
         // Properties Preferences

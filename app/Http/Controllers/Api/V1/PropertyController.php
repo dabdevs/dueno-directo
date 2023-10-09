@@ -27,8 +27,8 @@ class PropertyController extends Controller
         try {
             $this->validateUserAction(null, 'list properties');
 
-            $properties = auth()->user()->role == 'admin' ? Property::with('photos')->paginate(20) : Property::where('user_id', auth()->id())->paginate(20); 
-            
+            $properties = auth()->user()->role == 'admin' ? Property::with('photos')->paginate(20) : Property::where('user_id', auth()->id())->paginate(20);
+
             return response()->json([
                 'status' => 'OK',
                 "data" => PropertyResource::collection($properties),
@@ -57,12 +57,10 @@ class PropertyController extends Controller
     public function store(CreateRequest $request)
     {
         try {
-            if (!$request->has('user_id')) {
-                return response()->json(['message' => 'Missing user'], 400);
-            }
+            $user_id = $request->has('user_id') ? $request->user_id : auth()->id();
 
             // Get the user
-            $user = User::findOrFail($request->user_id);
+            $user = User::findOrFail($user_id);
 
             if (!$user->hasRole(User::ROLE_OWNER)) {
                 return response()->json(['message' => 'User is not an owner'], 403);
@@ -113,7 +111,7 @@ class PropertyController extends Controller
     public function update(UpdateRequest $request, Property $property)
     {
         try {
-            if (auth()->check() && !auth()->user()->can('update properties')) {
+            if (auth()->id() != $property->user_id && !User::findOrFail(auth()->id())->hasRole(User::ROLE_ADMIN)) {
                 return response()->json([
                     'status' => 'Error',
                     'message' => 'Forbidden'
@@ -142,7 +140,7 @@ class PropertyController extends Controller
     public function destroy(Property $property)
     {
         try {
-            if (auth()->check() && !auth()->user()->can('delete properties')) {
+            if (auth()->id() != $property->user_id && !User::findOrFail(auth()->id())->hasRole(User::ROLE_ADMIN)) {
                 return response()->json([
                     'status' => 'Error',
                     'message' => 'Forbidden'
@@ -354,7 +352,7 @@ class PropertyController extends Controller
     public function changeStatus(Request $request, Property $property)
     {
         $request->validate([
-            'status' => 'required|string|'.Rule::in(['Unlisted', 'Published', 'Booked', 'Rented'])
+            'status' => 'required|string|' . Rule::in(['Unlisted', 'Published', 'Booked', 'Rented'])
         ]);
 
         try {
@@ -364,7 +362,7 @@ class PropertyController extends Controller
             return response()->json([
                 'status' => 'OK',
                 'message' => 'Status changed successfuly',
-                'data' => new PropertyResource($property) 
+                'data' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
