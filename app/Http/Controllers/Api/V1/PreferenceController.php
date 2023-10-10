@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Preference\CreateRequest;
 use App\Http\Requests\Api\V1\Preference\UpdateRequest;
-use App\Http\Resources\PreferenceResource;
+use App\Http\Resources\PropertyPreferenceResource;
 use App\Models\Preference;
 use App\Models\Property;
 
@@ -21,7 +21,7 @@ class PreferenceController extends Controller
         try {
             return response()->json([
                 'status' => 'OK',
-                "data" => PreferenceResource::collection(Preference::all())
+                "data" => PropertyPreferenceResource::collection(Preference::all())
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -63,7 +63,7 @@ class PreferenceController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'data' => new PreferenceResource($preference),
+                'data' => new PropertyPreferenceResource($preference),
                 'message' => 'Preference created successfuly!'
             ], 201);
         } catch (\Throwable $th) {
@@ -83,7 +83,7 @@ class PreferenceController extends Controller
     public function show(Preference $preference)
     {
         return response()->json([
-            'data' => new PreferenceResource($preference)
+            'data' => new PropertyPreferenceResource($preference)
         ]);
     }
 
@@ -112,7 +112,7 @@ class PreferenceController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'data' => new PreferenceResource($preference)
+                'data' => new PropertyPreferenceResource($preference)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

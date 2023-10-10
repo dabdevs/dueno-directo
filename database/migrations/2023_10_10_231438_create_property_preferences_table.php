@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePreferencesTable extends Migration
+class CreatePropertyPreferencesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreatePreferencesTable extends Migration
      */
     public function up()
     {
-        Schema::create('preferences', function (Blueprint $table) {
+        Schema::create('property_preferences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('property_id')->unique()->constrained();
             $table->string('occupation')->nullable();
@@ -36,6 +36,6 @@ class CreatePreferencesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('preferences');
+        Schema::dropIfExists('property_preferences');
     }
 }

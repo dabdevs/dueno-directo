@@ -5,16 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Preference extends Model
+class PropertyRequirement extends Model
 {
     use HasFactory;
 
-    public $guarded = ['id'];
+    protected $guarded = ['id'];
 
-    /**
-     * Get the property that owns the Preference
-     *
-     */
     public function property()
     {
         return $this->belongsTo(Property::class);

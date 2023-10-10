@@ -9,11 +9,7 @@ class VerificationRequest extends Model
 {
     use HasFactory;
 
-    public $fillable = [
-        'property_id',
-        'tenant_id',
-        'phone'
-    ];
+    protected $guarded = ['id'];
 
     protected function approve()
     {

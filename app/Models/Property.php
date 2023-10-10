@@ -63,7 +63,7 @@ class Property extends Model
      */
     public function applications()
     {
-        return $this->hasMany(Application::class);
+        return $this->hasMany(PropertyApplication::class);
     }
 
     /**
@@ -73,7 +73,7 @@ class Property extends Model
      */
     public function preferences()
     {
-        return $this->hasOne(Preference::class);
+        return $this->hasOne(PropertyPreference::class);
     }
 
     public function verify()
@@ -123,7 +123,7 @@ class Property extends Model
 
     public function requirements()
     {
-        return $this->hasMany(Requirement::class);
+        return $this->hasMany(PropertyRequirement::class);
     }
 
     public function isPublished()

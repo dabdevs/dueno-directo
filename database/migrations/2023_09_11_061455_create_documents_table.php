@@ -16,7 +16,7 @@ class CreateDocumentsTable extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->foreignId('verification_request_id')->constrained();
+            $table->foreignId('verification_request_id')->nullable()->constrained();
             $table->string('name');
             $table->string('path');
             $table->enum('document_type', ['user_document', 'property_document']);

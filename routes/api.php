@@ -30,9 +30,6 @@ Route::group(['prefix' => 'v1'], function () {
 
     // Search properties
     Route::get('search', [PropertyController::class, 'search'])->name('properties.search');
-    
-    // Show property
-    Route::get('properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
 
     // Authentication routes
     Route::group(['prefix' => 'auth'], function () {
@@ -49,7 +46,13 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Property routes
         Route::resource('properties', PropertyController::class);
+
+        // Properties Preferences
+        Route::resource('preferences', PreferenceController::class);
     });
+
+    // Show property
+    Route::get('properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
 
     // ===== OWNER ROUTES ========= //
     Route::group(['prefix' => 'owners', 'middleware' => ['auth', 'role:owner']], function () {
@@ -90,33 +93,32 @@ Route::group(['prefix' => 'v1'], function () {
     // });
 
 
-    Route::group(['middleware' => 'check_token'], function () {
-        // User routes
-        Route::resource('users', UserController::class);
-        Route::get('my-properties', [UserController::class, 'myProperties'])->name('users.my_properties');
-        Route::group(['prefix' => 'users'], function () {
-            Route::get('{user}/profile', [UserController::class, 'profile'])->name('users.profile');
-            Route::delete('{user?}/profile/delete', [UserController::class, 'deleteProfile'])->name('users.delete_profile');
-            Route::post('upload-avatar', [UserController::class, 'uploadAvatar'])->name('users.upload_avatar');
-        });
+    // Route::group(['middleware' => 'check_token'], function () {
+    //     // User routes
+    //     Route::resource('users', UserController::class);
+    //     Route::get('my-properties', [UserController::class, 'myProperties'])->name('users.my_properties');
+    //     Route::group(['prefix' => 'users'], function () {
+    //         Route::get('{user}/profile', [UserController::class, 'profile'])->name('users.profile');
+    //         Route::delete('{user?}/profile/delete', [UserController::class, 'deleteProfile'])->name('users.delete_profile');
+    //         Route::post('upload-avatar', [UserController::class, 'uploadAvatar'])->name('users.upload_avatar');
+    //     });
 
-        // Tenant routes
-        Route::resource('/tenants', TenantController::class)->middleware('role:tenant');
+    //     // Tenant routes
+    //     Route::resource('/tenants', TenantController::class)->middleware('role:tenant');
         
-
-        // Properties Preferences
-        Route::resource('preferences', PreferenceController::class)->middleware('role:owner');
 
         
 
-        // VerificationRequest routes
-        Route::resource('verification-requests', VerificationRequestController::class);
-        Route::post('/verification-requests/{verification_request}/change-status', [VerificationRequestController::class, 'changeStatus'])->middleware('role:admin')->name('verification_requests.change_status');
+        
 
-        // Property Applications
-        Route::middleware(['ensureRole:owner'])->group(function () {
-            Route::get('get-applications', [PropertyApplicationController::class, 'getApplications']);
-        });
-        Route::post('submit-application', [PropertyApplicationController::class, 'submitApplication']);
-    });
+    //     // VerificationRequest routes
+    //     Route::resource('verification-requests', VerificationRequestController::class);
+    //     Route::post('/verification-requests/{verification_request}/change-status', [VerificationRequestController::class, 'changeStatus'])->middleware('role:admin')->name('verification_requests.change_status');
+
+    //     // Property Applications
+    //     Route::middleware(['ensureRole:owner'])->group(function () {
+    //         Route::get('get-applications', [PropertyApplicationController::class, 'getApplications']);
+    //     });
+    //     Route::post('submit-application', [PropertyApplicationController::class, 'submitApplication']);
+    // });
 });

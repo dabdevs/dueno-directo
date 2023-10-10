@@ -9,7 +9,7 @@ class PropertyApplication extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['property_id', 'tenant_id', 'status'];
+    protected $guarded = ['id'];
 
     public function property()
     {
@@ -19,5 +19,27 @@ class PropertyApplication extends Model
     public function tenant()
     {
         return $this->belongsTo(User::class, 'tenant_id');
+    }
+
+    protected function approve()
+    {
+        try {
+            $this->status = 'Approved';
+            $this->save();
+            return true;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    protected function reject()
+    {
+        try {
+            $this->status = 'Rejected';
+            $this->save();
+            return true;
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

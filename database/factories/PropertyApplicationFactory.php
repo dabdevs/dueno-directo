@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ApplicationFactory extends Factory
+class PropertyApplicationFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -15,7 +15,7 @@ class ApplicationFactory extends Factory
     {
         return [
             'note' => $this->faker->paragraph(),
-            'property_id' => \App\Models\Property::factory()->create()->id, 
+            'property_id' => \App\Models\Property::factory()->create()->id,
             'user_id' => \App\Models\User::factory()->create(['role' => 'tenant'])->id
         ];
     }
