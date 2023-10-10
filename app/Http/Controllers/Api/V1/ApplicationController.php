@@ -24,7 +24,6 @@ class ApplicationController extends Controller
     {
         try {
             $user = auth()->user();
-            dd($user);
             $applications = $user->role == 'admin' ? Application::paginate(10) : $user->tenant->applications->paginate(10);
 
             return response()->json([

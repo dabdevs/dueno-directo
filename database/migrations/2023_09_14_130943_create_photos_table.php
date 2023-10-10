@@ -15,9 +15,10 @@ class CreatePhotosTable extends Migration
     {
         Schema::create('photos', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->string('type');
             $table->string('path')->default('https://dummyimage.com/600x400/b2b2b2/000.jpg');
-            $table->foreignId('property_id');
+            $table->foreignId('property_id')->nullable();
+            $table->foreignId('user_id')->nullable();
             $table->boolean('is_primary')->default(0);
             $table->timestamps();
         });

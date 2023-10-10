@@ -15,6 +15,7 @@ class PhotoFactory extends Factory
     {
         return [
             'path' => 'https://dummyimage.com/600x400/b2b2b2/000.jpg',
+            'type' => 'property'
         ];
     }
 }

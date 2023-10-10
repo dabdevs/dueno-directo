@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\TenantController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\VerificationRequestController;
 use App\Http\Controllers\PropertyApplicationController;
+use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -65,6 +66,9 @@ Route::group(['prefix' => 'v1'], function () {
         
         // Application
         Route::post('/change-application-status/{application}', [ApplicationController::class, 'changeStatus'])->name('application.change_status');
+
+        // Upload
+        Route::post('/upload-to-property', [UploadController::class, 'propertyPhotos'])->name('upload.property_photos');
     });
 
     // ===== TENANT ROUTES ========= //

@@ -22,11 +22,11 @@ class ConvertCamelCaseToSnakeCase
         // Decode the JSON content into an associative array
         $data = json_decode($jsonContent, true); 
 
-        if ($data == null) {
+        if ($data == null && $request->all() != null) {
+            $data = $request->all();
+        } else {
             return $next($request);
         }
-
-        
 
         // Convert camelCase keys to snake_case
         $snakeCaseData = $this->convertKeysToSnakeCase($data);

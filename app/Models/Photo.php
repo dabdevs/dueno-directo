@@ -9,7 +9,7 @@ class Photo extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['path', 'name', 'property_id', 'is_primary'];
+    protected $fillable = ['path', 'type', 'property_id', 'is_primary'];
 
     public function property()
     {
