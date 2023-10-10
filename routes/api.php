@@ -68,7 +68,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/change-application-status/{application}', [ApplicationController::class, 'changeStatus'])->name('application.change_status');
 
         // Upload
-        Route::post('/upload-to-property', [UploadController::class, 'propertyPhotos'])->name('upload.property_photos');
+        Route::post('/property/{property}/upload-photos', [UploadController::class, 'propertyUploadPhotos'])->name('upload.property_upload_photos');
+        Route::post('/property/{property}/delete-photos', [UploadController::class, 'propertyDeletePhotos'])->name('upload.property_delete_photos');
     });
 
     // ===== TENANT ROUTES ========= //

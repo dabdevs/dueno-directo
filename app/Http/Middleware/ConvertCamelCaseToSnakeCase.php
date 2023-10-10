@@ -17,25 +17,25 @@ class ConvertCamelCaseToSnakeCase
     public function handle($request, Closure $next)
     {
         // Get the JSON content from the request
-        $jsonContent = $request->getContent();
+        $jsonContent = $request->getContent(); 
 
         // Decode the JSON content into an associative array
         $data = json_decode($jsonContent, true); 
-
+    
         if ($data == null && $request->all() != null) {
             $data = $request->all();
-        } else {
-            return $next($request);
-        }
+        } 
 
         // Convert camelCase keys to snake_case
-        $snakeCaseData = $this->convertKeysToSnakeCase($data);
+        if ($data != null) {
+            $snakeCaseData = $this->convertKeysToSnakeCase($data);
+    
+            // Encode the modified data back to JSON
+            $jsonContent = json_encode($snakeCaseData);
 
-        // Encode the modified data back to JSON
-        $jsonContent = json_encode($snakeCaseData); 
-
-        // Replace the request content with the modified JSON
-        $request->replace(json_decode($jsonContent, true)); 
+            // Replace the request content with the modified JSON
+            $request->replace(json_decode($jsonContent, true)); 
+        }
         
         return $next($request);
     }
