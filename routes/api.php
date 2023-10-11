@@ -58,15 +58,15 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => 'owners', 'middleware' => ['auth', 'role:owner']], function () {
         // Property
         Route::get('/properties', [OwnerController::class, 'myProperties'])->name('owner.properties');
-        Route::post('/create-property', [PropertyController::class, 'store'])->name('properties.store');
-        Route::put('/update-property/{property}', [PropertyController::class, 'update'])->name('properties.update');
-        Route::delete('/delete-property/{property}', [PropertyController::class, 'destroy'])->name('properties.destroy');
+        Route::post('/property/create', [PropertyController::class, 'store'])->name('properties.store');
+        Route::put('/property/{property}/update', [PropertyController::class, 'update'])->name('properties.update');
+        Route::delete('/property/{property}/delete', [PropertyController::class, 'destroy'])->name('properties.destroy');
         Route::get('/property-applications/{property}', [PropertyController::class, 'applications'])->name('properties.applications');
         Route::get('/property-preferences/{property}', [PropertyController::class, 'preferences'])->name('properties.preferences');
         Route::post('/change-property-status/{property}', [PropertyController::class, 'changeStatus'])->name('properties.change_status');
         Route::post('/assign-tenant/{property}', [PropertyController::class, 'assignTenant'])->name('properties.assign_tenant');
         Route::get('/property-tenant/{property}', [PropertyController::class, 'getTenant'])->name('properties.get_tenant');
-        
+
         // Application
         Route::post('/change-application-status/{application}', [ApplicationController::class, 'changeStatus'])->name('application.change_status');
 
@@ -84,7 +84,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('{tenant}/request-verification', [TenantController::class, 'requestVerification'])->name('tenants.request_verification');
     });
 
-    
+
     // Route::group(['prefix' => 'properties'], function () {
     //     Route::get('{property}/applications', [PropertyController::class, 'applications'])->name('properties.applications');
     //     Route::get('{property}/preferences', [PropertyController::class, 'preferences'])->name('properties.preferences');
@@ -105,11 +105,11 @@ Route::group(['prefix' => 'v1'], function () {
 
     //     // Tenant routes
     //     Route::resource('/tenants', TenantController::class)->middleware('role:tenant');
-        
 
-        
 
-        
+
+
+
 
     //     // VerificationRequest routes
     //     Route::resource('verification-requests', VerificationRequestController::class);

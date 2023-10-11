@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Property\CreateRequest;
 use App\Http\Requests\Api\V1\Property\UpdateRequest;
-use App\Http\Resources\ApplicationResource;
+use App\Http\Resources\PropertyApplicationResource;
 use App\Http\Resources\PreferenceResource;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
@@ -111,7 +111,7 @@ class PropertyController extends Controller
     public function update(UpdateRequest $request, Property $property)
     {
         try {
-            if (auth()->id() != $property->user_id && !User::findOrFail(auth()->id())->hasRole(User::ROLE_ADMIN)) {
+            if (auth()->id() != $property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
                 return response()->json([
                     'status' => 'Error',
                     'message' => 'Forbidden'
@@ -140,7 +140,7 @@ class PropertyController extends Controller
     public function destroy(Property $property)
     {
         try {
-            if (auth()->id() != $property->user_id && !User::findOrFail(auth()->id())->hasRole(User::ROLE_ADMIN)) {
+            if (auth()->id() != $property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
                 return response()->json([
                     'status' => 'Error',
                     'message' => 'Forbidden'
@@ -171,7 +171,7 @@ class PropertyController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'data' => ApplicationResource::collection($property->applications)
+                'data' => PropertyApplicationResource::collection($property->applications)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

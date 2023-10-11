@@ -8,6 +8,8 @@ use App\Http\Requests\Api\V1\Preference\UpdateRequest;
 use App\Http\Resources\PropertyPreferenceResource;
 use App\Models\Preference;
 use App\Models\Property;
+use App\Models\PropertyPreference;
+use App\Models\User;
 
 class PreferenceController extends Controller
 {
@@ -80,7 +82,7 @@ class PreferenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Preference $preference)
+    public function show(PropertyPreference $preference)
     {
         return response()->json([
             'data' => new PropertyPreferenceResource($preference)
@@ -105,9 +107,16 @@ class PreferenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateRequest $request, Preference $preference)
+    public function update(UpdateRequest $request, PropertyPreference $preference)
     {
         try {
+            if (auth()->id() != $preference->property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Forbidden'
+                ], 403);
+            }
+
             $preference->update($request->validated());
 
             return response()->json([
@@ -128,9 +137,16 @@ class PreferenceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Preference $preference)
+    public function destroy(PropertyPreference $preference)
     {
         try {
+            if (auth()->id() != $preference->property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Forbidden'
+                ], 403);
+            }
+
             $preference->delete();
 
             return response()->json([

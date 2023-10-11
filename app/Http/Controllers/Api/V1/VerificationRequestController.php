@@ -9,6 +9,7 @@ use App\Http\Resources\VerificationRequestResource;
 use App\Models\Document;
 use App\Models\Property;
 use App\Models\Tenant;
+use App\Models\User;
 use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -166,6 +167,13 @@ class VerificationRequestController extends Controller
     public function update(UpdateRequest $request, VerificationRequest $verification_request)
     {
         try {
+            if (auth()->id() != $verification_request->property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
+                return response()->json([ 
+                    'status' => 'Error',
+                    'message' => 'Forbidden'
+                ], 403);
+            }
+
             $valid_data = $request->only(['phone', 'userId', 'status']);
 
             if ($request->has('backId')) {
@@ -207,6 +215,13 @@ class VerificationRequestController extends Controller
     public function destroy(VerificationRequest $verification_request)
     {
         try {
+            if (auth()->id() != $verification_request->property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Forbidden'
+                ], 403);
+            }
+            
             $verification_request->delete();
 
             return response()->json([

@@ -5,12 +5,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Application\createRequest;
 use App\Http\Requests\Api\V1\Application\UpdateRequest;
-use App\Http\Resources\ApplicationResource;
-use App\Models\Application;
+use App\Http\Resources\PropertyApplicationResource;
 use App\Models\Property;
+use App\Models\PropertyApplication;
 use App\Models\Tenant;
 use App\Models\User;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -24,11 +23,11 @@ class ApplicationController extends Controller
     {
         try {
             $user = auth()->user();
-            $applications = $user->role == 'admin' ? Application::paginate(10) : $user->tenant->applications->paginate(10);
+            $applications = $user->role == 'admin' ? PropertyApplication::paginate(10) : $user->tenant->applications->paginate(10);
 
             return response()->json([
                 'status' => 'OK',
-                "data" => ApplicationResource::collection($applications),
+                "data" => PropertyApplicationResource::collection($applications),
                 'meta' => [
                     'current_page' => $applications->currentPage(),
                     'from' => $applications->firstItem(),
@@ -55,7 +54,7 @@ class ApplicationController extends Controller
     {
         try {
             $property = Property::findOrFail($request->property_id);
-            
+
             if (!$property->isPublished()) {
                 return response()->json([
                     'status' => 'Error',
@@ -66,7 +65,7 @@ class ApplicationController extends Controller
             $tenant = Tenant::findOrFail($request->tenant_id);
 
             // Validate if tenant has already applied for the property
-            $application = Application::where([
+            $application = PropertyApplication::where([
                 "tenant_id" => $tenant->id,
                 "property_id" => $request->property_id
             ])->first();
@@ -75,7 +74,7 @@ class ApplicationController extends Controller
                 return response()->json([
                     'status' => 'Error',
                     'message' => 'You already applied for this property.',
-                    'data' => new ApplicationResource($application)
+                    'data' => new PropertyApplicationResource($application)
                 ], 400);
             }
 
@@ -83,7 +82,7 @@ class ApplicationController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'data' => new ApplicationResource($application),
+                'data' => new PropertyApplicationResource($application),
                 'message' => 'Application created successfuly!'
             ], 201);
         } catch (\Throwable $th) {
@@ -98,13 +97,19 @@ class ApplicationController extends Controller
      * Show application
      *
      */
-    public function show(Application $application)
+    public function show(PropertyApplication $application)
     {
         try {
-            $this->validateUserAction($application);
+            if (!$this->_authorize($application)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
 
             return response()->json([
-                'data' => new ApplicationResource($application)
+                'status' => 'OK',
+                'data' => new PropertyApplicationResource($application)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -118,15 +123,21 @@ class ApplicationController extends Controller
      * Update application
      *
      */
-    public function update(UpdateRequest $request, Application $application)
+    public function update(UpdateRequest $request, PropertyApplication $application)
     {
         try {
-            $this->validateUserAction($application, 'update applications');
+            if (!$this->_authorize($application)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
             $application->update($request->validated());
 
             return response()->json([
                 'status' => 'OK',
-                'data' => new ApplicationResource($application)
+                'data' => new PropertyApplicationResource($application)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -139,10 +150,16 @@ class ApplicationController extends Controller
     /**
      * Delete application
      */
-    public function destroy(Application $application)
+    public function destroy(PropertyApplication $application)
     {
         try {
-            $this->validateUserAction($application);
+            if (!$this->_authorize($application)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
             $application->delete();
 
             return response()->json([
@@ -160,19 +177,26 @@ class ApplicationController extends Controller
     /**
      *  Change application status
      */
-    public function changeStatus(Application $application, Request $request)
+    public function changeStatus(PropertyApplication $application, Request $request)
     {
-        $request->validate([
-            'status' => ['required', 'string', Rule::in(['Pending', 'Approved', 'Rejected'])]
-        ]);
-
         try {
-            $user = User::findOrFail(auth()->id()); 
+            $request->validate([
+                'status' => ['required', 'string', Rule::in(['Pending', 'Approved', 'Rejected'])]
+            ]);
+            
+            if (!$this->_authorize($application)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
+            $user = User::findOrFail(auth()->id());
 
             if ($application->user_id != $user->id && !$user->hasRole(User::ROLE_ADMIN)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Un_authorized'
                 ], 403);
             }
 
@@ -182,7 +206,7 @@ class ApplicationController extends Controller
             return response()->json([
                 'status' => 'OK',
                 'message' => 'Application updated successfuly',
-                'data' => new ApplicationResource($application)
+                'data' => new PropertyApplicationResource($application)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -192,19 +216,12 @@ class ApplicationController extends Controller
         }
     }
 
-    private function validateUserAction(Application $application = null, string $permission = null)
+    private function _authorize(PropertyApplication $application)
     {
-        $user = auth()->user();
-
-        if ($permission != null && !$user->can($permission)) {
-            throw new Exception('Forbidden');
+        if (auth()->id() != $application->property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
+            return false;
         }
 
-        if ($application != null) {
-            // Validate the user
-            if ($user->id != $application->tenant_id || $user->role != User::ROLE_ADMIN) {
-                throw new Exception('Forbidden');
-            }
-        }
+        return true;
     }
 }

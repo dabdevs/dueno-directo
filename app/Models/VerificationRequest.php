@@ -23,6 +23,12 @@ class VerificationRequest extends Model
         return $this->save();
     }
 
+    protected function pending()
+    {
+        $this->status = 'Pending';
+        return $this->save();
+    }
+
     /**
      * Get the user that owns the verification request
      *

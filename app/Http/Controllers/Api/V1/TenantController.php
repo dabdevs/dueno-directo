@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Tenant\CreateRequest;
 use App\Http\Requests\Api\V1\Tenant\UpdateRequest;
 use App\Http\Requests\Api\V1\VerificationRequest\CreateRequest as VerificationCreateRequest;
-use App\Http\Resources\ApplicationResource;
+use App\Http\Resources\PropertyApplicationResource;
 use App\Http\Resources\TenantResource;
 use App\Models\Document;
 use App\Models\Property;
@@ -174,7 +174,7 @@ class TenantController extends Controller
         try {
             return response()->json([
                 'status' => 'OK',
-                'data' => ApplicationResource::collection($tenant->applications)
+                'data' => PropertyApplicationResource::collection($tenant->applications)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -220,7 +220,7 @@ class TenantController extends Controller
 
             // Creating documents
             $verification_request->documents()->create([
-                'name' => Document::ID_BACK, 
+                'name' => Document::ID_BACK,
                 'path' => $request->file('backId')->store('images/ids')
             ]);
 
@@ -229,7 +229,7 @@ class TenantController extends Controller
                 'path' => $request->file('frontId')->store('images/ids')
             ]);
 
-            DB::commit(); 
+            DB::commit();
 
             return response()->json([
                 'status' => 'OK',
