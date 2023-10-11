@@ -180,10 +180,6 @@ class ApplicationController extends Controller
     public function changeStatus(PropertyApplication $application, Request $request)
     {
         try {
-            $request->validate([
-                'status' => ['required', 'string', Rule::in(['Pending', 'Approved', 'Rejected'])]
-            ]);
-            
             if (!$this->_authorize($application)) {
                 return response()->json([
                     'status' => 'Error',
@@ -191,14 +187,9 @@ class ApplicationController extends Controller
                 ], 403);
             }
 
-            $user = User::findOrFail(auth()->id());
-
-            if ($application->user_id != $user->id && !$user->hasRole(User::ROLE_ADMIN)) {
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'Un_authorized'
-                ], 403);
-            }
+            $request->validate([
+                'status' => ['required', 'string', Rule::in(['Pending', 'Approved', 'Rejected'])]
+            ]);
 
             $application->status = $request->status;
             $application->save();

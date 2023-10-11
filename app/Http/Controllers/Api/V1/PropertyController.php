@@ -10,9 +10,7 @@ use App\Http\Resources\PreferenceResource;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Models\Property;
-use Illuminate\Validation\Rule;
 use App\Models\User;
-use Exception;
 use Illuminate\Http\Request;
 
 class PropertyController extends Controller
@@ -25,8 +23,6 @@ class PropertyController extends Controller
     public function index()
     {
         try {
-            $this->validateUserAction(null, 'list properties');
-
             $properties = auth()->user()->role == 'admin' ? Property::with('photos')->paginate(20) : Property::where('user_id', auth()->id())->paginate(20);
 
             return response()->json([
@@ -111,10 +107,10 @@ class PropertyController extends Controller
     public function update(UpdateRequest $request, Property $property)
     {
         try {
-            if (auth()->id() != $property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
+            if (!$this->_authorize($property)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Forbidden'
+                    'message' => 'Unauthorized'
                 ], 403);
             }
 
@@ -140,10 +136,10 @@ class PropertyController extends Controller
     public function destroy(Property $property)
     {
         try {
-            if (auth()->id() != $property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
+            if (!$this->_authorize($property)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Forbidden'
+                    'message' => 'Unauthorized'
                 ], 403);
             }
 
@@ -187,10 +183,10 @@ class PropertyController extends Controller
     public function preferences(Property $property)
     {
         try {
-            if (auth()->check() && !auth()->user()->can('view preferences')) {
+            if (!$this->_authorize($property)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Forbidden'
+                    'message' => 'Unauthorized'
                 ], 403);
             }
 
@@ -212,10 +208,10 @@ class PropertyController extends Controller
     public function assignTenant(Property $property)
     {
         try {
-            if (auth()->check() && !auth()->user()->can('assign tenants')) {
+            if (!$this->_authorize($property)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Forbidden'
+                    'message' => 'Unauthorized'
                 ], 403);
             }
 
@@ -244,7 +240,12 @@ class PropertyController extends Controller
     public function getTenant(Property $property)
     {
         try {
-            $this->validateUserAction($property);
+            if (!$this->_authorize($property)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
 
             return response()->json([
                 'status' => 'OK',
@@ -331,31 +332,16 @@ class PropertyController extends Controller
         }
     }
 
-    private function validateUserAction(Property $property = null, string $permission = null)
-    {
-        $user = auth()->user();
-
-        if ($permission != null && !$user->can($permission)) {
-            throw new Exception('Forbidden');
-        }
-
-        if ($property != null) {
-            $allowed_ids = [$property->owner->id, $property->agent ? $property->agent->id : null];
-
-            // Validate the user
-            if (!in_array($user->id, $allowed_ids) && $user->role != User::ROLE_ADMIN) {
-                throw new Exception('Forbidden');
-            }
-        }
-    }
-
     public function changeStatus(Request $request, Property $property)
     {
-        $request->validate([
-            'status' => 'required|string|' . Rule::in(['Unlisted', 'Published', 'Booked', 'Rented'])
-        ]);
-
         try {
+            if (!$this->_authorize($property)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
             $property->status = $request->status;
             $property->save();
 
@@ -370,5 +356,14 @@ class PropertyController extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
+    }
+
+    private function _authorize(Property $property)
+    {
+        if (auth()->id() != $property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
+            return false;
+        }
+
+        return true;
     }
 }
