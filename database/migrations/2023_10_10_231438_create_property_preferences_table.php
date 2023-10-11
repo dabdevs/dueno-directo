@@ -15,8 +15,9 @@ class CreatePropertyPreferencesTable extends Migration
     {
         Schema::create('property_preferences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('property_id')->unique()->constrained();
-            $table->string('occupation')->nullable();
+            $table->foreignId('property_id')->unique()->nullable()->constrained();
+            $table->foreignId('user_id')->unique()->nullable()->constrained();
+            $table->json('occupations')->nullable();
             $table->decimal('min_income', 10, 2)->nullable();
             $table->decimal('max_income', 10, 2)->nullable();
             $table->integer('number_of_occupants')->nullable();

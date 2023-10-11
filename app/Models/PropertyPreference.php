@@ -11,6 +11,10 @@ class PropertyPreference extends Model
 
     public $guarded = ['id'];
 
+    protected $casts = [
+        'occupations' => 'array',
+    ];
+
     /**
      * Get the property that owns the Preference
      *
@@ -18,5 +22,14 @@ class PropertyPreference extends Model
     public function property()
     {
         return $this->belongsTo(Property::class);
+    }
+
+    /**
+     * Get the user that owns the Preference
+     *
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Tenant;
 use App\Models\User;
+use App\Models\PropertyPreference;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -39,8 +39,8 @@ class UserSeeder extends Seeder
                 'given_name' => 'Martine',
                 'role' => 'tenant'
             ])->assignRole('tenant'); 
-            Tenant::factory()->create(['user_id' => $user->id]);
 
+            PropertyPreference::factory()->create(['user_id' => $user->id, 'occupations' => ['Doctor']]);
 
             // Agent test user
             User::factory()->create([

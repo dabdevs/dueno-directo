@@ -126,6 +126,11 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         return $this->hasOne(VerificationRequest::class);
     }
 
+    public function preferences()
+    {
+        return $this->hasOne(PropertyPreference::class);
+    }
+
     public function isOwner()
     {
         return $this->role == 'owner' && $this->properties() != null;
