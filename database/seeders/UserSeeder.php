@@ -38,9 +38,9 @@ class UserSeeder extends Seeder
                 'family_name' => 'Pierre',
                 'given_name' => 'Martine',
                 'role' => 'tenant'
-            ])->assignRole('tenant'); 
+            ])->assignRole('tenant');
 
-            PropertyPreference::factory()->create(['user_id' => $user->id, 'occupations' => ['Doctor']]);
+            PropertyPreference::factory()->create(['user_id' => $user->id, 'occupation' => ['Doctor']]);
 
             // Agent test user
             User::factory()->create([

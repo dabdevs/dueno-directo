@@ -27,6 +27,13 @@ Route::group(['prefix' => 'v1'], function () {
 
     // Search properties
     Route::get('search', [PropertyController::class, 'search'])->name('properties.search');
+    
+    // Show property
+    Route::get('properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
+
+    // Property Preferences
+    Route::resource('preferences', PreferenceController::class)->middleware(['auth', 'role:owner', 'role:tenant']);
+
 
     // Authentication routes
     Route::group(['prefix' => 'auth'], function () {
@@ -37,19 +44,17 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     // ===== ADMIN ROUTES ========= //
-    Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], function () {
         // Get All Owners
         Route::get('/owners', [OwnerController::class, 'index'])->name('admin.owners');
+
+        // Get All Tenants
+        Route::get('/tenants', [TenantController::class, 'index'])->name('admin.tenants');
 
         // Property routes
         Route::resource('properties', PropertyController::class);
 
-        // Properties Preferences
-        Route::resource('preferences', PreferenceController::class);
     });
-
-    // Show property
-    Route::get('properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
 
     // ===== OWNER ROUTES ========= //
     Route::group(['prefix' => 'owners', 'middleware' => ['auth', 'role:owner']], function () {

@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\Tenant\UpdateRequest;
 use App\Http\Requests\Api\V1\VerificationRequest\CreateRequest as VerificationCreateRequest;
 use App\Http\Resources\PropertyApplicationResource;
 use App\Http\Resources\TenantResource;
+use App\Http\Resources\UserResource;
 use App\Models\Document;
 use App\Models\Property;
 use App\Models\Tenant;
@@ -24,19 +25,19 @@ class TenantController extends Controller
     public function index()
     {
         try {
-            $tenants = Tenant::paginate(10);
+            $users = User::with('preferences')->whereRole('tenant')->paginate(20);
 
             return response()->json([
                 'status' => 'OK',
-                "data" => TenantResource::collection($tenants),
+                "data" => UserResource::collection($users),
                 'meta' => [
-                    'current_page' => $tenants->currentPage(),
-                    'from' => $tenants->firstItem(),
-                    'last_page' => $tenants->lastPage(),
-                    'path' => $tenants->path(),
-                    'per_page' => $tenants->perPage(),
-                    'to' => $tenants->lastItem(),
-                    'total' => $tenants->total(),
+                    'current_page' => $users->currentPage(),
+                    'from' => $users->firstItem(),
+                    'last_page' => $users->lastPage(),
+                    'path' => $users->path(),
+                    'per_page' => $users->perPage(),
+                    'to' => $users->lastItem(),
+                    'total' => $users->total(),
                 ]
             ]);
         } catch (\Throwable $th) {

@@ -13,8 +13,11 @@ class PropertyPreferenceFactory extends Factory
      */
     public function definition()
     {
+        $type = $this->faker->randomElement(['user', 'property']);
+
         return [
-            'occupations' => ['student', 'doctor', 'engineer', 'athelete', 'musician', 'salesman', 'architect', 'lawyer', 'businessman', 'constructor'],
+            'type' => $type,
+            'occupation' => $type === 'user' ? $this->faker->randomElement(['student', 'doctor', 'engineer', 'athelete', 'musician', 'salesman', 'architect', 'lawyer', 'businessman', 'constructor']) : ['student', 'doctor', 'engineer', 'athelete', 'musician', 'salesman', 'architect', 'lawyer', 'businessman', 'constructor'],
             'min_income' => $this->faker->numberBetween(10000, 20000),
             'max_income' => $this->faker->numberBetween(100000, 500000),
             'number_of_occupants' => $this->faker->numberBetween(1, 5),

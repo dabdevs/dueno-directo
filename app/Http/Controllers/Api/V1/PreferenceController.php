@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Preference\CreateRequest;
 use App\Http\Requests\Api\V1\Preference\UpdateRequest;
 use App\Http\Resources\PropertyPreferenceResource;
-use App\Models\Preference;
+use App\Http\Resources\UserResource;
 use App\Models\Property;
 use App\Models\PropertyPreference;
 use App\Models\User;
@@ -23,7 +23,7 @@ class PreferenceController extends Controller
         try {
             return response()->json([
                 'status' => 'OK',
-                "data" => PropertyPreferenceResource::collection(Preference::all())
+                "data" => PropertyPreferenceResource::collection(PropertyPreference::all())
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -53,15 +53,13 @@ class PreferenceController extends Controller
     {
         try {
             // Validate if property exists
-            $property = Property::find($request->property_id);
-            if (!$property) {
-                return response()->json([
-                    'message' => 'Property does not exist.'
-                ], 404);
+            if ($request->has('property_id')) {
+                $preference = Property::find($request->property_id)->preferences()->firstOrNew($request->validated());
+            } else {
+                $data = $request->validated();
+                $data['occupation'] = array($request->occupation);
+                $preference = User::find($request->user_id)->preferences()->firstOrNew($data);
             }
-
-            // Create preference
-            $preference = $property->preferences()->firstOrCreate($request->validated());
 
             return response()->json([
                 'status' => 'OK',

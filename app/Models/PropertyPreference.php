@@ -12,7 +12,7 @@ class PropertyPreference extends Model
     public $guarded = ['id'];
 
     protected $casts = [
-        'occupations' => 'array',
+        'occupation' => 'array',
     ];
 
     /**

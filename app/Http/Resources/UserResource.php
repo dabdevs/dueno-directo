@@ -24,6 +24,7 @@ class UserResource extends JsonResource
             'number' => $this->number,
             'appartment' => $this->appartment,
             'zipCode' => $this->zip_code,
+            'preferences' => new PreferenceResource($this->preferences),
             "emailVerifiedAt" => $this->email_verified_at ? $this->email_verified_at->format('Y-m-d') : null,
             "dateRegistered" => $this->created_at->format('Y-m-d'),
             "dateUpdated" => $this->updated_at ? $this->updated_at->format('Y-m-d') : null
