@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -54,7 +55,7 @@ class Property extends Model
      */
     public function tenant()
     {
-        return $this->belongsTo(Tenant::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -98,21 +99,33 @@ class Property extends Model
         return $this->save();
     }
 
-    private function assignTenant(Tenant $tenant)
+    public function assignTenant(User $user)
     {
-        $this->tenant_id = $tenant->id;
+        if ($user->role != User::ROLE_TENANT) {
+            throw new Exception("User is not a tenant", 1);
+        } 
+
+        $this->tenant_id = $user->id;
         return $this->save();
     }
 
-    private function assignAgent(Agent $agent)
+    public function assignAgent(User $user)
     {
-        $this->agent_id = $agent->id;
+        if ($user->role != User::ROLE_AGENT) {
+            throw new Exception("User is not an agent", 1);
+        } 
+
+        $this->agent_id = $user->id;
         return $this->save();
     }
 
-    private function assignLawyer(Lawyer $lawyer)
+    public function assignLawyer(User $user)
     {
-        $this->lawyer_id = $lawyer->id;
+        if ($user->role != User::ROLE_LAWYER) {
+            throw new Exception("User is not a lawyer", 1);
+        } 
+
+        $this->lawyer_id = $user->id;
         return $this->save();
     }
 

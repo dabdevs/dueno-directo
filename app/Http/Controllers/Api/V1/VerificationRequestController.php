@@ -8,13 +8,13 @@ use App\Http\Requests\Api\V1\VerificationRequest\UpdateRequest;
 use App\Http\Resources\VerificationRequestResource;
 use App\Models\Document;
 use App\Models\Property;
-use App\Models\Tenant;
 use App\Models\User;
 use App\Models\VerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class VerificationRequestController extends Controller
 {
@@ -26,7 +26,10 @@ class VerificationRequestController extends Controller
     public function index()
     {
         try {
-            $verification_requests = VerificationRequest::paginate(10);
+            $verification_requests = auth()->user()->role == 'admin' ? VerificationRequest::paginate(20) :
+                VerificationRequest::whereHas('property', function ($query) {
+                    $query->where('user_id', auth()->id());
+                })->paginate(20);
 
             return response()->json([
                 'status' => 'OK',
@@ -67,46 +70,42 @@ class VerificationRequestController extends Controller
     public function store(CreateRequest $request)
     {
         try {
-            DB::beginTransaction(); 
+            DB::beginTransaction();
 
-            // verification request's data
-            $vr_data = $request->only(["type", "phone"]);
-
-            if ($request->has('propertyId')) {
-                $vr_data['property_id'] = $request->propertyId;
-                $property = Property::findOrFail($request->propertyId);
+            if ($request->has('property_id') && $request->type == 'property') {
+                $property = Property::findOrFail($request->property_id);
 
                 if ($property->verification_request != null) {
                     return response()->json([
                         'status' => 'OK',
-                        'message' => 'Verification already requested'
+                        'message' => 'Verification request already submited'
                     ], 400);
                 }
-                $verification_request = $property->verification_request()->create($vr_data);
+                $verification_request = $property->verification_request()->create($request->validated());
             }
 
-            if ($request->has('tenantId')) {
-                $vr_data['tenant_id'] = $request->tenantId;
-                $tenant = Tenant::findOrFail($request->tenantId);
+            if ($request->has('user_id') && $request->type == 'user') {
+                $user = User::findOrFail($request->user_id);
 
-                if ($tenant->verification_request != null) {
+                if ($user->verification_request != null) {
                     return response()->json([
                         'status' => 'OK',
-                        'message' => 'Verification already requested'
+                        'message' => 'Verification request already submited'
                     ], 400);
                 }
-                $verification_request = Tenant::findOrFail($request->tenantId)->verification_request()->create($vr_data);
+                $verification_request = $user->verification_request()->create($request->validated());
             }
 
             // Creating documents
             $verification_request->documents()->create([
-                'name' => Document::ID_BACK,
-                'path' => $request->file('backId')->store('documents/ids')
-            ]);
-
-            $verification_request->documents()->create([
-                'name' => Document::ID_FRONT,
-                'path' => $request->file('frontId')->store('documents/ids')
+                [
+                    'name' => Document::ID_BACK,
+                    'path' => $request->file('back_id')->store('documents/ids')
+                ],
+                [
+                    'name' => Document::ID_FRONT,
+                    'path' => $request->file('front_id')->store('documents/ids')
+                ]
             ]);
 
             DB::commit();
@@ -134,6 +133,13 @@ class VerificationRequestController extends Controller
     public function show(VerificationRequest $verification_request)
     {
         try {
+            if (!$this->_authorize($verification_request)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
             return response()->json([
                 'status' => 'OK',
                 'data' => new VerificationRequestResource($verification_request)
@@ -167,28 +173,28 @@ class VerificationRequestController extends Controller
     public function update(UpdateRequest $request, VerificationRequest $verification_request)
     {
         try {
-            if (auth()->id() != $verification_request->property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
-                return response()->json([ 
+            if (!$this->_authorize($verification_request)) {
+                return response()->json([
                     'status' => 'Error',
-                    'message' => 'Forbidden'
+                    'message' => 'Unauthorized'
                 ], 403);
             }
 
-            $valid_data = $request->only(['phone', 'userId', 'status']);
+            $valid_data = $request->all();
 
-            if ($request->has('backId')) {
+            if ($request->has('back_id')) {
                 if (Storage::exists($verification_request->back_id)) {
                     Storage::delete($verification_request->back_id);
                 }
 
-                $valid_data['back_id'] = $request->file('backId')->store('documents/ids');
+                $valid_data['back_id'] = $request->file('back_id')->store('documents/ids');
             }
 
-            if ($request->has('frontId')) {
+            if ($request->has('front_id')) {
                 if (Storage::exists($verification_request->front_id)) {
                     Storage::delete($verification_request->front_id);
                 }
-                $valid_data['front_id'] = $request->file('frontId')->store('documents/ids');
+                $valid_data['front_id'] = $request->file('front_id')->store('documents/ids');
             }
 
             $verification_request->update($valid_data);
@@ -215,18 +221,18 @@ class VerificationRequestController extends Controller
     public function destroy(VerificationRequest $verification_request)
     {
         try {
-            if (auth()->id() != $verification_request->property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
+            if (!$this->_authorize($verification_request)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Forbidden'
+                    'message' => 'Unauthorized'
                 ], 403);
             }
-            
+
             $verification_request->delete();
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'User deleted successfully!'
+                'message' => 'Verification request deleted successfully!'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -242,16 +248,23 @@ class VerificationRequestController extends Controller
     public function changeStatus(VerificationRequest $verification_request, Request $request)
     {
         try {
+            if (!$this->_authorize($verification_request)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Unauthorized'
+                ], 403);
+            }
+
             $data = $request->validate([
                 'status' => ['required', 'string', Rule::in(['Pending', 'Approved', 'Rejected'])]
-            ]); 
+            ]);
 
             $verification_request->status = $data['status'];
             $verification_request->save();
 
             return response()->json([
-                'status' => 'OK',
-                'message' => "Application $request->status successfuly" 
+                'status' => 'OK', 
+                'message' => "Application ".Str::lower($request->status)." successfuly"
             ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -260,5 +273,16 @@ class VerificationRequestController extends Controller
                 'message' => $th->getMessage()
             ], 500);
         }
+    }
+
+    private function _authorize(VerificationRequest $verification_request)
+    {
+        $user_id = $verification_request->type == 'user' ? $verification_request->user_id : $verification_request->property->user_id;
+
+        if (auth()->id() != $user_id && auth()->user()->role != User::ROLE_ADMIN) {
+            return false;
+        }
+
+        return true;
     }
 }

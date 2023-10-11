@@ -18,7 +18,7 @@ class CreateVerificationRequestsTable extends Migration
             $table->enum('type', ['user', 'property']);
             $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('property_id')->nullable()->constrained();
-            $table->string('phone');
+            $table->text('note');
             $table->enum('status', ['Pending', 'Approved', 'Rejected'])->default('pending');
             $table->integer('approved_by')->nullable();
             $table->timestamps();

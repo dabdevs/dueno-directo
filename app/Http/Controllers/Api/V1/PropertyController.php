@@ -10,6 +10,7 @@ use App\Http\Resources\PreferenceResource;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Models\Property;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -216,17 +217,27 @@ class PropertyController extends Controller
             }
 
             $data = request()->validate([
-                'tenant_id' => 'required|numeric|exists:tenants,id'
+                'user_id' => 'required|numeric|exists:users,id'
             ]);
 
-            $property->tenant_id = $data['tenant_id'];
-            $property->save();
+            $user = User::findOrFail($data['user_id']);
+
+            if ($user->role != User::ROLE_TENANT) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'User is not a tenant'
+                ], 403);
+            }
+
+            $property->assignTenant($user);
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Tenant assigned to property successfuly'
+                'message' => 'Tenant assigned to property successfuly',
+                'data' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
+            throw $th;
             return response()->json([
                 'status' => 'Error',
                 'message' => $th->getMessage()

@@ -62,20 +62,19 @@ class ApplicationController extends Controller
                 ], 400);
             }
 
-            $tenant = Tenant::findOrFail($request->tenant_id);
+            $user = User::findOrFail($request->user_id);
 
-            // Validate if tenant has already applied for the property
+            // Validate if user has already applied for the property
             $application = PropertyApplication::where([
-                "tenant_id" => $tenant->id,
+                "user_id" => $user->id,
                 "property_id" => $request->property_id
             ])->first();
 
             if ($application) {
                 return response()->json([
-                    'status' => 'Error',
-                    'message' => 'You already applied for this property.',
+                    'status' => 'OK',
                     'data' => new PropertyApplicationResource($application)
-                ], 400);
+                ]);
             }
 
             $application = $property->applications()->create($request->validated());
