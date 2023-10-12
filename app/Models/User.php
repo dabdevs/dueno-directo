@@ -146,9 +146,9 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         return $this->belongsTo(Country::class);
     }
 
-    public function property_application()
+    public function property_applications()
     {
-        return $this->hasOne(PropertyApplication::class);
+        return $this->hasMany(PropertyApplication::class);
     }
 
     public function hasRole($role)

@@ -18,7 +18,6 @@ class PropertySeeder extends Seeder
             ->count(2)
             ->hasOwner()
             ->hasPreferences()
-            ->hasApplications(1)
             ->hasPhotos(5)
             ->create();
 
@@ -26,7 +25,6 @@ class PropertySeeder extends Seeder
         ->count(1)
         ->hasOwner()
         ->hasPreferences()
-        ->hasApplications(5)
         ->hasPhotos(2)
         ->create();
 
@@ -37,7 +35,7 @@ class PropertySeeder extends Seeder
             ->hasPreferences()
             ->hasApplications(7)
             ->hasPhotos(6)
-            ->create();
+            ->create(['status' => 'Published']);
 
         Property::factory()
             ->count(2)
@@ -45,7 +43,7 @@ class PropertySeeder extends Seeder
             ->hasPreferences()
             ->hasApplications(2)
             ->hasPhotos(3)
-            ->create();
+            ->create(['status' => 'Published']);
 
         Property::factory()
             ->count(4)
@@ -55,7 +53,7 @@ class PropertySeeder extends Seeder
             ->hasRequirements(3)
             ->hasApplications(12)
             ->hasPhotos(5)
-            ->create();
+            ->create(['status' => 'Published']);
 
         Property::factory()
             ->count(3)

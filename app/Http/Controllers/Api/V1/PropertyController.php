@@ -320,6 +320,10 @@ class PropertyController extends Controller
                 $query->orderBy($request->order);
             }
 
+            if ($request->has('status')) {
+                $query->whereStatus($request->status);
+            }
+
             $properties = $query->paginate(20);
 
             return response()->json([

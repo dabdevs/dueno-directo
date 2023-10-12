@@ -19,7 +19,9 @@ class CreatePropertyApplicationsTable extends Migration
             $table->foreignId('property_id')->onDelete('cascade');
             $table->text('note')->nullable();
             $table->boolean('viewed')->default(0);
-            $table->enum('status', ['Approved', 'Rejected', 'Pending'])->default('pending');
+            $table->enum('status', ['Approved', 'Rejected', 'Pending'])->default('Pending');
+            $table->dateTime('approved_at')->nullable();
+            $table->dateTime('rejected_at')->nullable();
             $table->timestamps();
         });
     }

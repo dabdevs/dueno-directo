@@ -18,10 +18,12 @@ class PropertyApplicationResource extends JsonResource
             "id" => $this->id,
             "note" => $this->note,
             "status" => $this->status,
-            "tenant" => new TenantResource($this->tenant),
+            "applicant" => new UserResource($this->user),
             "property" => new PropertyResource($this->property),
-            "createdAt" => $this->updated_at->format('Y-m-d'),
-            "updatedAt" => $this->created_at->format('Y-m-d')
+            "approvedAt" => $this->approved_at == null ? null : $this->approved_at->format('Y-m-d'),
+            "rejectedAt" => $this->rejeced_at == null ? null : $this->rejected_at->format('Y-m-d'),
+            "dateUpdated" => $this->updated_at == null ? null : $this->updated_at->format('Y-m-d'),
+            "dateRegisted" => $this->created_at == null ? null : $this->created_at->format('Y-m-d'),
         ];
     }
 }

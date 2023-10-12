@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\User\CreateRequest;
 use App\Http\Requests\Api\V1\User\UpdateRequest;
+use App\Http\Resources\PropertyApplicationResource;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Http\Resources\UserResource;
+use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -280,6 +282,40 @@ class UserController extends Controller
                 'status' => 'OK',
                 'message' => 'Avatar uploaded successfuly.'
             ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     *  Apply to a property
+     */
+    public function applyToProperty(Request $request, Property $property)
+    {
+        try {
+            if (!$property->isPublished()) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'The property is not published.'
+                ], 400);
+            }
+
+            $application = $request->validate([
+                'note' => 'nullable|string|max:255'
+            ]);
+
+            $application['property_id'] = $property->id;
+
+            $application = User::findOrFail(auth()->id())->property_applications()->firstOrNew($application);
+            
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Application submited successfuly.',
+                'data' => new PropertyApplicationResource($application)
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 'Error',

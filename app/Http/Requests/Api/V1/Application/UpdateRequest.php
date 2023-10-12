@@ -24,7 +24,7 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'tenant_id' => 'required|exists:tenants,id',
+            'user_id' => 'required|exists:users,id',
             'property_id' => 'required|exists:properties,id',
             'note' => 'nullable|string|max:255'
         ];

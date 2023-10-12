@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V1\OwnerController;
 use App\Http\Controllers\Api\V1\PreferenceController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\Api\V1\TenantController;
+use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,10 +32,6 @@ Route::group(['prefix' => 'v1'], function () {
     // Show property
     Route::get('properties/{property}', [PropertyController::class, 'show'])->name('properties.show');
 
-    // Property Preferences
-    Route::resource('preferences', PreferenceController::class)->middleware(['auth', 'role:owner', 'role:tenant']);
-
-
     // Authentication routes
     Route::group(['prefix' => 'auth'], function () {
         Route::post('/register', [AuthenticationController::class, 'register'])->name('register');
@@ -42,6 +39,18 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
         Route::post('/refresh-token', [AuthenticationController::class, 'refresh'])->name('refresh_token');
     });
+
+    // Property Preferences
+    Route::resource('preferences', PreferenceController::class)->middleware(['auth', 'role:owner', 'role:tenant']);
+
+    // ===== USER ROUTES ========= //
+    Route::group(['prefix' => 'users', 'middleware' => ['auth', 'role:tenant']], function () {
+        // Apply to property
+        Route::post('properties/{property}/apply', [UserController::class, 'applyToProperty'])->name('users.apply_to_property');
+        
+        // Route::post('{tenant}/request-verification', [TenantController::class, 'requestVerification'])->name('tenants.request_verification');
+    });
+
 
     // ===== ADMIN ROUTES ========= //
     Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin']], function () {
@@ -53,7 +62,8 @@ Route::group(['prefix' => 'v1'], function () {
 
         // Property routes
         Route::resource('properties', PropertyController::class);
-
+        
+        Route::resource('applications', ApplicationController::class);
     });
 
     // ===== OWNER ROUTES ========= //
@@ -80,7 +90,6 @@ Route::group(['prefix' => 'v1'], function () {
     // ===== TENANT ROUTES ========= //
     Route::group(['prefix' => 'tenants', 'middleware' => ['auth', 'role:tenant']], function () {
         // Application
-        Route::resource('applications', ApplicationController::class);
         Route::get('{tenant}/applications', [TenantController::class, 'applications'])->name('tenants.applications');
         Route::post('{tenant}/request-verification', [TenantController::class, 'requestVerification'])->name('tenants.request_verification');
     });

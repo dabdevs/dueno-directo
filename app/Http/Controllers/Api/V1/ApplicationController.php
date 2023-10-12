@@ -8,7 +8,7 @@ use App\Http\Requests\Api\V1\Application\UpdateRequest;
 use App\Http\Resources\PropertyApplicationResource;
 use App\Models\Property;
 use App\Models\PropertyApplication;
-use App\Models\Tenant;
+use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -53,7 +53,7 @@ class ApplicationController extends Controller
     public function store(CreateRequest $request)
     {
         try {
-            $property = Property::findOrFail($request->property_id);
+            $property = Property::find($request->property_id);
 
             if (!$property->isPublished()) {
                 return response()->json([
@@ -78,7 +78,7 @@ class ApplicationController extends Controller
             }
 
             $application = $property->applications()->create($request->validated());
-
+            dd('hola');
             return response()->json([
                 'status' => 'OK',
                 'data' => new PropertyApplicationResource($application),
@@ -187,15 +187,14 @@ class ApplicationController extends Controller
             }
 
             $request->validate([
-                'status' => ['required', 'string', Rule::in(['Pending', 'Approved', 'Rejected'])]
+                'status' => ['required', 'string', Rule::in(['Approved', 'Rejected'])]
             ]);
 
-            $application->status = $request->status;
-            $application->save();
+            $request->status === 'Approved' ? $application->approve() : $application->reject();
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Application updated successfuly',
+                'message' => 'Application '. Str::lower($request->status) .' successfully',
                 'data' => new PropertyApplicationResource($application)
             ]);
         } catch (\Throwable $th) {

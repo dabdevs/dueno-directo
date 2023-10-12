@@ -16,30 +16,32 @@ class PropertyApplication extends Model
         return $this->belongsTo(Property::class);
     }
 
-    public function tenant()
-    {
-        return $this->belongsTo(User::class, 'tenant_id');
-    }
-
-    protected function approve()
+    public function approve()
     {
         try {
             $this->status = 'Approved';
-            $this->save();
-            return true;
+            $this->approved_at = now();
+
+            return $this->save();
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    protected function reject()
+    public function reject()
     {
         try {
             $this->status = 'Rejected';
-            $this->save();
-            return true;
+            $this->rejected_at = now();
+
+            return $this->save();
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }
