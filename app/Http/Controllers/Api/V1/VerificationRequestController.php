@@ -112,7 +112,7 @@ class VerificationRequestController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Verification request submited successfuly',
+                'message' => 'Verification request submited successfully',
                 'data' => new VerificationRequestResource($verification_request)
             ], 201);
         } catch (\Throwable $th) {
@@ -136,7 +136,7 @@ class VerificationRequestController extends Controller
             if (!$this->_authorize($verification_request)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -176,7 +176,7 @@ class VerificationRequestController extends Controller
             if (!$this->_authorize($verification_request)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -201,7 +201,7 @@ class VerificationRequestController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Verification request updated successfuly',
+                'message' => 'Verification request updated successfully',
                 'data' => new VerificationRequestResource($verification_request)
             ], 201);
         } catch (\Throwable $th) {
@@ -224,7 +224,7 @@ class VerificationRequestController extends Controller
             if (!$this->_authorize($verification_request)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -251,7 +251,7 @@ class VerificationRequestController extends Controller
             if (!$this->_authorize($verification_request)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -263,8 +263,8 @@ class VerificationRequestController extends Controller
             $verification_request->save();
 
             return response()->json([
-                'status' => 'OK', 
-                'message' => "Application ".Str::lower($request->status)." successfuly"
+                'status' => 'OK',
+                'message' => "Application " . Str::lower($request->status) . " successfully"
             ]);
         } catch (\Throwable $th) {
             throw $th;

@@ -9,7 +9,11 @@ class PropertyApplication extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'user_id',
+        'property_id',
+        'note'
+    ];
 
     public function property()
     {
@@ -33,6 +37,18 @@ class PropertyApplication extends Model
         try {
             $this->status = 'Rejected';
             $this->rejected_at = now();
+
+            return $this->save();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function archive()
+    {
+        try {
+            $this->status = 'Archived';
+            $this->archived_at = now();
 
             return $this->save();
         } catch (\Throwable $th) {

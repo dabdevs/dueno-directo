@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\Application\createRequest;
-use App\Http\Requests\Api\V1\Application\UpdateRequest;
+use App\Http\Requests\Api\V1\PropertyApplication\CreateRequest;
 use App\Http\Resources\PropertyApplicationResource;
 use App\Models\Property;
 use App\Models\PropertyApplication;
@@ -78,11 +77,11 @@ class ApplicationController extends Controller
             }
 
             $application = $property->applications()->create($request->validated());
-            dd('hola');
+
             return response()->json([
                 'status' => 'OK',
                 'data' => new PropertyApplicationResource($application),
-                'message' => 'Application created successfuly!'
+                'message' => 'Application created successfully!'
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
@@ -102,37 +101,9 @@ class ApplicationController extends Controller
             if (!$this->_authorize($application)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
-
-            return response()->json([
-                'status' => 'OK',
-                'data' => new PropertyApplicationResource($application)
-            ]);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'Error',
-                'message' => $th->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Update application
-     *
-     */
-    public function update(UpdateRequest $request, PropertyApplication $application)
-    {
-        try {
-            if (!$this->_authorize($application)) {
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'Unauthorized'
-                ], 403);
-            }
-
-            $application->update($request->validated());
 
             return response()->json([
                 'status' => 'OK',
@@ -149,21 +120,21 @@ class ApplicationController extends Controller
     /**
      * Delete application
      */
-    public function destroy(PropertyApplication $application)
+    public function archive(PropertyApplication $application)
     {
         try {
             if (!$this->_authorize($application)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
-            $application->delete();
+            $application->archive();
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Application deleted successfuly'
+                'message' => 'Application archived successfully'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -182,7 +153,7 @@ class ApplicationController extends Controller
             if (!$this->_authorize($application)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -194,7 +165,7 @@ class ApplicationController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Application '. Str::lower($request->status) .' successfully',
+                'message' => 'Application ' . Str::lower($request->status) . ' successfully',
                 'data' => new PropertyApplicationResource($application)
             ]);
         } catch (\Throwable $th) {

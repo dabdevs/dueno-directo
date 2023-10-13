@@ -111,7 +111,7 @@ class PropertyController extends Controller
             if (!$this->_authorize($property)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -140,7 +140,7 @@ class PropertyController extends Controller
             if (!$this->_authorize($property)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -164,7 +164,12 @@ class PropertyController extends Controller
     public function applications(Property $property)
     {
         try {
-            $this->validateUserAction($property);
+            if (!$this->_authorize($property)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Forbidden'
+                ], 403);
+            }
 
             return response()->json([
                 'status' => 'OK',
@@ -187,7 +192,7 @@ class PropertyController extends Controller
             if (!$this->_authorize($property)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -212,7 +217,7 @@ class PropertyController extends Controller
             if (!$this->_authorize($property)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -233,7 +238,7 @@ class PropertyController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Tenant assigned to property successfuly',
+                'message' => 'Tenant assigned to property successfully',
                 'data' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
@@ -254,7 +259,7 @@ class PropertyController extends Controller
             if (!$this->_authorize($property)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -353,7 +358,7 @@ class PropertyController extends Controller
             if (!$this->_authorize($property)) {
                 return response()->json([
                     'status' => 'Error',
-                    'message' => 'Unauthorized'
+                    'message' => 'Forbidden'
                 ], 403);
             }
 
@@ -362,7 +367,7 @@ class PropertyController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Status changed successfuly',
+                'message' => 'Status changed successfully',
                 'data' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {

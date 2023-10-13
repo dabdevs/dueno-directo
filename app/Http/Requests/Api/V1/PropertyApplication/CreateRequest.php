@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\V1\Application;
+namespace App\Http\Requests\Api\V1\PropertyApplication;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,7 +25,7 @@ class CreateRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer|exists:users,id',
-            'note' => 'nullable|string|max:255',
+            'note' => 'required|string|max:255',
             'property_id' => 'required|integer|exists:properties,id'
         ];
     }

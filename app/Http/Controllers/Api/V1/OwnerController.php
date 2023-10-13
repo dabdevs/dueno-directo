@@ -44,7 +44,6 @@ class OwnerController extends Controller
      */
     public function store()
     {
-        
     }
 
     /**
@@ -95,7 +94,7 @@ class OwnerController extends Controller
     public function myProperties()
     {
         try {
-            return response()->json([ 
+            return response()->json([
                 'status' => 'OK',
                 'data' => PropertyResource::collection(auth()->user()->properties)
             ]);
@@ -112,18 +111,14 @@ class OwnerController extends Controller
         try {
             $user = User::findOrFail(auth()->id());
 
-            if (!$user->hasRole(User::ROLE_OWNER)) {
-                return response()->json(['message' => 'User is not an owner'], 403);
-            }
-
             $data = $request->validated();
             $data['slug'] = str_replace('', '-', $request->title);
 
             $property = $user->properties()->create($data);
-            
+
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Property created successfuly',
+                'message' => 'Property created successfully',
                 'data' => new PropertyResource($property)
             ], 201);
         } catch (\Throwable $th) {

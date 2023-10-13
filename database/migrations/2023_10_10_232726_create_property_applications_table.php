@@ -17,11 +17,12 @@ class CreatePropertyApplicationsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->onDelete('cascade');
             $table->foreignId('property_id')->onDelete('cascade');
-            $table->text('note')->nullable();
+            $table->text('note');
             $table->boolean('viewed')->default(0);
-            $table->enum('status', ['Approved', 'Rejected', 'Pending'])->default('Pending');
+            $table->enum('status', ['Approved', 'Rejected', 'Pending', 'Archived'])->default('Pending');
             $table->dateTime('approved_at')->nullable();
             $table->dateTime('rejected_at')->nullable();
+            $table->dateTime('archived_at')->nullable();
             $table->timestamps();
         });
     }

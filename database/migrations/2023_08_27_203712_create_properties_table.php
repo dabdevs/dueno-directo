@@ -30,7 +30,7 @@ class CreatePropertiesTable extends Migration
             $table->boolean('patio')->default(0);
             $table->text('note')->nullable();
             $table->text('preferred_tenant_profile')->nullable();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->onDelete('cascade');
             $table->unsignedBigInteger('tenant_id')->nullable();
             $table->foreign('tenant_id')->references('id')->on('users');
             $table->unsignedBigInteger('agent_id')->nullable();

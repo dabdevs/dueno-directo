@@ -10,17 +10,13 @@ use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Http\Resources\UserResource;
 use App\Models\Property;
+use App\Models\PropertyApplication;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('role:admin')->except(['update', 'profile', 'uploadAvatar', 'myProperties']);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -74,7 +70,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'User created successfuly!',
+                'message' => 'User created successfully!',
                 'data' => new UserResource($user)
             ], 201);
         } catch (\Throwable $th) {
@@ -235,7 +231,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Profile deleted successfuly!'
+                'message' => 'Profile deleted successfully!'
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -280,7 +276,7 @@ class UserController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Avatar uploaded successfuly.'
+                'message' => 'Avatar uploaded successfully.'
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -303,18 +299,51 @@ class UserController extends Controller
                 ], 400);
             }
 
-            $application = $request->validate([
-                'note' => 'nullable|string|max:255'
+            $request->validate([
+                'note' => 'required|string|max:255'
             ]);
 
-            $application['property_id'] = $property->id;
+            $application = $property->applications()->where('user_id', auth()->id())->first();
 
-            $application = User::findOrFail(auth()->id())->property_applications()->firstOrNew($application);
+            // If the user already applied for this property
+            if ($application) {
+                return response()->json([
+                    'status' => 'OK',
+                    'data' => new PropertyApplicationResource($application)
+                ]);
+            }
+
+            // Create application
+            $application = $property->applications()->create([
+                'user_id' => auth()->id(),
+                'note' => $request->note
+            ]);
+
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Application submited successfully.',
+                'data' => new PropertyApplicationResource($application)
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function propertyApplications(Property $property = null)
+    {
+        try {
+            if ($property) {
+                $applications = $property->applications()->where('user_id', auth()->id())->get();
+            } else {
+                $applications = auth()->user()->propertyApplications;
+            }
             
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Application submited successfuly.',
-                'data' => new PropertyApplicationResource($application)
+                'data' => $applications == null ? [] : PropertyApplicationResource::collection($applications)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

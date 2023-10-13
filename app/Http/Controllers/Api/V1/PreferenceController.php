@@ -52,19 +52,18 @@ class PreferenceController extends Controller
     public function store(createRequest $request)
     {
         try {
-            // Validate if property exists
             if ($request->has('property_id')) {
-                $preference = Property::find($request->property_id)->preferences()->firstOrNew($request->validated());
+                $preference = Property::find($request->property_id)->preferences()->firstOrCreate($request->validated());
             } else {
                 $data = $request->validated();
                 $data['occupation'] = array($request->occupation);
-                $preference = User::find($request->user_id)->preferences()->firstOrNew($data);
+                $preference = User::find($request->user_id)->preferences()->firstOrCreate($data);
             }
 
             return response()->json([
                 'status' => 'OK',
                 'data' => new PropertyPreferenceResource($preference),
-                'message' => 'Preference created successfuly!'
+                'message' => 'Preference created successfully!'
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
@@ -149,7 +148,7 @@ class PreferenceController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Preference deleted successfuly'
+                'message' => 'Preference deleted successfully'
             ]);
         } catch (\Throwable $th) {
             return response()->json([

@@ -84,7 +84,7 @@ class TenantController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Tenant created successfuly!',
+                'message' => 'Tenant created successfully!',
                 'data' => new TenantResource($tenant)
             ], 201);
         } catch (\Throwable $th) {
@@ -192,7 +192,7 @@ class TenantController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Application submited successfuly.'
+                'message' => 'Application submited successfully.'
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -234,7 +234,7 @@ class TenantController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Verification request submited successfuly.'
+                'message' => 'Verification request submited successfully.'
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();

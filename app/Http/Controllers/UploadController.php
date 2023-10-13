@@ -45,7 +45,7 @@ class UploadController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Photos uploaded successfuly',
+                'message' => 'Photos uploaded successfully',
                 'data' => new PropertyResource($property)
             ]);
         } catch (\Throwable $th) {
@@ -58,7 +58,7 @@ class UploadController extends Controller
         }
     }
 
-    public function PropertydeletePhotos(PropertyDeletePhotosRequest $request, Property $property) 
+    public function PropertydeletePhotos(PropertyDeletePhotosRequest $request, Property $property)
     {
         try {
             DB::beginTransaction();
@@ -71,7 +71,7 @@ class UploadController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'message' => 'Photos deleted successfuly'
+                'message' => 'Photos deleted successfully'
             ]);
         } catch (\Throwable $th) {
             DB::rollback();
@@ -83,7 +83,7 @@ class UploadController extends Controller
         }
     }
 
-    private function deletePhotos($photos, $property_id=null)
+    private function deletePhotos($photos, $property_id = null)
     {
         if (count($photos) > 0) {
             foreach ($photos as $id) {
