@@ -14,6 +14,18 @@ class PropertyPreferenceResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            "id" => $this->id,
+            'occupation' => $this->occupation,
+            'minIncome' => $this->min_income,
+            'maxIncome' => $this->max_income,
+            'numberOfOccupants' => $this->number_of_occupants,
+            'hasPets' => $this->has_pets,
+            'smoker' => $this->smoker,
+            'employmentStatus' => $this->employment_status,
+            "property" => new PropertyResource($this->property),
+            "dateRegistered" => $this->created_at == null ? null : $this->created_at->format('Y-m-d'),
+            "dateUpdated" => $this->updated_at == null ? null : $this->updated_at->format('Y-m-d')
+        ];
     }
 }

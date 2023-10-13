@@ -9,7 +9,17 @@ class PropertyPreference extends Model
 {
     use HasFactory;
 
-    public $guarded = ['id'];
+    public $fillable = [
+        'occupation',
+        'min_income',
+        'max_income',
+        'number_of_occupants',
+        'has_pets',
+        'smoker',
+        'employment_status',
+        'property_id',
+        'user_id'
+    ];
 
     protected $casts = [
         'occupation' => 'array',

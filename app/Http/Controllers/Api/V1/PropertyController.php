@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Property\CreateRequest;
 use App\Http\Requests\Api\V1\Property\UpdateRequest;
 use App\Http\Resources\PropertyApplicationResource;
-use App\Http\Resources\PreferenceResource;
+use App\Http\Resources\PropertyPreferenceResource;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Models\Property;
@@ -198,7 +198,7 @@ class PropertyController extends Controller
 
             return response()->json([
                 'status' => 'OK',
-                'data' => $property->preferences == null ? [] : new PreferenceResource($property->preferences)
+                'data' => $property->preferences == null ? [] : new PropertyPreferenceResource($property->preferences)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
