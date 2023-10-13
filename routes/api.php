@@ -50,7 +50,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::delete('/applications/{application}', [ApplicationController::class, 'archive'])->name('applications.archive');
 
     // ===== USER ROUTES ========= //
-    Route::group(['middleware' => ['auth', 'role:tenant']], function () {
+    Route::group(['prefix' => 'users', 'middleware' => ['auth', 'role:tenant']], function () {
         // Applications
         Route::post('properties/{property}/apply', [UserController::class, 'applyToProperty'])->name('users.apply_to_property');
         Route::get('properties/applications/{property?}', [UserController::class, 'propertyApplications'])->name('users.property_applications');
