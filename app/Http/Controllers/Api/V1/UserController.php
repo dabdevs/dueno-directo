@@ -259,33 +259,6 @@ class UserController extends Controller
         }
     }
 
-    public function uploadAvatar(Request $request)
-    {
-        try {
-            $request->validate([
-                'avatar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            ]);
-
-            $user = User::find(auth()->id());
-
-            if ($request->has('avatar')) {
-                $path = $request->file('avatar')->store('images/users/avatars/' . $user->id);
-                $user->avatar = $path;
-                $user->save();
-            }
-
-            return response()->json([
-                'status' => 'OK',
-                'message' => 'Avatar uploaded successfully.'
-            ], 200);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => 'Error',
-                'message' => $th->getMessage()
-            ], 500);
-        }
-    }
-
     /**
      *  Apply to a property
      */

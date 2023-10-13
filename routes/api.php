@@ -40,14 +40,17 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/refresh-token', [AuthenticationController::class, 'refresh'])->name('refresh_token');
     });
 
+    // Upload avatar
+    Route::post('/users/upload-avatar', [UploadController::class, 'userAvatar'])->middleware('auth')->name('upload.upload_avatar');
+
     // Property Preferences
     Route::resource('preferences', PreferenceController::class)->middleware(['auth', 'role:owner', 'role:tenant']);
-    
+
     // Archive Application
     Route::delete('/applications/{application}', [ApplicationController::class, 'archive'])->name('applications.archive');
 
     // ===== USER ROUTES ========= //
-    Route::group(['prefix' => 'users', 'middleware' => ['auth', 'role:tenant']], function () {
+    Route::group(['middleware' => ['auth', 'role:tenant']], function () {
         // Applications
         Route::post('properties/{property}/apply', [UserController::class, 'applyToProperty'])->name('users.apply_to_property');
         Route::get('properties/applications/{property?}', [UserController::class, 'propertyApplications'])->name('users.property_applications');
@@ -91,13 +94,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->name('application.change_status');
 
         // Upload
-        Route::post('/properties/{property}/upload-photos', [UploadController::class, 'propertyUploadPhotos'])->name('upload.property_upload_photos');
+        Route::post('/properties/{property}/upload-photos', [UploadController::class, 'propertyPhotos'])->name('upload.property_upload_photos');
         Route::post('/properties/{property}/delete-photos', [UploadController::class, 'propertyDeletePhotos'])->name('upload.property_delete_photos');
-    });
-
-    // ===== TENANT ROUTES ========= //
-    Route::group(['prefix' => 'users', 'middleware' => ['auth', 'role:tenant']], function () {
-        // Application
-        Route::post('{tenant}/request-verification', [TenantController::class, 'requestVerification'])->name('tenant.request_verification');
     });
 });

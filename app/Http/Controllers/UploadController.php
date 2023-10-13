@@ -8,12 +8,13 @@ use App\Http\Resources\PropertyResource;
 use App\Models\Photo;
 use App\Models\Property;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
 {
-    public function propertyUploadPhotos(PropertyUploadPhotosRequest $request, Property $property)
+    public function propertyPhotos(PropertyUploadPhotosRequest $request, Property $property)
     {
         try {
             if ($property->owner->id != auth()->id() && auth()->user()->role != User::ROLE_ADMIN) {
@@ -26,9 +27,8 @@ class UploadController extends Controller
             DB::beginTransaction();
 
             if ($request->has('deleted_photos')) {
-                $this->deletePhotos($request->deleted_photos, $property->id);
+                $this->deletePhotos($request->deleted_photos);
             }
-
 
             // Retrieve the uploaded files
             $photos = $request->file('photos');
@@ -64,7 +64,7 @@ class UploadController extends Controller
             DB::beginTransaction();
 
             if ($request->has('deleted_photos')) {
-                $this->deletePhotos($request->deleted_photos, $property->id);
+                $this->deletePhotos($request->deleted_photos);
             }
 
             DB::commit();
@@ -83,21 +83,69 @@ class UploadController extends Controller
         }
     }
 
-    private function deletePhotos($photos, $property_id = null)
+    private function deletePhotos($photos)
     {
         if (count($photos) > 0) {
             foreach ($photos as $id) {
                 $photo = Photo::findOrFail($id);
+                $directory = storage_path('app/' . $photo->path);
 
-                // Define the photo directory
-                $photo_directory = "images/properties/photos/$property_id/$photo->path";
-                $photo->delete();
-
-                if (file_exists($photo_directory)) {
+                if (file_exists($directory)) {
                     // Delete the directory and its contents
-                    Storage::deleteDirectory($photo_directory);
+                    unlink($directory);
+                    $photo->delete();
                 }
             }
         }
     }
+
+    public function userAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $user = User::find(auth()->id());
+
+        if ($user->avatar) {
+            $directory = storage_path('app/' . $user->avatar);
+    
+            if (file_exists($directory)) {
+                // Delete the directory and its contents
+                unlink($directory);
+            }
+        }
+        
+        $path = $request->file('avatar')->store('images/users/avatars/' . $user->id);
+        $user->avatar = $path;
+        $user->save();
+
+        return response()->json([
+            'status' => 'OK',
+            'message' => 'Avatar uploaded successfully.'
+        ], 200);
+        try {
+            $request->validate([
+                'avatar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            ]);
+
+            $user = User::find(auth()->id());
+
+            $path = $request->file('avatar')->store('images/users/avatars/' . $user->id);
+            $user->avatar = $path;
+            $user->save();
+
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Avatar uploaded successfully.'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    
 }
