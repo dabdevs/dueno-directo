@@ -325,4 +325,28 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    public function archivePropertyApplication(PropertyApplication $application)
+    {
+        try {
+            if ($application->user_id != auth()->id() && auth()->user()->role != User::ROLE_ADMIN) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Forbidden'
+                ], 400);
+            }
+
+            $application->archive();
+
+            return response()->json([
+                'status' => 'OK',
+                'message' => 'Application archived successfully.',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -178,6 +178,12 @@ class ApplicationController extends Controller
 
     private function _authorize(PropertyApplication $application)
     {
+        // If it's the applicant
+        if (auth()->id() === $application->user_id) {
+
+        }
+
+        // If it's the owner of the property
         if (auth()->id() != $application->property->user_id && auth()->user()->role != User::ROLE_ADMIN) {
             return false;
         }

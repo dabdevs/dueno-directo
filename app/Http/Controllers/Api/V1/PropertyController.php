@@ -13,6 +13,7 @@ use App\Models\Property;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PropertyController extends Controller
 {
@@ -24,7 +25,7 @@ class PropertyController extends Controller
     public function index()
     {
         try {
-            $properties = auth()->user()->role == 'admin' ? Property::with('photos')->paginate(20) : Property::where('user_id', auth()->id())->paginate(20);
+            $properties = auth()->user()->role == 'admin' ? Property::with('photos')->where('status', 'Published')->paginate(20) : Property::where(['user_id' => auth()->id(), 'status' => 'Published'])->paginate(20);
 
             return response()->json([
                 'status' => 'OK',
@@ -278,11 +279,11 @@ class PropertyController extends Controller
     public function search(Request $request)
     {
         try {
-            $query = Property::query();
+            $query = Property::query()->where('status', 'Published');
 
             if ($request->has('keyword')) {
                 $query->where('title', 'like', '%' . $request->keyword . '%');
-                $query->orWhere('description', 'like', '%' . $request->keyword . '%');
+                $query->where('description', 'like', '%' . $request->keyword . '%');
             }
 
             if ($request->has('min_price')) {
@@ -324,11 +325,7 @@ class PropertyController extends Controller
             if ($request->has('order')) {
                 $query->orderBy($request->order);
             }
-
-            if ($request->has('status')) {
-                $query->whereStatus($request->status);
-            }
-
+            
             $properties = $query->paginate(20);
 
             return response()->json([

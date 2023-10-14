@@ -50,6 +50,14 @@ class PropertyApplication extends Model
             $this->status = 'Archived';
             $this->archived_at = now();
 
+            if (auth()->user()->role == User::ROLE_OWNER) {
+                $this->archived_by_propertys_owner = 1;
+            } elseif (auth()->user()->role == User::ROLE_TENANT) {
+                $this->archived_by_applicant = 1;
+            } else {
+                $this->archived_by_admin = auth()->user();
+            }
+
             return $this->save();
         } catch (\Throwable $th) {
             throw $th;

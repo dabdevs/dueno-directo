@@ -46,14 +46,19 @@ Route::group(['prefix' => 'v1'], function () {
     // Property Preferences
     Route::resource('preferences', PreferenceController::class)->middleware(['auth', 'role:owner', 'role:tenant']);
 
-    // Archive Application
-    Route::delete('/applications/{application}', [ApplicationController::class, 'archive'])->name('applications.archive');
+    // Archive Property Application
+    Route::delete('/applications/{application}', [ApplicationController::class, 'archive'])->middleware(['auth', 'role:owner', 'role:tenant'])->name('applications.archive');
 
     // ===== USER ROUTES ========= //
     Route::group(['prefix' => 'users', 'middleware' => ['auth', 'role:tenant']], function () {
         // Applications
         Route::post('properties/{property}/apply', [UserController::class, 'applyToProperty'])->name('users.apply_to_property');
+        
+        // Get one or all properties applications 
         Route::get('properties/applications/{property?}', [UserController::class, 'propertyApplications'])->name('users.property_applications');
+        
+        // Archive property's application
+        Route::post('applications/{application}/archive', [UserController::class, 'archivePropertyApplication'])->name('users.archive_property_application');
 
         // Route::post('{tenant}/request-verification', [TenantController::class, 'requestVerification'])->name('tenants.request_verification');
     });

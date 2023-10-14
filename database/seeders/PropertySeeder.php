@@ -29,7 +29,7 @@ class PropertySeeder extends Seeder
         ->create();
 
         Property::factory()
-            ->count(3)
+            ->count(13)
             ->hasOwner()
             ->hasRequirements(1)
             ->hasPreferences()
@@ -38,7 +38,7 @@ class PropertySeeder extends Seeder
             ->create(['status' => 'Published']);
 
         Property::factory()
-            ->count(2)
+            ->count(10)
             ->hasOwner()
             ->hasPreferences()
             ->hasApplications(2)
