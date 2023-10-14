@@ -22,7 +22,7 @@ class ApplicationController extends Controller
     {
         try {
             $user = auth()->user();
-            $applications = $user->role == 'admin' ? PropertyApplication::paginate(10) : $user->tenant->applications->paginate(10);
+            $applications = $user->role == 'admin' ? PropertyApplication::paginate(env('PAGINATION')) : $user->tenant->applications->paginate(env('PAGINATION'));
 
             return response()->json([
                 'status' => 'OK',

@@ -25,7 +25,7 @@ class TenantController extends Controller
     public function index()
     {
         try {
-            $users = User::with('preferences')->whereRole('tenant')->paginate(20);
+            $users = User::with('preferences')->whereRole('tenant')->paginate(env('PAGINATION'));
 
             return response()->json([
                 'status' => 'OK',

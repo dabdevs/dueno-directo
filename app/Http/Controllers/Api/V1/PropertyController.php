@@ -25,11 +25,16 @@ class PropertyController extends Controller
     public function index()
     {
         try {
-            $properties = auth()->user()->role == 'admin' ? Property::with('photos')->where('status', 'Published')->paginate(20) : Property::where(['user_id' => auth()->id(), 'status' => 'Published'])->paginate(20);
+            $properties = Property::query()->with('photos');
+
+            if (auth()->user()->role === User::ROLE_OWNER) {
+                $properties->where('user_id', auth()->id());
+            }
+
+            $properties->paginate(env('PAGINATION'));
 
             return response()->json([
                 'status' => 'OK',
-                "data" => PropertyResource::collection($properties),
                 'meta' => [
                     'current_page' => $properties->currentPage(),
                     'from' => $properties->firstItem(),
@@ -38,7 +43,8 @@ class PropertyController extends Controller
                     'per_page' => $properties->perPage(),
                     'to' => $properties->lastItem(),
                     'total' => $properties->total(),
-                ]
+                ],
+                "data" => PropertyResource::collection($properties)
             ]);
         } catch (\Throwable $th) {
             throw $th;
@@ -326,11 +332,10 @@ class PropertyController extends Controller
                 $query->orderBy($request->order);
             }
             
-            $properties = $query->paginate(20);
+            $properties = $query->paginate(env('PAGINATION'));
 
             return response()->json([
                 'status' => 'OK',
-                "data" => PropertyResource::collection($properties),
                 'meta' => [
                     'current_page' => $properties->currentPage(),
                     'from' => $properties->firstItem(),
@@ -339,7 +344,8 @@ class PropertyController extends Controller
                     'per_page' => $properties->perPage(),
                     'to' => $properties->lastItem(),
                     'total' => $properties->total(),
-                ]
+                ],
+                "data" => PropertyResource::collection($properties)
             ]);
         } catch (\Throwable $th) {
             return response()->json([

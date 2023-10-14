@@ -25,16 +25,17 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'family_name' => ['sometimes', 'string', 'max:150'],
-            'given_name' => ['sometimes', 'string', 'max:150'], 
-            'password' => ['sometimes', 'string'],
-            'role'  => ['sometimes', 'string', Rule::in(['owner', 'tenant', 'admin', 'lawyer', 'agent'])],
-            'telephone' => ['sometimes', 'string', 'numeric'],
-            'country_id' => ['sometimes', 'integer'],
-            'city' => ['sometimes', 'string'],
-            'number' => ['sometimes', 'integer', 'numeric'],
-            'appartment' =>['sometimes', 'string'],
-            'zip_code' => ['sometimes', 'string']
+            'family_name' => ['nullable', 'string', 'max:150'],
+            'given_name' => ['nullable', 'string', 'max:150'], 
+            'password' => ['nullable', 'string'],
+            'avatar' => ['nullable','image', 'max:2048','mimes:jpeg,jpg,png'],
+            'telephone' => ['nullable', 'string', 'numeric'],
+            'country_id' => ['nullable', 'integer'],
+            'city_id' => ['nullable', 'string'],
+            'street' => ['nullable', 'string', 'max:200'],
+            'number' => ['nullable', 'integer', 'numeric'],
+            'appartment' =>['nullable', 'string'],
+            'zip_code' => ['nullable', 'string']
         ];
     }
 }

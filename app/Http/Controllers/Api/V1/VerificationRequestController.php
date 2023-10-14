@@ -29,7 +29,7 @@ class VerificationRequestController extends Controller
             $verification_requests = auth()->user()->role == 'admin' ? VerificationRequest::paginate(20) :
                 VerificationRequest::whereHas('property', function ($query) {
                     $query->where('user_id', auth()->id());
-                })->paginate(20);
+                })->paginate(env('PAGINATION'));
 
             return response()->json([
                 'status' => 'OK',

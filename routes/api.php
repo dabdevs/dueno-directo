@@ -51,6 +51,9 @@ Route::group(['prefix' => 'v1'], function () {
 
     // ===== USER ROUTES ========= //
     Route::group(['prefix' => 'users', 'middleware' => ['auth', 'role:tenant']], function () {
+        // Update profile
+        Route::put('edit-profile', [UserController::class, 'updateProfile'])->name('users.edit_profile');
+        
         // Applications
         Route::post('properties/{property}/apply', [UserController::class, 'applyToProperty'])->name('users.apply_to_property');
         
