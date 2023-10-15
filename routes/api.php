@@ -52,14 +52,14 @@ Route::group(['prefix' => 'v1'], function () {
     // ===== USER ROUTES ========= //
     Route::group(['prefix' => 'users', 'middleware' => ['auth', 'role:tenant']], function () {
         // Update profile
-        Route::put('edit-profile', [UserController::class, 'updateProfile'])->name('users.edit_profile');
-        
+        Route::put('update-profile', [UserController::class, 'updateProfile'])->name('users.update_profile');
+
         // Applications
         Route::post('properties/{property}/apply', [UserController::class, 'applyToProperty'])->name('users.apply_to_property');
-        
+
         // Get one or all properties applications 
         Route::get('properties/applications/{property?}', [UserController::class, 'propertyApplications'])->name('users.property_applications');
-        
+
         // Archive property's application
         Route::post('applications/{application}/archive', [UserController::class, 'archivePropertyApplication'])->name('users.archive_property_application');
 
@@ -102,7 +102,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->name('application.change_status');
 
         // Upload
-        Route::post('/properties/{property}/upload-photos', [UploadController::class, 'propertyPhotos'])->name('upload.property_upload_photos');
-        Route::post('/properties/{property}/delete-photos', [UploadController::class, 'propertyDeletePhotos'])->name('upload.property_delete_photos');
+        Route::post('/properties/{property}/upload-photos', [UploadController::class, 'uploadPropertyPhotos'])->name('upload.property_upload_photos');
+        Route::post('/properties/{property}/delete-photos', [UploadController::class, 'deletePropertyPhotos'])->name('upload.property_delete_photos');
     });
 });

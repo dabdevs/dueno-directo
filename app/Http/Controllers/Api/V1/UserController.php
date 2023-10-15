@@ -18,14 +18,12 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     *  List users
      */
     public function index()
     {
         try {
-            $users = User::paginate(10);
+            $users = User::paginate(env('PAGINATION'));
 
             return response()->json([
                 'status' => 'OK',
@@ -48,20 +46,7 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     *  Store a new user
      */
     public function store(CreateRequest $request)
     {
@@ -82,24 +67,11 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     *  Show a user
      */
-    public function show($id)
+    public function show(User $user)
     {
         try {
-            $user = User::find($id);
-
-            // If the user is not found
-            if (!$user) {
-                return response()->json([
-                    'status' => 'OK',
-                    'message' => 'User not found!'
-                ], 404);
-            }
-
             return response()->json([
                 'status' => 'OK',
                 'data' => new UserResource($user)
@@ -350,8 +322,22 @@ class UserController extends Controller
         }
     }
 
-    public function updateProfile()
+    public function updateProfile(UpdateRequest $request)
     {
+        try {
+            $user = User::find(auth()->id());
+            $user->update($request->validated());
 
+            return response()->json([
+                'status' => 'OK',
+                'data' => new UserResource($user),
+                'message' => 'Profile updated successfully.',
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => 'Error',
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 }

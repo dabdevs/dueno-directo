@@ -23,6 +23,8 @@ class AuthenticationController extends Controller
                 'password' => bcrypt($request->password)
             ]);
 
+            dd($request->role);
+
             return response()->json([
                 'status' => 'OK',
                 'message' => 'User registered successfully',

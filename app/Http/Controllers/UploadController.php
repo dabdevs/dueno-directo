@@ -4,17 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Api\V1\Upload\PropertyDeletePhotosRequest;
 use App\Http\Requests\Api\V1\Upload\PropertyUploadPhotosRequest;
+use App\Http\Requests\Api\V1\Upload\UserAvatarRequest;
 use App\Http\Resources\PropertyResource;
 use App\Models\Photo;
 use App\Models\Property;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class UploadController extends Controller
 {
-    public function propertyPhotos(PropertyUploadPhotosRequest $request, Property $property)
+    /**
+     * Upload photos for a property
+     */
+    public function uploadPropertyPhotos(PropertyUploadPhotosRequest $request, Property $property)
     {
         try {
             if ($property->owner->id != auth()->id() && auth()->user()->role != User::ROLE_ADMIN) {
@@ -58,7 +60,10 @@ class UploadController extends Controller
         }
     }
 
-    public function PropertydeletePhotos(PropertyDeletePhotosRequest $request, Property $property)
+    /**
+     * Delete photos from property
+     */
+    public function deletePropertyPhotos(PropertyDeletePhotosRequest $request, Property $property)
     {
         try {
             DB::beginTransaction();
@@ -83,6 +88,9 @@ class UploadController extends Controller
         }
     }
 
+    /**
+     *  Delete photos from both database and storage
+     */
     private function deletePhotos($photos)
     {
         if (count($photos) > 0) {
@@ -91,7 +99,6 @@ class UploadController extends Controller
                 $directory = storage_path('app/' . $photo->path);
 
                 if (file_exists($directory)) {
-                    // Delete the directory and its contents
                     unlink($directory);
                     $photo->delete();
                 }
@@ -99,37 +106,22 @@ class UploadController extends Controller
         }
     }
 
-    public function userAvatar(Request $request)
+    /**
+     *  Upload an avatar for user
+     */
+    public function userAvatar(UserAvatarRequest $request)
     {
-        $request->validate([
-            'avatar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        $user = User::find(auth()->id());
-
-        if ($user->avatar) {
-            $directory = storage_path('app/' . $user->avatar);
-    
-            if (file_exists($directory)) {
-                // Delete the directory and its contents
-                unlink($directory);
-            }
-        }
-        
-        $path = $request->file('avatar')->store('images/users/avatars/' . $user->id);
-        $user->avatar = $path;
-        $user->save();
-
-        return response()->json([
-            'status' => 'OK',
-            'message' => 'Avatar uploaded successfully.'
-        ], 200);
         try {
-            $request->validate([
-                'avatar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            ]);
-
             $user = User::find(auth()->id());
+
+            // If the avatar is being replaced
+            if ($user->avatar) {
+                $directory = storage_path('app/' . $user->avatar);
+
+                if (file_exists($directory)) {
+                    unlink($directory);
+                }
+            }
 
             $path = $request->file('avatar')->store('images/users/avatars/' . $user->id);
             $user->avatar = $path;
@@ -146,6 +138,4 @@ class UploadController extends Controller
             ], 500);
         }
     }
-
-    
 }

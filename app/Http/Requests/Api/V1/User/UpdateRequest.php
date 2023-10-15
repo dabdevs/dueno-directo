@@ -28,7 +28,6 @@ class UpdateRequest extends FormRequest
             'family_name' => ['nullable', 'string', 'max:150'],
             'given_name' => ['nullable', 'string', 'max:150'], 
             'password' => ['nullable', 'string'],
-            'avatar' => ['nullable','image', 'max:2048','mimes:jpeg,jpg,png'],
             'telephone' => ['nullable', 'string', 'numeric'],
             'country_id' => ['nullable', 'integer'],
             'city_id' => ['nullable', 'string'],

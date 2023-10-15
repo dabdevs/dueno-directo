@@ -21,24 +21,24 @@ class UserSeeder extends Seeder
                 'email' => 'admin@duenodirecto.com',
                 'family_name' => 'James',
                 'given_name' => 'Steven J. K.',
-                'role' => 'admin'
-            ])->syncRoles(['admin', 'owner', 'tenant', 'lawyer', 'agent']);
+                'role' => User::ROLE_ADMIN
+            ])->syncRoles([User::ROLE_ADMIN, User::ROLE_OWNER, User::ROLE_TENANT, User::ROLE_LAWYER, User::ROLE_AGENT]);
 
             // Owner test user
             User::factory()->create([
                 'email' => 'owner@duenodirecto.com',
                 'family_name' => 'Morrison',
                 'given_name' => 'Jackie',
-                'role' => 'owner'
-            ])->assignRole('owner');
+                'role' => User::ROLE_OWNER
+            ])->assignRole(User::ROLE_OWNER);
 
             // Tenant test user
             $user = User::factory()->create([
                 'email' => 'tenant@duenodirecto.com',
                 'family_name' => 'Pierre',
                 'given_name' => 'Martine',
-                'role' => 'tenant'
-            ])->assignRole('tenant');
+                'role' => User::ROLE_TENANT
+            ])->assignRole(User::ROLE_TENANT);
 
             PropertyPreference::factory()->create(['user_id' => $user->id, 'occupation' => ['Doctor']]);
 
@@ -47,16 +47,16 @@ class UserSeeder extends Seeder
                 'email' => 'agent@duenodirecto.com',
                 'family_name' => 'Lommert',
                 'given_name' => 'Karla G.',
-                'role' => 'agent'
-            ])->assignRole('agent');
+                'role' => User::ROLE_AGENT
+            ])->assignRole(User::ROLE_AGENT);
 
             // Lawyer test user
             User::factory()->create([
                 'email' => 'lawyer@duenodirecto.com',
                 'family_name' => 'Bifuka',
                 'given_name' => 'Darla Stephie G.',
-                'role' => 'lawyer'
-            ])->assignRole('lawyer');
+                'role' => User::ROLE_LAWYER
+            ])->assignRole(User::ROLE_LAWYER);
         } catch (\Throwable $th) {
             throw $th;
         }

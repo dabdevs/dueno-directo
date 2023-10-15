@@ -24,8 +24,7 @@ class AuthenticationController extends Controller
     public function register(CreateRequest $request)
     {
         try {
-            $role = Role::create(['name' => $request->role]);
-            User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]))->assignRole($role);
+            User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]))->assignRole($request->role);
             
             return response()->json([
                 'status' => 'OK',

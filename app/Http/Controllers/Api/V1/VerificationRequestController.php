@@ -26,7 +26,7 @@ class VerificationRequestController extends Controller
     public function index()
     {
         try {
-            $verification_requests = auth()->user()->role == 'admin' ? VerificationRequest::paginate(20) :
+            $verification_requests = auth()->user()->role == 'admin' ? VerificationRequest::paginate(env('PAGINATION')) :
                 VerificationRequest::whereHas('property', function ($query) {
                     $query->where('user_id', auth()->id());
                 })->paginate(env('PAGINATION'));
