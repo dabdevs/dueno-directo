@@ -24,11 +24,10 @@ class CreatePropertiesTable extends Migration
             $table->integer('area');
             $table->boolean('balcony')->default(0);
             $table->string('email')->nullable();
-            $table->string('phone_number');
+            $table->string('telephone');
             $table->string('address')->nullable();
             $table->enum('type', ['House', 'Apartment', 'Condo']);
             $table->boolean('patio')->default(0);
-            $table->text('note')->nullable();
             $table->text('preferred_tenant_profile')->nullable();
             $table->foreignId('user_id')->onDelete('cascade');
             $table->unsignedBigInteger('tenant_id')->nullable();
@@ -47,7 +46,8 @@ class CreatePropertiesTable extends Migration
             $table->enum('get_notified_by', ['Phone', 'Email'])->default('Email');
             $table->boolean('negotiable')->default(0);
             $table->enum('status', ['Unlisted', 'Published', 'Booked', 'Rented'])->default('Unlisted');
-            $table->dateTime('verified_at')->nullable();
+            $table->dateTime('date_published')->nullable();
+            $table->dateTime('date_expires')->nullable();
             $table->timestamps();
         });
     }

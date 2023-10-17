@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Events\User\UserCreated;
+use App\Events\User\UserCreatedEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\User\CreateRequest;
@@ -14,7 +14,8 @@ use App\Http\Resources\UserResource;
 use App\Models\Navigation;
 use Tymon\JWTAuth\Contracts\Providers\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class AuthenticationController extends Controller
 {
@@ -24,8 +25,10 @@ class AuthenticationController extends Controller
     public function register(CreateRequest $request)
     {
         try {
-            User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]))->assignRole($request->role);
-            
+            $user = User::create(array_merge($request->only(['email', 'role']), ['password' => bcrypt($request->password)]))->assignRole($request->role);
+
+            event(new UserCreatedEvent($user));
+
             return response()->json([
                 'status' => 'OK',
                 'message' => 'User registered successfully'
@@ -47,7 +50,7 @@ class AuthenticationController extends Controller
             $credentials = $request->only(['email', 'password']);  
             
             // Validate login creadentials
-            if (!$token = JWTAuth::attempt($credentials, ['expires' => now()->addMinutes(1)->timestamp])) {
+            if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json(['status' => 'Error', 'message' => 'Wrong credentials'], 401);
             }
 
@@ -56,9 +59,19 @@ class AuthenticationController extends Controller
             $token_exp = date('Y-m-d H:i:s', $payload['exp']);
 
             $user = auth()->user();
+
+            $routes = Route::getRoutes();
+
+            $user_routes = [];
+
+            foreach ($routes as $route) {
+                if (Str::startsWith($route->uri(), 'api/v1/'. $user->role .'s/')) {
+                    $user_routes[] = $route->uri();
+                }
+            }
+
             $roles = $user->getRoleNames();
-            $permissions = $user->getAllPermissions()->pluck('name')->toArray();
-            $token = JWTAuth::fromUser($user, ['roles' => $roles, 'permissions' => $permissions]);
+            $token = JWTAuth::fromUser($user, ['roles' => $roles]);
             $navigation = NavigationResource::collection(Navigation::whereJsonContains('allowed_roles', $user->role)->whereActive(1)->get());
 
             return response()->json([
@@ -66,7 +79,6 @@ class AuthenticationController extends Controller
                 'exp' => $token_exp,
                 'user' => new UserResource($user),
                 'roles' => $roles,
-                'permissions' => $permissions,
                 'navigation' => $navigation
             ]);
         } catch (\Throwable $th) {

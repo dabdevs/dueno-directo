@@ -25,20 +25,29 @@ class UpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'sometimes|required|string|max:150',
-            'description' => 'sometimes|string|required|max:255',
-            'price' => 'sometimes|numeric|min:0|required',
-            'bedrooms' => 'sometimes|integer|min:1',
-            'bathrooms' => 'sometimes|integer|min:1',
-            'area' => 'sometimes|integer|min:1',
-            'location' => 'sometimes|string|max:255|required',
-            'phone_number' => 'sometimes|string|max:20',
-            'type' => ['sometimes', 'string', 'max:255', Rule::in(['House', 'Apartment', 'Condo'])],
-            'status' => ['sometimes', Rule::in(['Unlisted', 'Published', 'Booked', 'Rented'])],
-            'note' => 'nullable|string',
-            'user_id' => 'sometimes|exists:users,id|required',
-            'tenant_id' => 'sometimes|exists:tenants,id|required',
-            'agent_id' => 'nullable|exists:users,id'
+            'title' => 'required|string|max:150',
+            'description' => 'required|string|max:255',
+            'price' => 'required|numeric|min:1',
+            'bedrooms' => 'required|integer|min:1',
+            'bathrooms' => 'required|integer|min:1',
+            'area' => 'required|integer',
+            'balcony' => 'nullable|boolean',
+            'patio' => 'nullable|boolean',
+            'telephone' => 'nullable|string|max:20',
+            'type' => ['required', 'string', 'max:255', Rule::in(['House', 'Apartment', 'Condo'])],
+            'note' => 'string|max:200',
+            'email' => 'nullable|string',
+            'address' => 'string|max:150',
+            'preferred_tenant_profile' => 'string|max:150',
+            'user_id' => 'nullable|integer|exists:users,id',
+            'country_id' => 'required|integer|exists:countries,id',
+            'city_id' => 'required|integer|exists:cities,id',
+            'state' => 'string',
+            'lease_term' => 'string|max:150',
+            'payment_method' => 'string',
+            'security_deposit' => 'string',
+            'neighborhood' => 'string',
+            'get_notified_by' => ['string', 'max:150', Rule::in(['Phone', 'Email'])]
         ];
     }
 }

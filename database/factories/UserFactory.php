@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Country;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -20,7 +21,7 @@ class UserFactory extends Factory
         return [
             'given_name' => $this->faker->firstName(),
             'family_name' => $this->faker->lastName(),
-            'role' => $this->faker->randomElement(['owner', 'tenant']),
+            'role' => $this->faker->randomElement([User::ROLE_OWNER, User::ROLE_RENTER]),
             'telephone' => $this->faker->phoneNumber(),
             'country_id' => $this->faker->randomElement($countries),
             'city_id' => $this->faker->randomElement([1, 8]),

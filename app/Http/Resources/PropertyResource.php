@@ -26,7 +26,7 @@ class PropertyResource extends JsonResource
             'area' => $this->area,
             'type' => $this->type,
             'negotiable' => $this->negotiable,
-            'phoneNumber' => $this->phone_number,
+            'phoneNumber' => $this->telephone,
             'getNotifiedBy' => $this->get_notified_by,
             'note' => $this->note,
             'state' => $this->state,

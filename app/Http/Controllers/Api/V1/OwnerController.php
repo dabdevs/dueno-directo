@@ -18,7 +18,7 @@ class OwnerController extends Controller
      */
     public function index()
     {
-        $owners = User::whereRole('owner')->get();
+        $owners = User::whereRole(User::ROLE_OWNER)->get();
 
         return response()->json([
             'status' => 'OK',

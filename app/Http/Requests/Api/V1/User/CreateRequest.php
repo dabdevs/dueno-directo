@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1\User;
 
+use App\Models\User;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,7 +28,7 @@ class CreateRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string','between:8,20', 'regex:/^(?=.*[A-Z])(?=.*\d).+$/'], // Pwd must be between 8 and 20 characters, at least one capital letter, and one number.
-            'role'  => ['required', 'string', Rule::in(['owner', 'tenant', 'admin', 'lawyer', 'agent'])],
+            'role'  => ['required', 'string', Rule::in([User::ROLE_RENTER, User::ROLE_OWNER, User::ROLE_TENANT, User::ROLE_ADMIN, User::ROLE_LAWYER, User::ROLE_AGENT])],
         ];
     }
 }

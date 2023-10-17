@@ -10,10 +10,9 @@ use App\Http\Resources\PropertyPreferenceResource;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\TenantResource;
 use App\Models\Property;
-use App\Models\Tenant;
+use App\Models\PropertyApplication;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class PropertyController extends Controller
 {
@@ -31,7 +30,7 @@ class PropertyController extends Controller
                 $properties->where('user_id', auth()->id());
             }
 
-            $properties->paginate(env('PAGINATION'));
+            $properties = $properties->paginate(env('PAGINATION'));
 
             return response()->json([
                 'status' => 'OK',
@@ -66,13 +65,14 @@ class PropertyController extends Controller
             // Get the user
             $user = User::findOrFail($user_id);
 
-            if (!$user->hasRole(User::ROLE_OWNER)) {
-                return response()->json(['message' => 'User is not an owner'], 403);
-            }
-
             $data = $request->validated();
             $data['slug'] = str_replace('', '-', $request->title);
-
+            $data['email'] = $user->email;
+            
+            if ($user->telephone) {
+                $data['telephone'] = $user->telephone;
+            }
+            
             $property = $user->properties()->create($data);
 
             return response()->json([
@@ -166,21 +166,27 @@ class PropertyController extends Controller
     }
 
     /**
-     *  Property applications
+     *  Get applications for one or all properties 
      */
-    public function applications(Property $property)
+    public function propertyApplications(Property $property = null)
     {
         try {
-            if (!$this->_authorize($property)) {
-                return response()->json([
-                    'status' => 'Error',
-                    'message' => 'Forbidden'
-                ], 403);
+            if ($property) {
+                if (!$this->_authorize($property)) {
+                    return response()->json([
+                        'status' => 'Error',
+                        'message' => 'Forbidden'
+                    ], 403);
+                }
+
+                $applications = $property->applications;
+            } else {
+                $applications = PropertyApplication::whereIn('property_id', User::find(auth()->id())->properties()->pluck('id'))->get();
             }
 
             return response()->json([
                 'status' => 'OK',
-                'data' => PropertyApplicationResource::collection($property->applications)
+                'data' => PropertyApplicationResource::collection($applications)
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -331,7 +337,7 @@ class PropertyController extends Controller
             if ($request->has('order')) {
                 $query->orderBy($request->order);
             }
-            
+
             $properties = $query->paginate(env('PAGINATION'));
 
             return response()->json([
@@ -365,8 +371,7 @@ class PropertyController extends Controller
                 ], 403);
             }
 
-            $property->status = $request->status;
-            $property->save();
+            $property->changeStatus($request->status);
 
             return response()->json([
                 'status' => 'OK',

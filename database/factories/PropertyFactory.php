@@ -18,16 +18,15 @@ class PropertyFactory extends Factory
 
         return [
             'title' => $title,
-            'slug' => str_replace('', '-', $title), 
+            'slug' => str_replace('', '-', $title),
             'description' => $this->faker->paragraph,
             'price' => $this->faker->randomFloat(2, 1000, 100000),
             'bedrooms' => $this->faker->numberBetween(1, 5),
             'bathrooms' => $this->faker->numberBetween(1, 3),
             'area' => $this->faker->numberBetween(500, 5000),
-            'phone_number' => $this->faker->phoneNumber,
+            'telephone' => $this->faker->phoneNumber,
             'type' => $this->faker->randomElement(['House', 'Apartment', 'Condo']),
-            'note' => $this->faker->paragraph,
-            'user_id' => User::factory()->create(['role' => 'owner'])->id,
+            'user_id' => User::factory()->create(['role' => User::ROLE_OWNER])->id,
             'agent_id' => $this->faker->randomElement([null, User::factory()->create(['role' => 'agent'])->id]),
             'country_id' => $this->faker->randomElement([1, 3]),
             'city_id' => $this->faker->randomElement([1, 3])

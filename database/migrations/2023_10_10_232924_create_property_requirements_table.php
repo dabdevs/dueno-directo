@@ -15,7 +15,7 @@ class CreatePropertyRequirementsTable extends Migration
     {
         Schema::create('property_requirements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('property_id')->constrained();
+            $table->foreignId('property_id')->onDelete('cascade');
             $table->string('name');
             $table->string('quantity');
             $table->boolean('negotiable')->default(0);

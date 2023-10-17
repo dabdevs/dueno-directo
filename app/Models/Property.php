@@ -10,6 +10,12 @@ class Property extends Model
 {
     use HasFactory;
 
+    // Property status
+    const STATUS_PUBLISHED = 'Published';
+    const STATUS_UNLISTED = 'Unlisted';
+    const STATUS_BOOKED = 'Booked';
+    const STATUS_RENTED = 'Rented';
+
     protected $fillable = [
         'title',
         'slug',
@@ -29,11 +35,10 @@ class Property extends Model
         'state',
         'neighborhood',
         'get_notified_by',
-        'phone_number',
+        'telephone',
         'lease_term',
         'security_deposit',
         'type',
-        'note',
         'email',
         'user_id',
         'status',
@@ -95,7 +100,11 @@ class Property extends Model
 
     public function changeStatus(string $status)
     {
-        $this->status($status);
+        if ($status === self::STATUS_PUBLISHED) {
+            $this->date_published = now();
+            $this->date_expires = now()->addDays(env('PUBLICATION_LIFETIME'));
+        }
+
         return $this->save();
     }
 
@@ -103,7 +112,7 @@ class Property extends Model
     {
         if ($user->role != User::ROLE_TENANT) {
             throw new Exception("User is not a tenant", 1);
-        } 
+        }
 
         $this->tenant_id = $user->id;
         return $this->save();
@@ -113,7 +122,7 @@ class Property extends Model
     {
         if ($user->role != User::ROLE_AGENT) {
             throw new Exception("User is not an agent", 1);
-        } 
+        }
 
         $this->agent_id = $user->id;
         return $this->save();
@@ -123,7 +132,7 @@ class Property extends Model
     {
         if ($user->role != User::ROLE_LAWYER) {
             throw new Exception("User is not a lawyer", 1);
-        } 
+        }
 
         $this->lawyer_id = $user->id;
         return $this->save();

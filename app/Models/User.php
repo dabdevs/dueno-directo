@@ -13,10 +13,11 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles; 
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     // User roles
     const ROLE_ADMIN = 'admin';
+    const ROLE_RENTER = 'renter';
     const ROLE_OWNER = 'owner';
     const ROLE_TENANT = 'tenant';
     const ROLE_AGENT = 'agent';
@@ -133,12 +134,22 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 
     public function isOwner()
     {
-        return $this->role == 'owner' && $this->properties() != null;
+        return $this->role == self::ROLE_OWNER;
     }
 
     public function isTenant()
     {
-        return $this->role == 'tenant' && $this->tenant() != null;
+        return $this->role == self::ROLE_TENANT;
+    }
+
+    public function isRenter()
+    {
+        return $this->role == self::ROLE_RENTER;
+    }
+
+    public function isAdmin()
+    {
+        return $this->role == self::ROLE_ADMIN;
     }
 
     public function country()
@@ -160,4 +171,6 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     {
         return in_array($role, $this->getRoleNames()->toArray());
     }
+
+
 }

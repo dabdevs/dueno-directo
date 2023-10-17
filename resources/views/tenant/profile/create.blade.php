@@ -1,9 +1,9 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 
 @section('content')
     <h1>Create Tenant Profile</h1>
 
-    @if(session('success'))
+    @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
@@ -24,9 +24,9 @@
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
 
-        <label for="phone_number">Phone Number:</label>
-        <input type="text" name="phone_number" id="phone_number" value="{{ old('phone_number') }}">
-        @error('phone_number')
+        <label for="telephone">Phone Number:</label>
+        <input type="text" name="telephone" id="telephone" value="{{ old('telephone') }}">
+        @error('telephone')
             <div class="alert alert-danger">{{ $message }}</div>
         @enderror
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Property;
 
-use App\Events\User\UserCreated;
+use App\Events\PropertyPublishedEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class UserCreatedListener
+class PropertyPublishedListener
 {
     /**
      * Create the event listener.
@@ -21,10 +21,11 @@ class UserCreatedListener
     /**
      * Handle the event.
      *
+     * @param  \App\Events\PropertyPublishedEvent  $event
+     * @return void
      */
-    public function handle(UserCreated $event)
+    public function handle(PropertyPublishedEvent $event)
     {
-        $user = $event->user; 
-        $user->assignRole($user->role);
+        //
     }
 }

@@ -33,7 +33,7 @@ class CreateRequest extends FormRequest
             'area' => 'required|integer',
             'balcony' => 'nullable|boolean',
             'patio' => 'nullable|boolean',
-            'phone_number' => 'nullable|string|max:20',
+            'telephone' => 'nullable|string|max:20',
             'type' => ['required', 'string', 'max:255', Rule::in(['House', 'Apartment', 'Condo'])],
             'note' => 'string|max:200',
             'email' => 'nullable|string',
