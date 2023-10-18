@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PropertyApplicationFactory extends Factory
@@ -15,8 +16,8 @@ class PropertyApplicationFactory extends Factory
     {
         return [
             'note' => $this->faker->paragraph(),
-            'property_id' => \App\Models\Property::factory()->create()->id,
-            'user_id' => \App\Models\User::factory()->create(['role' => 'tenant'])->id
+            'property_id' => $this->faker->numberBetween(1, 5),
+            'user_id' => User::whereEmail('renter@duenodirecto.com')->first()->id
         ];
     }
 }

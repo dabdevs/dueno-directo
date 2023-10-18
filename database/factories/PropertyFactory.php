@@ -26,7 +26,7 @@ class PropertyFactory extends Factory
             'area' => $this->faker->numberBetween(500, 5000),
             'telephone' => $this->faker->phoneNumber,
             'type' => $this->faker->randomElement(['House', 'Apartment', 'Condo']),
-            'user_id' => User::factory()->create(['role' => User::ROLE_OWNER])->id,
+            'user_id' => User::whereRole(User::ROLE_OWNER)->first()->id,
             'agent_id' => $this->faker->randomElement([null, User::factory()->create(['role' => 'agent'])->id]),
             'country_id' => $this->faker->randomElement([1, 3]),
             'city_id' => $this->faker->randomElement([1, 3])

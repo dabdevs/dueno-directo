@@ -166,23 +166,19 @@ class PropertyController extends Controller
     }
 
     /**
-     *  Get applications for one or all properties 
+     *  Get applications for property
      */
-    public function propertyApplications(Property $property = null)
+    public function applications(Property $property)
     {
         try {
-            if ($property) {
-                if (!$this->_authorize($property)) {
-                    return response()->json([
-                        'status' => 'Error',
-                        'message' => 'Forbidden'
-                    ], 403);
-                }
-
-                $applications = $property->applications;
-            } else {
-                $applications = PropertyApplication::whereIn('property_id', User::find(auth()->id())->properties()->pluck('id'))->get();
+            if (!$this->_authorize($property)) {
+                return response()->json([
+                    'status' => 'Error',
+                    'message' => 'Forbidden'
+                ], 403);
             }
+            
+            $applications = $property->applications;
 
             return response()->json([
                 'status' => 'OK',

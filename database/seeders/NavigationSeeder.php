@@ -25,7 +25,7 @@ class NavigationSeeder extends Seeder
                 ],
                 [
                     'name' => 'Property applications',
-                    'endpoint' => 'api/v1/owners/properties/{property}/applications',
+                    'endpoint' => 'api/v1/owners/properties/applications',
                     'allowed_roles' => [User::ROLE_OWNER]
                 ],
                 [

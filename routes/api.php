@@ -86,19 +86,24 @@ Route::group(['prefix' => 'v1'], function () {
 
     // ===== OWNER ROUTES ========= //
     Route::group(['prefix' => 'owners', 'middleware' => ['auth', 'role:owner']], function () {
-        // Property routes
+        // Property resource routes
         Route::resource('properties', PropertyController::class);
 
-        // Property
-        Route::get('/my-properties', [OwnerController::class, 'myProperties'])->name('owner.my_properties');
+        // Property Applications
+        Route::get('properties/{property}/applications', [PropertyController::class, 'applications'])->name('owner.property_applications');
+
+        //Route::get('/my-properties', [OwnerController::class, 'myProperties'])->name('owner.my_properties');
         //Route::post('/create-property', [PropertyController::class, 'store'])->name('owner.create_property');
         //Route::put('/properties/{property}/update', [PropertyController::class, 'update'])->name('owner.update_property');
         //Route::delete('/properties/{property}/delete', [PropertyController::class, 'destroy'])->name('owner.destroy_property');
-        Route::get('properties/applications/{property?}', [PropertyController::class, 'propertyApplications'])->name('owner.property_applications');
+        
         Route::get('/properties/{property}/preferences', [PropertyController::class, 'preferences'])->name('owner.property_preferences');
         Route::post('/properties/{property}/change-status', [PropertyController::class, 'changeStatus'])->name('owner.property_change_status');
         Route::post('/properties/{property}/assign-tenant', [PropertyController::class, 'assignTenant'])->name('owner.property_assign_tenant');
         Route::get('/properties/{property}/get-tenant', [PropertyController::class, 'getTenant'])->name('owner.property_get_tenant');
+
+        // Application routes
+        Route::resource('applications', ApplicationController::class);
 
         // Application
         Route::post('/applications/{application}/change-status', [ApplicationController::class, 'changeStatus'])->name('application.change_status');

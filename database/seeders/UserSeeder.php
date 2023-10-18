@@ -25,12 +25,12 @@ class UserSeeder extends Seeder
             ])->syncRoles([User::ROLE_ADMIN, User::ROLE_RENTER, User::ROLE_OWNER, User::ROLE_TENANT, User::ROLE_LAWYER, User::ROLE_AGENT]);
 
             // Renter test user
-            // User::factory()->create([
-            //     'email' => 'renter@duenodirecto.com',
-            //     'family_name' => 'Renter',
-            //     'given_name' => 'Renter',
-            //     'role' => User::ROLE_RENTER
-            // ])->assignRole(User::ROLE_RENTER);
+            User::factory()->create([
+                'email' => 'renter@duenodirecto.com',
+                'family_name' => 'Renter',
+                'given_name' => 'Renter',
+                'role' => User::ROLE_RENTER
+            ])->assignRole(User::ROLE_RENTER);
 
             // Owner test user
             User::factory()->create([
