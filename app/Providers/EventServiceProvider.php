@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-use App\Listeners\SendVerificationNotification;
-use Illuminate\Auth\Events\Registered;
+use App\Events\Property\PropertyPublishedEvent;
+use App\Events\User\UserCreatedEvent;
+use App\Listeners\Property\PropertyPublishedListener;
+use App\Listeners\User\UserCreatedListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,8 +16,11 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendVerificationNotification::class,
+        UserCreatedEvent::class => [
+            UserCreatedListener::class,
+        ],
+        PropertyPublishedEvent::class => [
+            PropertyPublishedListener::class
         ],
     ];
 
