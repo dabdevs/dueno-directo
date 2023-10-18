@@ -71,7 +71,7 @@ class AuthenticationController extends Controller
             }
 
             $roles = $user->getRoleNames();
-            $token = JWTAuth::fromUser($user, ['roles' => $roles]);
+            $token = JWTAuth::fromUser($user, ['roles' => $roles]); 
             $navigation = NavigationResource::collection(Navigation::whereJsonContains('allowed_roles', $user->role)->whereActive(1)->get());
 
             return response()->json([

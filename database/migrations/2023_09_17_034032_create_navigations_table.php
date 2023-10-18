@@ -15,8 +15,8 @@ class CreateNavigationsTable extends Migration
     {
         Schema::create('navigations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('endpoint');
+            $table->string('name')->unique();
+            $table->string('endpoint')->unique();
             $table->json('allowed_roles');
             $table->boolean('active')->default(1);
             $table->timestamps();
